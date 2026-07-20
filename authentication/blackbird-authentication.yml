@@ -1,0 +1,40 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/blackbird-flynet-openapi-original.yml
+docs: https://docs.flynet.org/concepts/authentication
+description: >-
+  Flynet uses two credentials for two route families, never interchangeable:
+  an X-API-Key (fly_live_/fly_test_) for Discovery routes (/restaurants*,
+  /locations*, /check_ins feed), and an OAuth 2.0 + PKCE bearer JWT for member
+  routes (/users/me/*) and all payment intent routes. The spec models the bearer
+  as http/JWT; the OAuth flow and scopes are documented in
+  scopes/blackbird-scopes.yml.
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+  oauth_variant: OAuth 2.0 + PKCE (Token-Mediating Backend)
+schemes:
+- name: oauthBearer
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: |-
+    OAuth 2.0 access token. Required for the `/users/me/*` routes
+    (profile, status, wallets, tags, check-ins, memberships) and all
+    payment intent routes.
+  sources:
+  - openapi/blackbird-flynet-openapi-original.yml
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: X-API-Key
+  description: |-
+    Server-to-server API key prefixed `fly_live_...` (production) or
+    `fly_test_...` (staging/dev). Required on restaurant and location
+    Discovery routes and on the `/check_ins` venue feed (key minted
+    with `read:checkins`).
+  sources:
+  - openapi/blackbird-flynet-openapi-original.yml
