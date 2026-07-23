@@ -1,0 +1,324 @@
+openapi: 3.0.3
+info:
+  title: Flynet App Rewards API
+  version: '1.0'
+  description: 'Flynet''s partner API. Read access to member context, restaurants,
+
+    locations, check-ins, and memberships; write access for payment
+
+    intents.
+
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+
+    location discovery. See Concepts → Authentication.
+
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+
+    default `50`. List responses include a `pagination` wrapper except
+
+    `GET /locations/{id}/open_hours`.
+
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+
+    are documented there.
+
+    '
+servers:
+- url: https://api.staging.blackbird.xyz/flynet/v1
+  description: Staging
+security:
+- oauthBearer: []
+tags:
+- name: Rewards
+paths:
+  /issue_reward:
+    post:
+      tags:
+      - Rewards
+      summary: Issue a reward
+      operationId: issueReward
+      description: 'Issue a FLY reward from your app''s wallet to a member. The transfer
+
+        is immediate and **irreversible** — there is no refund. Idempotent:
+
+        replaying the same `idempotency_key` returns the existing reward
+
+        instead of issuing a second one. API-key auth only; requires the
+
+        `write:rewards` scope and enough FLY in your app''s wallet.
+
+        '
+      security:
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              - amount
+              - description
+              - idempotency_key
+              properties:
+                user_id:
+                  type: string
+                  format: uuid
+                  description: The member receiving the reward.
+                amount:
+                  $ref: '#/components/schemas/Money'
+                description:
+                  type: string
+                idempotency_key:
+                  type: string
+                  description: Replaying the same key returns the existing reward.
+                metadata:
+                  type: object
+                  additionalProperties: true
+            example:
+              user_id: '{uuid}'
+              amount:
+                value: '1000000000000000000'
+                currency: FLY
+              description: Loyalty streak reward
+              idempotency_key: reward-12345
+              metadata:
+                campaign: summer-2026
+      responses:
+        '201':
+          description: Reward issued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reward'
+        '200':
+          description: Idempotent replay; returns the existing reward.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reward'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/MissingApiKey'
+        '403':
+          description: Key lacks the `write:rewards` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+  /balance:
+    get:
+      tags:
+      - Rewards
+      summary: Get your app's wallet balance
+      operationId: getBalance
+      description: 'Returns your app''s own FLY wallet balance — the source wallet that
+
+        `POST /issue_reward` draws from — alongside its USD equivalent.
+
+        API-key auth only; requires the `read:balance` scope.
+
+        '
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Your app's account balance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalance'
+              example:
+                id: 3f1c6d8e-0f12-4a5b-8c9d-1e2f3a4b5c6d
+                object: account_balance
+                owner_id: 2c8f0e5a-1d4b-4c9e-9f2a-7b3c6d8e0f12
+                owner_type: flynet_merchant
+                balance:
+                  value: '2500000000000000000'
+                  currency: fly
+                balance_usd:
+                  value: 250
+                  currency: usd
+        '401':
+          $ref: '#/components/responses/MissingApiKey'
+        '403':
+          description: Key lacks the `read:balance` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+components:
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    AccountBalance:
+      type: object
+      description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
+
+        '
+      required:
+      - id
+      - object
+      - owner_id
+      - owner_type
+      - balance
+      - balance_usd
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - account_balance
+        owner_id:
+          type: string
+          format: uuid
+        owner_type:
+          type: string
+          enum:
+          - user
+          - flynet_merchant
+        balance:
+          type: object
+          description: FLY balance. `value` is a base-unit big-integer string with 18 decimals (wei-style) — divide by 10^18 for human FLY. Never parse with a float.
+          required:
+          - value
+          - currency
+          properties:
+            value:
+              type: string
+            currency:
+              type: string
+              enum:
+              - fly
+        balance_usd:
+          type: object
+          description: USD equivalent. `value` is integer cents.
+          required:
+          - value
+          - currency
+          properties:
+            value:
+              type: integer
+            currency:
+              type: string
+              enum:
+              - usd
+    Reward:
+      type: object
+      required:
+      - id
+      - object
+      - user_id
+      - amount
+      - description
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The reward id (the underlying payment-intent id).
+        object:
+          type: string
+          enum:
+          - reward
+        user_id:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/Money'
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    Money:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: 'Amount as a stringified integer in the smallest unit of
+
+            `currency`. For FLY, this is wei (18-decimal precision).
+
+            '
+          example: '1000000000000000000'
+        currency:
+          type: string
+          enum:
+          - FLY
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              nullable: true
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth 2.0 access token. Required for the `/users/me/*` routes
+
+        (profile, status, wallets, tags, check-ins, memberships) and all
+
+        payment intent routes.
+
+        '
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'Server-to-server API key prefixed `fly_live_...` (production) or
+
+        `fly_test_...` (staging/dev). Required on restaurant and location
+
+        Discovery routes and on the `/check_ins` venue feed (key minted
+
+        with `read:checkins`).
+
+        '

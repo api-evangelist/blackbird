@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  title: Flynet App Memberships API
+  version: '1.0'
+  description: 'Flynet''s partner API. Read access to member context, restaurants,
+
+    locations, check-ins, and memberships; write access for payment
+
+    intents.
+
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+
+    location discovery. See Concepts → Authentication.
+
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+
+    default `50`. List responses include a `pagination` wrapper except
+
+    `GET /locations/{id}/open_hours`.
+
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+
+    are documented there.
+
+    '
+servers:
+- url: https://api.staging.blackbird.xyz/flynet/v1
+  description: Staging
+security:
+- oauthBearer: []
+tags:
+- name: Memberships
+  description: Per-(member, restaurant) loyalty records carrying check-in counts and tiers.
+paths:
+  /users/me/memberships:
+    get:
+      tags:
+      - Memberships
+      summary: List the authenticated member's memberships
+      operationId: listMemberships
+      description: 'Returns the authenticated member''s paginated membership records —
+
+        one per restaurant — each carrying a `check_in_count` and the
+
+        member''s `membership_tier` at that restaurant. The subject is
+
+        resolved from the access token, so there is no member ID in the
+
+        path. This is the canonical source for the member''s per-restaurant
+
+        check-in totals: filter by `restaurant` and sum `check_in_count`
+
+        across the result.
+
+
+        Accessible with a token carrying `read:memberships`.
+
+
+        There is no `GET /users/me/memberships/{id}` — the list, with
+
+        filters, is the only accessor. Server-side sorting is not applied:
+
+        `sort` and related parameters are silently ignored, so sort
+
+        client-side.
+
+        '
+      security:
+      - oauthBearer: []
+      parameters:
+      - name: restaurant
+        in: query
+        description: 'Restaurant UUID to filter by. Note the asymmetry: the filter
+
+          key is `restaurant`, but the field on each record is
+
+          `restaurant_id`. Passing `restaurant_id` is silently ignored
+
+          and returns the full unfiltered list.
+
+          '
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paginated memberships.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipList'
+              example:
+                memberships:
+                - id: 011ac10e-7f27-4355-847a-c51e2e7e5625
+                  object: membership
+                  restaurant_id: 2cb56d03-4417-4b60-afe3-be819ecde8ac
+                  check_in_count: 1
+                  last_check_in_date: '2026-05-26T16:30:45.825827Z'
+                  membership_tier:
+                    id: 8a71471b-c07c-4e05-9888-7ecd8e1bc609
+                    object: membership_tier
+                    name: Member
+                    artist: Andrew Braswell
+                    asset:
+                      preview_1x: https://images.blackbird.xyz/.../343_490.png
+                      web_2x: https://images.blackbird.xyz/.../343_490.png
+                      full_3x: https://images.blackbird.xyz/.../343_490.png
+                pagination:
+                  total_count: 875
+                  total_pages: 18
+                  current_page: 0
+                  next_page: 1
+                  page_size: 50
+        '401':
+          description: Missing or invalid token. Empty body.
+        '403':
+          description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
+components:
+  schemas:
+    Membership:
+      type: object
+      required:
+      - id
+      - object
+      - restaurant_id
+      - check_in_count
+      - membership_tier
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - membership
+        restaurant_id:
+          type: string
+          format: uuid
+          description: The restaurant this membership belongs to. (The filter param is `restaurant`, not `restaurant_id`.)
+        check_in_count:
+          type: integer
+          description: This member's check-ins at this restaurant. Sum across a filtered list for the per-restaurant total.
+        last_check_in_date:
+          type: string
+          format: date-time
+          nullable: true
+        membership_tier:
+          type: object
+          required:
+          - id
+          - object
+          - name
+          properties:
+            id:
+              type: string
+              format: uuid
+            object:
+              type: string
+              enum:
+              - membership_tier
+            name:
+              type: string
+              description: Open string (e.g. Member, VIP, Friend), not a fixed enum.
+            artist:
+              type: string
+              nullable: true
+              description: Card-art creator.
+            asset:
+              type: object
+              nullable: true
+              properties:
+                preview_1x:
+                  type: string
+                  format: uri
+                  nullable: true
+                web_2x:
+                  type: string
+                  format: uri
+                  nullable: true
+                full_3x:
+                  type: string
+                  format: uri
+                  nullable: true
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type: integer
+          nullable: true
+        page_size:
+          type: integer
+    MembershipList:
+      type: object
+      required:
+      - memberships
+      - pagination
+      properties:
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/Membership'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+  parameters:
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth 2.0 access token. Required for the `/users/me/*` routes
+
+        (profile, status, wallets, tags, check-ins, memberships) and all
+
+        payment intent routes.
+
+        '
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'Server-to-server API key prefixed `fly_live_...` (production) or
+
+        `fly_test_...` (staging/dev). Required on restaurant and location
+
+        Discovery routes and on the `/check_ins` venue feed (key minted
+
+        with `read:checkins`).
+
+        '

@@ -1,0 +1,466 @@
+openapi: 3.0.3
+info:
+  title: Flynet App Payments API
+  version: '1.0'
+  description: 'Flynet''s partner API. Read access to member context, restaurants,
+
+    locations, check-ins, and memberships; write access for payment
+
+    intents.
+
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+
+    location discovery. See Concepts → Authentication.
+
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+
+    default `50`. List responses include a `pagination` wrapper except
+
+    `GET /locations/{id}/open_hours`.
+
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+
+    are documented there.
+
+    '
+servers:
+- url: https://api.staging.blackbird.xyz/flynet/v1
+  description: Staging
+security:
+- oauthBearer: []
+tags:
+- name: Payments
+  description: Payment Intents for FLY-funded payments.
+paths:
+  /payment_intents:
+    post:
+      tags:
+      - Payments
+      summary: Create a Payment Intent
+      operationId: createPaymentIntent
+      description: 'Create a new Payment Intent. The intent enters `pending` status
+
+        until you call `/confirm`. `flynet_merchant_id` is optional — omit
+
+        it to credit your own app''s merchant, or pass one to route the
+
+        payment to a specific merchant.
+
+        '
+      security:
+      - oauthBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - customer_user_id
+              - amount
+              - description
+              - idempotency_key
+              properties:
+                flynet_merchant_id:
+                  type: string
+                  format: uuid
+                customer_user_id:
+                  type: string
+                  format: uuid
+                amount:
+                  $ref: '#/components/schemas/Money'
+                description:
+                  type: string
+                idempotency_key:
+                  type: string
+                  description: Unique per `(flynet_merchant_id, key)`.
+                expires_at:
+                  type: string
+                  format: date-time
+                metadata:
+                  type: object
+                  additionalProperties: true
+            example:
+              flynet_merchant_id: '{merchant_uuid}'
+              customer_user_id: '{uuid}'
+              amount:
+                value: '1000000000000000000'
+                currency: FLY
+              description: Event ticket
+              idempotency_key: order-12345
+              expires_at: '2026-05-30T00:00:00Z'
+              metadata:
+                order_id: '12345'
+      responses:
+        '201':
+          description: New Payment Intent created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        '200':
+          description: Idempotent replay; returns the existing intent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Missing or invalid token. Empty body.
+    get:
+      tags:
+      - Payments
+      summary: List Payment Intents
+      operationId: listPaymentIntents
+      security:
+      - oauthBearer: []
+      parameters:
+      - name: payee_account_balance_id
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: payer_account_balance_id
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paginated list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentList'
+        '401':
+          description: Missing or invalid token. Empty body.
+  /payment_intents/{id}:
+    get:
+      tags:
+      - Payments
+      summary: Retrieve a Payment Intent
+      operationId: getPaymentIntent
+      security:
+      - oauthBearer: []
+      parameters:
+      - $ref: '#/components/parameters/PaymentIntentId'
+      responses:
+        '200':
+          description: The Payment Intent with derived status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        '401':
+          description: Missing or invalid token. Empty body.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /payment_intents/{id}/cancel:
+    post:
+      tags:
+      - Payments
+      summary: Cancel a pending Payment Intent
+      operationId: cancelPaymentIntent
+      description: 'Cancels a `pending` intent. Re-canceling a canceled intent returns
+
+        200 with the same intent. Rejects with 400 if the intent has already
+
+        been paid or refunded.
+
+        '
+      security:
+      - oauthBearer: []
+      parameters:
+      - $ref: '#/components/parameters/PaymentIntentId'
+      responses:
+        '200':
+          description: Updated intent with status `canceled`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Missing or invalid token. Empty body.
+  /payment_intents/{id}/confirm:
+    post:
+      tags:
+      - Payments
+      summary: Confirm and execute a Payment Intent
+      operationId: confirmPaymentIntent
+      description: 'Transfers FLY from the customer''s wallet to the merchant. Customer
+
+        must already hold enough FLY — v1 does not card-fund or auto-load.
+
+        '
+      security:
+      - oauthBearer: []
+      parameters:
+      - $ref: '#/components/parameters/PaymentIntentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              properties:
+                user_id:
+                  type: string
+                  format: uuid
+                  description: Must own the intent's payer wallet.
+            example:
+              user_id: '{uuid}'
+      responses:
+        '200':
+          description: Intent paid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        '400':
+          description: Insufficient FLY or not confirmable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token. Empty body.
+  /payment_intents/{id}/refund:
+    post:
+      tags:
+      - Payments
+      summary: Refund a paid Payment Intent
+      operationId: refundPaymentIntent
+      description: 'Reverses the FLY transfer. Full refund only in v1; partial refunds
+
+        are not supported.
+
+        '
+      security:
+      - oauthBearer: []
+      parameters:
+      - $ref: '#/components/parameters/PaymentIntentId'
+      responses:
+        '200':
+          description: Intent refunded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Missing or invalid token. Empty body.
+components:
+  responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    PaymentIntentList:
+      type: object
+      required:
+      - payment_intents
+      - pagination
+      properties:
+        payment_intents:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentIntent'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    PaymentIntent:
+      type: object
+      required:
+      - id
+      - object
+      - payer_account_balance_id
+      - payee_account_balance_id
+      - amount
+      - description
+      - status
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - payment_intent
+        payer_account_balance_id:
+          type: string
+          format: uuid
+        payee_account_balance_id:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/Money'
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - paid
+          - canceled
+          - refunded
+          - expired
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        canceled_at:
+          type: string
+          format: date-time
+          nullable: true
+        paid_at:
+          type: string
+          format: date-time
+          nullable: true
+        refunded_at:
+          type: string
+          format: date-time
+          nullable: true
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Money:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: 'Amount as a stringified integer in the smallest unit of
+
+            `currency`. For FLY, this is wei (18-decimal precision).
+
+            '
+          example: '1000000000000000000'
+        currency:
+          type: string
+          enum:
+          - FLY
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type: integer
+          nullable: true
+        page_size:
+          type: integer
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              nullable: true
+  parameters:
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    PaymentIntentId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: '{uuid}'
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth 2.0 access token. Required for the `/users/me/*` routes
+
+        (profile, status, wallets, tags, check-ins, memberships) and all
+
+        payment intent routes.
+
+        '
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'Server-to-server API key prefixed `fly_live_...` (production) or
+
+        `fly_test_...` (staging/dev). Required on restaurant and location
+
+        Discovery routes and on the `/check_ins` venue feed (key minted
+
+        with `read:checkins`).
+
+        '

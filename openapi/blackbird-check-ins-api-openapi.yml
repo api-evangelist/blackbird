@@ -1,0 +1,484 @@
+openapi: 3.0.3
+info:
+  title: Flynet App Check-ins API
+  version: '1.0'
+  description: 'Flynet''s partner API. Read access to member context, restaurants,
+
+    locations, check-ins, and memberships; write access for payment
+
+    intents.
+
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+
+    location discovery. See Concepts → Authentication.
+
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+
+    default `50`. List responses include a `pagination` wrapper except
+
+    `GET /locations/{id}/open_hours`.
+
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+
+    are documented there.
+
+    '
+servers:
+- url: https://api.staging.blackbird.xyz/flynet/v1
+  description: Staging
+security:
+- oauthBearer: []
+tags:
+- name: Check-ins
+  description: Filtered visit records.
+paths:
+  /check_ins:
+    get:
+      tags:
+      - Check-ins
+      summary: List check-ins
+      operationId: listCheckIns
+      description: 'Returns paginated check-ins for a restaurant or location — an
+
+        anonymized venue activity feed for dashboards, heatmaps, and
+
+        recent-visit displays. Responses carry no member identity (see the
+
+        check-in schema). Filters — `[restaurant, location, created_after,
+
+        created_before]` — are optional and AND together; a bare unfiltered
+
+        list returns the full set. For the authenticated member''s own
+
+        history, use `GET /users/me/check_ins`.
+
+
+        Unknown query parameters are silently ignored. A typo in a filter
+
+        name is treated as no filter supplied, so you get the full
+
+        unfiltered set rather than an error.
+
+
+        Auth: API key in `X-API-Key`, minted with the `read:checkins` scope —
+
+        no member token needed. (A member''s own history at
+
+        `GET /users/me/check_ins` uses their OAuth token instead.)
+
+        '
+      security:
+      - apiKey: []
+      parameters:
+      - name: restaurant
+        in: query
+        description: Restaurant UUID — every location of this brand.
+        schema:
+          type: string
+          format: uuid
+      - name: location
+        in: query
+        description: Location UUID — one specific venue.
+        schema:
+          type: string
+          format: uuid
+      - name: created_after
+        in: query
+        description: ISO 8601 timestamp. Epoch seconds are rejected.
+        schema:
+          type: string
+          format: date-time
+      - name: created_before
+        in: query
+        description: ISO 8601 timestamp. Epoch seconds are rejected.
+        schema:
+          type: string
+          format: date-time
+      - name: sort_order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paginated check-ins.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckInList'
+        '400':
+          description: Bad timestamp (epoch seconds rejected) or invalid sort order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid token. Empty body.
+        '403':
+          description: Token lacks the `read:checkins` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /check_ins/{id}:
+    get:
+      tags:
+      - Check-ins
+      summary: Get a check-in
+      operationId: getCheckIn
+      description: 'Single check-in by UUID. Responses carry no member identity.
+
+
+        Auth: API key in `X-API-Key`, minted with the `read:checkins`
+
+        scope — the same credential as the `/check_ins` venue feed.
+
+        '
+      security:
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/CheckInId'
+      responses:
+        '200':
+          description: Check-in found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckIn'
+        '401':
+          $ref: '#/components/responses/MissingApiKey'
+        '403':
+          description: Key lacks the `read:checkins` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Location:
+      type: object
+      required:
+      - id
+      - object
+      - restaurant
+      - neighborhood
+      - address
+      - time_zone
+      - payments_enabled
+      - is_club
+      - reservations_enabled
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - location
+        name:
+          type: string
+          nullable: true
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        neighborhood:
+          $ref: '#/components/schemas/Neighborhood'
+        slug:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        coordinate:
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+          nullable: true
+        phone_number:
+          type: string
+          nullable: true
+        time_zone:
+          type: string
+        payments_enabled:
+          type: boolean
+        is_club:
+          type: boolean
+        reservations_enabled:
+          type: boolean
+        reservation_url:
+          type: string
+          format: uri
+          nullable: true
+        google_place_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type: string
+          nullable: true
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+    CheckInList:
+      type: object
+      required:
+      - check_ins
+      - pagination
+      properties:
+        check_ins:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckIn'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    CheckIn:
+      type: object
+      required:
+      - id
+      - object
+      - location
+      - blackbird_pay_enabled
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - check_in
+        location:
+          $ref: '#/components/schemas/Location'
+        blackbird_pay_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        ended_at:
+          type: string
+          format: date-time
+          nullable: true
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    Restaurant:
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - cuisine
+      - cohort
+      - tags
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - restaurant
+        name:
+          type: string
+        cuisine:
+          type: array
+          items:
+            type: string
+        cohort:
+          type: string
+          nullable: true
+        price:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        asset:
+          type: object
+          nullable: true
+          required:
+          - preview_1x
+          - web_2x
+          - full_3x
+          properties:
+            preview_1x:
+              type: string
+              format: uri
+              nullable: true
+            web_2x:
+              type: string
+              format: uri
+              nullable: true
+            full_3x:
+              type: string
+              format: uri
+              nullable: true
+        website_url:
+          type: string
+          format: uri
+          nullable: true
+        instagram_url:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type: integer
+          nullable: true
+        page_size:
+          type: integer
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              nullable: true
+  parameters:
+    CheckInId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: '{uuid}'
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth 2.0 access token. Required for the `/users/me/*` routes
+
+        (profile, status, wallets, tags, check-ins, memberships) and all
+
+        payment intent routes.
+
+        '
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'Server-to-server API key prefixed `fly_live_...` (production) or
+
+        `fly_test_...` (staging/dev). Required on restaurant and location
+
+        Discovery routes and on the `/check_ins` venue feed (key minted
+
+        with `read:checkins`).
+
+        '

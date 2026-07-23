@@ -1,0 +1,889 @@
+openapi: 3.0.3
+info:
+  title: Flynet App Users API
+  version: '1.0'
+  description: 'Flynet''s partner API. Read access to member context, restaurants,
+
+    locations, check-ins, and memberships; write access for payment
+
+    intents.
+
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+
+    location discovery. See Concepts → Authentication.
+
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+
+    default `50`. List responses include a `pagination` wrapper except
+
+    `GET /locations/{id}/open_hours`.
+
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+
+    are documented there.
+
+    '
+servers:
+- url: https://api.staging.blackbird.xyz/flynet/v1
+  description: Staging
+security:
+- oauthBearer: []
+tags:
+- name: Users
+  description: The authenticated member — profile, status, wallets, tags, and check-in history. Subject resolved from the token.
+paths:
+  /users/me:
+    get:
+      tags:
+      - Users
+      summary: Get the authenticated member
+      operationId: getMe
+      description: 'Returns the authenticated member''s profile — the subject is
+
+        resolved from the access token, so there is no member ID in the
+
+        path. Requires the `read:profile` scope.
+
+        '
+      security:
+      - oauthBearer: []
+      responses:
+        '200':
+          description: The authenticated member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: be9caffa-7f30-462a-b7ab-9cca9edb8ab8
+                object: user
+                first_name: David
+                last_name: Zhou
+                email: member@example.com
+                phone_number: '+18585551234'
+                birthdate: '1997-01-11'
+                zipcode: '11249'
+                avatar: null
+                account_status: ok
+                created_at: '2026-05-07T18:18:31.078859Z'
+                updated_at: '2026-05-12T18:06:00.874082Z'
+        '401':
+          description: Missing or invalid token. Empty body.
+        '403':
+          description: Token lacks the `read:profile` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /users/me/status:
+    get:
+      tags:
+      - Users
+      summary: Get the authenticated member's status
+      operationId: getMyStatus
+      description: 'Returns the authenticated member''s membership status — tier,
+
+        level, track, benefits, and progress toward the next level. The
+
+        subject is resolved from the access token. Requires the
+
+        `read:profile` scope.
+
+
+        A member with no active status record returns `404` with
+
+        `code: "resource_not_found"` (envelope A), not an empty status.
+
+        '
+      security:
+      - oauthBearer: []
+      responses:
+        '200':
+          description: The member's status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+              example:
+                id: 54245b01-5de2-4608-91d3-be7ddabf28ea
+                object: status
+                user: be9caffa-7f30-462a-b7ab-9cca9edb8ab8
+                tier: '$FLY
+
+                  with us'
+                level: 1
+                track: regular
+                fly_multiplier: 3
+                state: active
+                benefits:
+                - title: Dining Points
+                  description: Earn 3X on Blackbird Pay.
+                - title: Coffee Club
+                  description: Earn 10X points at all Blackbird coffee shops.
+                progress:
+                  check_ins: 1
+                  check_in_threshold: 0
+                  spend:
+                    value: 0
+                    currency: usd
+                  spend_threshold:
+                    value: 0
+                    currency: usd
+                  fly_deposit:
+                    value: '0'
+                    currency: fly
+                  fly_deposit_threshold:
+                    value: '0'
+                    currency: fly
+                year_start: 1767225600
+                year_end: 1798761600
+                started_at: '2026-05-12T18:06:00.660572Z'
+                created_at: '2026-05-12T18:06:00.665635Z'
+                updated_at: '2026-05-12T18:06:00.665646Z'
+        '401':
+          description: Missing or invalid token. Empty body.
+        '403':
+          description: Token lacks the `read:profile` scope. Empty body; reason in the `WWW-Authenticate` header.
+        '404':
+          description: No active status record for the member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/me/check_ins:
+    get:
+      tags:
+      - Users
+      summary: List the authenticated member's check-ins
+      operationId: listMyCheckIns
+      description: 'Returns the authenticated member''s own check-ins, newest first —
+
+        the subject is resolved from the access token. Same shape as
+
+        `GET /check_ins`, scoped to the member. Requires the
+
+        `read:user_checkins` scope.
+
+        '
+      security:
+      - oauthBearer: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paginated check-ins for the member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckInList'
+        '401':
+          description: Missing or invalid token. Empty body.
+        '403':
+          description: Token lacks the `read:user_checkins` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /users/me/wallets:
+    get:
+      tags:
+      - Users
+      summary: List the authenticated member's wallets
+      operationId: listMyWallets
+      description: 'Returns the wallets of the authenticated member — the subject is
+
+        resolved from the access token, so there is no member ID in the
+
+        path. Each member has a MEMBERSHIP wallet and a SPENDING wallet,
+
+        both auto-provisioned on their first OAuth completion. Requires
+
+        the `read:wallets` scope.
+
+        '
+      security:
+      - oauthBearer: []
+      responses:
+        '200':
+          description: The member's wallets.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - wallets
+                - balance
+                properties:
+                  wallets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Wallet'
+                  balance:
+                    $ref: '#/components/schemas/AccountBalance'
+              example:
+                wallets:
+                - id: 726182e2-865d-4660-b07d-c58e47f482d6
+                  object: user_wallet
+                  wallet_type: MEMBERSHIP
+                  address: '0xaF8A2609EEaf253838E90353881987d8218c8056'
+                  created_at: '2026-05-11T20:21:07.812609Z'
+                  updated_at: '2026-05-11T20:21:07.812621Z'
+                - id: 1a11f75b-f893-4eb2-976b-0b35a9ffd410
+                  object: user_wallet
+                  wallet_type: SPENDING
+                  address: '0x0DC3837d4Ec7732733fD72736279B365DbC10229'
+                  created_at: '2026-05-11T20:21:07.824437Z'
+                  updated_at: '2026-05-11T20:21:07.824449Z'
+                balance:
+                  id: 0b9c2d3e-4f5a-6b7c-8d9e-0a1b2c3d4e5f
+                  object: account_balance
+                  owner_id: 9f8e7d6c-5b4a-3c2d-1e0f-a9b8c7d6e5f4
+                  owner_type: user
+                  balance:
+                    value: '500250000000000000000'
+                    currency: fly
+                  balance_usd:
+                    value: 500
+                    currency: usd
+        '401':
+          description: Missing or invalid token. Empty body.
+        '403':
+          description: Token lacks the `read:wallets` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /users/me/tags:
+    get:
+      tags:
+      - Users
+      summary: List the authenticated member's tags
+      operationId: listMyTags
+      description: 'Returns metadata tags attached to the authenticated member — the
+
+        subject is resolved from the access token, so there is no member
+
+        ID in the path. A tag with `type: "industry"` identifies the
+
+        member as a restaurant employee. Empty array if the member has
+
+        no tags.
+
+        '
+      security:
+      - oauthBearer: []
+      responses:
+        '200':
+          description: The member's tags.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - tags
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+              example:
+                tags:
+                - object: user_tag
+                  type: industry
+                  metadata:
+                  - key: Employer
+                    value:
+                    - FLYBAR
+                  created_at: '2026-01-15T21:47:02.273075Z'
+                  updated_at: '2026-02-19T18:50:38.512641Z'
+        '401':
+          description: Missing or invalid token. Empty body.
+        '403':
+          description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
+components:
+  schemas:
+    User:
+      type: object
+      required:
+      - id
+      - object
+      - first_name
+      - last_name
+      - email
+      - account_status
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - user
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+          nullable: true
+        birthdate:
+          type: string
+          format: date
+          nullable: true
+          description: YYYY-MM-DD.
+        zipcode:
+          type: string
+          nullable: true
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          description: Profile image URL, or null.
+        account_status:
+          type: string
+          enum:
+          - ok
+          - suspended
+          - payment_disputed
+          - payment_failed
+          - unpaid_check
+          - negative_balance
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Location:
+      type: object
+      required:
+      - id
+      - object
+      - restaurant
+      - neighborhood
+      - address
+      - time_zone
+      - payments_enabled
+      - is_club
+      - reservations_enabled
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - location
+        name:
+          type: string
+          nullable: true
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        neighborhood:
+          $ref: '#/components/schemas/Neighborhood'
+        slug:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        coordinate:
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+          nullable: true
+        phone_number:
+          type: string
+          nullable: true
+        time_zone:
+          type: string
+        payments_enabled:
+          type: boolean
+        is_club:
+          type: boolean
+        reservations_enabled:
+          type: boolean
+        reservation_url:
+          type: string
+          format: uri
+          nullable: true
+        google_place_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type: string
+          nullable: true
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+    AccountBalance:
+      type: object
+      description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
+
+        '
+      required:
+      - id
+      - object
+      - owner_id
+      - owner_type
+      - balance
+      - balance_usd
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - account_balance
+        owner_id:
+          type: string
+          format: uuid
+        owner_type:
+          type: string
+          enum:
+          - user
+          - flynet_merchant
+        balance:
+          type: object
+          description: FLY balance. `value` is a base-unit big-integer string with 18 decimals (wei-style) — divide by 10^18 for human FLY. Never parse with a float.
+          required:
+          - value
+          - currency
+          properties:
+            value:
+              type: string
+            currency:
+              type: string
+              enum:
+              - fly
+        balance_usd:
+          type: object
+          description: USD equivalent. `value` is integer cents.
+          required:
+          - value
+          - currency
+          properties:
+            value:
+              type: integer
+            currency:
+              type: string
+              enum:
+              - usd
+    CheckInList:
+      type: object
+      required:
+      - check_ins
+      - pagination
+      properties:
+        check_ins:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckIn'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Wallet:
+      type: object
+      required:
+      - id
+      - object
+      - wallet_type
+      - address
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - user_wallet
+        wallet_type:
+          type: string
+          enum:
+          - MEMBERSHIP
+          - SPENDING
+        address:
+          type: string
+          pattern: ^0x[a-fA-F0-9]{40}$
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CheckIn:
+      type: object
+      required:
+      - id
+      - object
+      - location
+      - blackbird_pay_enabled
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - check_in
+        location:
+          $ref: '#/components/schemas/Location'
+        blackbird_pay_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        ended_at:
+          type: string
+          format: date-time
+          nullable: true
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
+    Status:
+      type: object
+      required:
+      - id
+      - object
+      - user
+      - tier
+      - level
+      - track
+      - state
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - status
+        user:
+          type: string
+          format: uuid
+          description: The member's UUID (the token subject).
+        tier:
+          type: string
+          description: Display string. May contain newlines (e.g. "$FLY\nwith us").
+        level:
+          type: integer
+          minimum: 1
+          maximum: 7
+        track:
+          type: string
+          enum:
+          - regular
+          - pro
+        fly_multiplier:
+          type: integer
+        state:
+          type: string
+          enum:
+          - active
+          - expired
+          - replaced
+          - deactivated
+        benefits:
+          type: array
+          items:
+            type: object
+            required:
+            - title
+            - description
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+        progress:
+          type: object
+          description: Current standing vs. the threshold to advance a level.
+          properties:
+            check_ins:
+              type: integer
+            check_in_threshold:
+              type: integer
+            spend:
+              type: object
+              properties:
+                value:
+                  type: integer
+                  description: Cents. 500 = $5.00.
+                currency:
+                  type: string
+                  enum:
+                  - usd
+            spend_threshold:
+              type: object
+              properties:
+                value:
+                  type: integer
+                currency:
+                  type: string
+                  enum:
+                  - usd
+            fly_deposit:
+              type: object
+              properties:
+                value:
+                  type: string
+                  description: FLY in wei (18-decimal string).
+                currency:
+                  type: string
+                  enum:
+                  - fly
+            fly_deposit_threshold:
+              type: object
+              properties:
+                value:
+                  type: string
+                currency:
+                  type: string
+                  enum:
+                  - fly
+        year_start:
+          type: integer
+          description: Unix epoch seconds — not an ISO string.
+        year_end:
+          type: integer
+          description: Unix epoch seconds — not an ISO string.
+        started_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Restaurant:
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - cuisine
+      - cohort
+      - tags
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - restaurant
+        name:
+          type: string
+        cuisine:
+          type: array
+          items:
+            type: string
+        cohort:
+          type: string
+          nullable: true
+        price:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        asset:
+          type: object
+          nullable: true
+          required:
+          - preview_1x
+          - web_2x
+          - full_3x
+          properties:
+            preview_1x:
+              type: string
+              format: uri
+              nullable: true
+            web_2x:
+              type: string
+              format: uri
+              nullable: true
+            full_3x:
+              type: string
+              format: uri
+              nullable: true
+        website_url:
+          type: string
+          format: uri
+          nullable: true
+        instagram_url:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type: integer
+          nullable: true
+        page_size:
+          type: integer
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              nullable: true
+    Tag:
+      type: object
+      required:
+      - object
+      - type
+      - metadata
+      - created_at
+      - updated_at
+      properties:
+        object:
+          type: string
+          enum:
+          - user_tag
+        type:
+          type: string
+          enum:
+          - industry
+        metadata:
+          type: array
+          items:
+            type: object
+            required:
+            - key
+            - value
+            properties:
+              key:
+                type: string
+              value:
+                type: array
+                items:
+                  type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+  parameters:
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth 2.0 access token. Required for the `/users/me/*` routes
+
+        (profile, status, wallets, tags, check-ins, memberships) and all
+
+        payment intent routes.
+
+        '
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'Server-to-server API key prefixed `fly_live_...` (production) or
+
+        `fly_test_...` (staging/dev). Required on restaurant and location
+
+        Discovery routes and on the `/check_ins` venue feed (key minted
+
+        with `read:checkins`).
+
+        '

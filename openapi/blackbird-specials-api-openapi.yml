@@ -1,0 +1,258 @@
+openapi: 3.0.3
+info:
+  title: Flynet App Specials API
+  version: '1.0'
+  description: 'Flynet''s partner API. Read access to member context, restaurants,
+
+    locations, check-ins, and memberships; write access for payment
+
+    intents.
+
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+
+    location discovery. See Concepts → Authentication.
+
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+
+    default `50`. List responses include a `pagination` wrapper except
+
+    `GET /locations/{id}/open_hours`.
+
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+
+    are documented there.
+
+    '
+servers:
+- url: https://api.staging.blackbird.xyz/flynet/v1
+  description: Staging
+security:
+- oauthBearer: []
+tags:
+- name: Specials
+paths:
+  /specials:
+    get:
+      tags:
+      - Specials
+      summary: List specials
+      operationId: listSpecials
+      description: 'Lists restaurant specials — limited menu items or offers, each
+
+        optionally carrying a FLY reward and a check-in threshold. API-key
+
+        auth only; requires the `read:restaurant_specials` scope.
+
+        '
+      security:
+      - apiKey: []
+      parameters:
+      - name: restaurant
+        in: query
+        required: true
+        description: Restaurant UUID to list specials for.
+        schema:
+          type: string
+          format: uuid
+        example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of specials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecialList'
+        '401':
+          $ref: '#/components/responses/MissingApiKey'
+        '403':
+          description: Key lacks the `read:restaurant_specials` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+components:
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
+  schemas:
+    SpecialList:
+      type: object
+      required:
+      - specials
+      - pagination
+      properties:
+        specials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Special'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type: integer
+          nullable: true
+        page_size:
+          type: integer
+    Amount:
+      type: object
+      description: 'A monetary amount. `value` is a stringified integer in the smallest
+
+        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
+
+        opaque — never parse it as a float. `currency` is the token or fiat
+
+        symbol; its casing is not guaranteed stable across endpoints, so
+
+        compare it case-insensitively.
+
+        '
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          example: '1000000000000000000'
+        currency:
+          type: string
+          example: FLY
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              nullable: true
+    Special:
+      type: object
+      required:
+      - id
+      - object
+      - label
+      - description
+      - emoji
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          example: special
+        restaurant_id:
+          type: string
+          format: uuid
+          nullable: true
+        label:
+          type: string
+        description:
+          type: string
+        emoji:
+          type: string
+        image:
+          type: string
+          nullable: true
+        fly_reward:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+          nullable: true
+        fly_reward_bips:
+          type: integer
+          nullable: true
+        check_in_threshold:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+  parameters:
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth 2.0 access token. Required for the `/users/me/*` routes
+
+        (profile, status, wallets, tags, check-ins, memberships) and all
+
+        payment intent routes.
+
+        '
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'Server-to-server API key prefixed `fly_live_...` (production) or
+
+        `fly_test_...` (staging/dev). Required on restaurant and location
+
+        Discovery routes and on the `/check_ins` venue feed (key minted
+
+        with `read:checkins`).
+
+        '

@@ -1,0 +1,201 @@
+openapi: 3.0.3
+info:
+  title: Flynet App API
+  version: '1.0'
+  description: 'Flynet''s partner API. Read access to member context, restaurants,
+
+    locations, check-ins, and memberships; write access for payment
+
+    intents.
+
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+
+    location discovery. See Concepts → Authentication.
+
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+
+    default `50`. List responses include a `pagination` wrapper except
+
+    `GET /locations/{id}/open_hours`.
+
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+
+    are documented there.
+
+    '
+servers:
+- url: https://api.staging.blackbird.xyz/flynet/v1
+  description: Staging
+security:
+- oauthBearer: []
+tags:
+- name: App
+paths:
+  /app:
+    get:
+      tags:
+      - App
+      summary: Get the calling app
+      operationId: getApp
+      description: 'Returns the calling application''s own record, resolved from the
+
+        API key — including its `flynet_merchant_id`, `allowed_scopes`, and
+
+        owning account. Use it to look up your `flynet_merchant_id` for
+
+        payment-intent creation without waiting on the onboarding email.
+
+        Requires the `read:app` scope; API-key auth only.
+
+        '
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: The calling app.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+              example:
+                id: 7b3c6d8e-0f12-4a5b-8c9d-1e2f3a4b5c6d
+                object: app
+                name: Corner Suite
+                flynet_merchant_id: 2c8f0e5a-1d4b-4c9e-9f2a-7b3c6d8e0f12
+                allowed_scopes:
+                - read:app
+                - read:checkins
+                - read:profile
+                - read:wallets
+                active: true
+                created_at: '2026-05-07T18:18:31.078859Z'
+                account:
+                  id: 9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d
+                  company_name: Corner Suite, Inc.
+                  contact_email: dev@cornersuite.example
+        '401':
+          $ref: '#/components/responses/MissingApiKey'
+        '403':
+          description: Key lacks the `read:app` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+components:
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
+  schemas:
+    App:
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - flynet_merchant_id
+      - allowed_scopes
+      - active
+      - created_at
+      - account
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The app's client ID.
+        object:
+          type: string
+          enum:
+          - app
+        name:
+          type: string
+        flynet_merchant_id:
+          type: string
+          format: uuid
+        allowed_scopes:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        account:
+          $ref: '#/components/schemas/AppAccount'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              nullable: true
+    AppAccount:
+      type: object
+      required:
+      - id
+      - company_name
+      - contact_email
+      properties:
+        id:
+          type: string
+          format: uuid
+        company_name:
+          type: string
+        contact_email:
+          type: string
+          format: email
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth 2.0 access token. Required for the `/users/me/*` routes
+
+        (profile, status, wallets, tags, check-ins, memberships) and all
+
+        payment intent routes.
+
+        '
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 'Server-to-server API key prefixed `fly_live_...` (production) or
+
+        `fly_test_...` (staging/dev). Required on restaurant and location
+
+        Discovery routes and on the `/check_ins` venue feed (key minted
+
+        with `read:checkins`).
+
+        '
