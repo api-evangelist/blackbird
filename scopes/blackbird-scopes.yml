@@ -1,0 +1,60 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/blackbird-flynet-openapi-original.yml
+docs: https://docs.flynet.org/concepts/oauth
+description: >-
+  OAuth 2.0 scopes for the Flynet API. Flynet's OAuth implementation follows the
+  Token-Mediating Backend variant of OAuth 2.0 + PKCE (S256). Member routes are
+  gated per-scope: a valid bearer that lacks the scope a route requires returns
+  HTTP 403 insufficient_scope (in the WWW-Authenticate header for member routes,
+  a JSON body for API-key Discovery routes). Scope names are exact-match; a token
+  is granted exactly the scopes it requests. The scope-to-operation map below is
+  derived from the per-operation 403 response descriptions in the OpenAPI and
+  enriched from the docs OAuth reference. The spec models the bearer as an
+  http/JWT scheme (oauthBearer), so this scope surface is documented rather than
+  declared as an OpenAPI oauth2 flow object.
+oauth:
+  variant: OAuth 2.0 + PKCE (Token-Mediating Backend)
+  authorize_url: https://api.blackbird.xyz/oauth/authorize
+  token_url: https://api.blackbird.xyz/oauth/token
+  authorize_url_staging: https://api.staging.blackbird.xyz/oauth/authorize
+  token_url_staging: https://api.staging.blackbird.xyz/oauth/token
+  consent_host: https://passport.flynet.org
+  pkce_required: true
+  code_challenge_method: S256
+  access_token_ttl: 60 minutes
+  refresh_token_ttl: up to 30 days, rotated on each use
+scopes:
+  - scope: read:profile
+    description: Read the authenticated member's profile and status.
+    operations: [getMe, getMyStatus]
+  - scope: read:wallets
+    description: Read the authenticated member's wallets (MEMBERSHIP and SPENDING).
+    operations: [listMyWallets]
+  - scope: read:user_checkins
+    description: Read the authenticated member's own check-in history.
+    operations: [listMyCheckIns]
+  - scope: read:checkins
+    description: Read the anonymized venue check-in feed (also minted on API keys for the /check_ins feed).
+    operations: [getCheckIn, listCheckIns]
+  - scope: read:balance
+    description: Read the calling app's FLY wallet balance.
+    operations: [getBalance]
+  - scope: read:app
+    description: Read the calling app (DeveloperApp) context.
+    operations: [getApp]
+  - scope: read:restaurant_challenges
+    description: List restaurant challenges.
+    operations: [listChallenges]
+  - scope: read:restaurant_specials
+    description: List restaurant specials.
+    operations: [listSpecials]
+  - scope: write:rewards
+    description: Issue a FLY reward to a user.
+    operations: [issueReward]
+notes: >-
+  Payment Intent routes require an OAuth access token (API keys are not accepted)
+  but are not gated by a payments-specific scope in the published spec; access is
+  gated by partner approval and the flynet_merchant_id credential instead. On a
+  member's first successful OAuth completion two wallets are minted automatically
+  (MEMBERSHIP + SPENDING).

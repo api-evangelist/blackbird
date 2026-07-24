@@ -1,0 +1,24 @@
+generated: '2026-07-18'
+method: searched
+source: >-
+  blackbird-flynet.md is the provider-published Agent Skill, extracted verbatim
+  from the @flynetdev/skills npm package (files/claude-skill/SKILL.md). The two
+  flow skills are generated from the OpenAPI + conventions/errors artifacts,
+  grounded in real operationIds.
+skills:
+  - file: blackbird-flynet.md
+    name: flynet
+    method: searched
+    api: openapi/blackbird-flynet-openapi-original.yml
+    source: "npm @flynetdev/skills (files/claude-skill/SKILL.md)"
+    description: Provider-published skill — two-credential auth model, verified API rules, and how to compose @flynetdev/core and @flynetdev/react.
+  - file: blackbird-member-passport.md
+    name: blackbird-member-passport
+    method: generated
+    api: openapi/blackbird-flynet-openapi-original.yml
+    operations: [getMe, getMyStatus, listMyWallets, listMyCheckIns, listMemberships]
+  - file: blackbird-payment-intent.md
+    name: blackbird-payment-intent
+    method: generated
+    api: openapi/blackbird-flynet-openapi-original.yml
+    operations: [createPaymentIntent, confirmPaymentIntent, getPaymentIntent, cancelPaymentIntent, refundPaymentIntent]

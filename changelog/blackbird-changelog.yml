@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.flynet.org/resources/changelog
+description: >-
+  Structured capture of the Flynet (Blackbird) API changelog. The live docs
+  changelog is the source of truth; this records the recent window. Versioning
+  is URI-path (v1); notable API and documentation changes are announced here.
+docs: https://docs.flynet.org/resources/changelog
+versioning:
+  scheme: uri-path
+  current: v1
+  detail: lifecycle/blackbird-lifecycle.yml
+entries:
+  - title: TypeScript SDK published
+    additions:
+      - "@flynetdev/core — framework-agnostic TypeScript client"
+      - "@flynetdev/react — React provider, hooks, and components"
+    highlights:
+      - Install whichever fits your stack; both published on npm.
+  - title: "/check_ins filter now optional"
+    changes:
+      - GET /check_ins no longer requires a filter; a bare request returns the full paginated set.
+      - "Filters (user, location, restaurant, created_after, created_before) remain optional and AND together."

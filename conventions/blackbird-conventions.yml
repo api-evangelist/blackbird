@@ -1,0 +1,88 @@
+generated: '2026-07-18'
+method: searched
+source: >-
+  https://docs.flynet.org/concepts (authentication, oauth, environments,
+  api-keys, pagination-errors, payments, money-and-tokens) — the cross-cutting
+  request/response semantics that apply across the Flynet API.
+description: >-
+  How the Flynet (Blackbird) API behaves across every operation: the
+  two-credential auth model, idempotency on payment intents, zero-indexed
+  pagination, the money wire shape, error envelopes, and versioning. These are
+  the developer-experience / runtime-semantics conventions that the OpenAPI does
+  not fully express.
+
+base_url: https://api.blackbird.xyz/flynet/v1
+base_url_staging: https://api.staging.blackbird.xyz/flynet/v1
+api_style: REST over HTTPS, JSON requests and responses
+
+authentication:
+  model: two credentials, two route families (never interchangeable)
+  schemes:
+    - name: API key
+      header: X-API-Key
+      prefix: [fly_live_ (production), fly_test_ (staging/dev)]
+      used_by: Discovery routes (/restaurants*, /locations*) and the /check_ins venue feed
+    - name: OAuth bearer (JWT)
+      header: "Authorization: Bearer <jwt>"
+      used_by: member routes (/users/me/*) and all payment intent routes
+  oauth: OAuth 2.0 + PKCE (S256), Token-Mediating Backend variant
+  detail: authentication/blackbird-authentication.yml
+  scopes: scopes/blackbird-scopes.yml
+
+idempotency:
+  supported: true
+  mechanism: idempotency_key field in the POST /payment_intents request body
+  applies_to: Payment Intent create (POST /payment_intents)
+  scope: unique per (flynet_merchant_id, idempotency_key)
+  behavior: >-
+    First create with a key returns 201 with a new intent; replaying the same
+    key returns 200 with the same intent; a new key creates a new intent.
+    Idempotency on confirm/cancel/refund is state-based (re-confirming a paid
+    intent or re-canceling a canceled intent returns the same intent with no
+    side effects) — no separate key needed.
+  guidance: Use your own order ID as the idempotency key.
+  docs: https://docs.flynet.org/concepts/payments
+
+pagination:
+  style: zero-indexed page + page_size
+  request_params:
+    page: zero-indexed, default 0
+    page_size: default 50
+  response_wrapper: pagination
+  response_fields: [total_count, total_pages, current_page, next_page, page_size]
+  not_paginated: [listLocationOpenHours]
+  notes: >-
+    Most list responses embed a `pagination` wrapper. next_page is null on the
+    last page. Unknown query parameters are silently ignored (a typo'd filter
+    returns the unfiltered set rather than a 400).
+  docs: https://docs.flynet.org/concepts/pagination-errors
+
+money:
+  wire_shape: "{ value, currency }"
+  value: stringified integer in FLY wei (18 decimals)
+  currency: FLY
+  docs: https://docs.flynet.org/concepts/money-and-tokens
+  helpers: formatFly / formatUsdCents (in @flynetdev/core)
+
+filtering:
+  check_ins: optional filters [restaurant, location, created_after, created_before], AND together; a bare call returns the full set
+  timestamps: ISO 8601 strings (e.g. 2026-04-01T00:00:00Z); epoch seconds are rejected with 400
+
+versioning:
+  scheme: uri-path
+  current: v1
+  base_path: /flynet/v1
+  detail: lifecycle/blackbird-lifecycle.yml
+
+error_envelope:
+  shapes: 3 (modern Envelope A on /check_ins, /users/me/*, /payment_intents/*; routing-layer 404 Envelope C; empty-body 401/403 with WWW-Authenticate header)
+  format: JSON (branch on HTTP status first)
+  sdk: "@flynetdev/core normalizes every envelope into a single FlynetError; branch on error.kind"
+  detail: errors/blackbird-problem-types.yml
+
+rate_limit_signaling:
+  documented: partial
+  notes: The SDK maps HTTP 429 to FlynetError kind rate_limited; no numeric published rate-limit table at launch.
+
+webhooks:
+  status: not available in v1 (coming soon); poll GET /payment_intents/{id} for terminal state

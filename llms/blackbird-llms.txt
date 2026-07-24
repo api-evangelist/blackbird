@@ -1,0 +1,78 @@
+# Flynet Docs
+
+## Docs
+
+- [Get the calling app](https://docs.flynet.org/api-reference/app/get.md)
+- [List challenges](https://docs.flynet.org/api-reference/challenges/list.md)
+- [Retrieve a check-in](https://docs.flynet.org/api-reference/check-ins/get.md)
+- [List check-ins](https://docs.flynet.org/api-reference/check-ins/list.md)
+- [Introduction](https://docs.flynet.org/api-reference/introduction.md): Flynet API on staging - interactive reference.
+- [Retrieve a location](https://docs.flynet.org/api-reference/locations/get.md)
+- [List locations](https://docs.flynet.org/api-reference/locations/list.md)
+- [List location open hours](https://docs.flynet.org/api-reference/locations/open-hours.md)
+- [List memberships](https://docs.flynet.org/api-reference/memberships/list.md)
+- [Cancel a Payment Intent](https://docs.flynet.org/api-reference/payments/cancel.md)
+- [Confirm a Payment Intent](https://docs.flynet.org/api-reference/payments/confirm.md)
+- [Create a Payment Intent](https://docs.flynet.org/api-reference/payments/create.md)
+- [List Payment Intents](https://docs.flynet.org/api-reference/payments/list.md)
+- [Refund a Payment Intent](https://docs.flynet.org/api-reference/payments/refund.md)
+- [Retrieve a Payment Intent](https://docs.flynet.org/api-reference/payments/retrieve.md)
+- [Retrieve a restaurant](https://docs.flynet.org/api-reference/restaurants/get.md)
+- [List restaurants](https://docs.flynet.org/api-reference/restaurants/list.md)
+- [List restaurant locations](https://docs.flynet.org/api-reference/restaurants/list-locations.md)
+- [Get your wallet balance](https://docs.flynet.org/api-reference/rewards/balance.md)
+- [Issue a reward](https://docs.flynet.org/api-reference/rewards/issue.md)
+- [List specials](https://docs.flynet.org/api-reference/specials/list.md)
+- [Get my profile](https://docs.flynet.org/api-reference/users/get-me.md)
+- [Get my status](https://docs.flynet.org/api-reference/users/get-status.md)
+- [List my check-ins](https://docs.flynet.org/api-reference/users/list-check-ins.md)
+- [List my tags](https://docs.flynet.org/api-reference/users/list-tags.md)
+- [List my wallets](https://docs.flynet.org/api-reference/users/list-wallets.md)
+- [Agent skills & rules](https://docs.flynet.org/build-with-ai/agent-skills.md): Install the Flynet agent skill for Claude Code and the Flynet rules for Cursor.
+- [Architecture](https://docs.flynet.org/build-with-ai/architecture.md): How the Flynet SDK and agent tooling are layered — and which layer to build on.
+- [MCP servers](https://docs.flynet.org/build-with-ai/mcp-servers.md): Connect the Flynet Docs MCP and the Flynet API MCP to Claude Code, Cursor, and Claude Desktop.
+- [Build with AI](https://docs.flynet.org/build-with-ai/overview.md): Connect Flynet to Claude Code, Cursor, and other AI coding agents — live docs, an agent skill, and editor rules.
+- [Walkthrough: ship with Claude](https://docs.flynet.org/build-with-ai/walkthrough.md): From an empty directory to a deployed Flynet app on Vercel — built with Claude Code, with your credentials handled safely the whole way.
+- [Get started](https://docs.flynet.org/components/get-started.md): Adding Flynet components to your project. Coming soon.
+- [Components](https://docs.flynet.org/components/index.md): Drop-in React components for Flynet — auth, member context, and discovery, built on the SDK.
+- [API keys](https://docs.flynet.org/concepts/api-keys.md): Server-to-server credential for restaurant and location discovery routes.
+- [Authentication](https://docs.flynet.org/concepts/authentication.md): Two credentials, two patterns. Choose by who you are acting on behalf of.
+- [Data model](https://docs.flynet.org/concepts/data-model.md): Core resources in the launch Flynet API.
+- [Environments](https://docs.flynet.org/concepts/environments.md): Staging vs production base URLs and the two-credential-set model.
+- [Money + tokens](https://docs.flynet.org/concepts/money-and-tokens.md): How Flynet represents amounts on the wire.
+- [OAuth](https://docs.flynet.org/concepts/oauth.md): OAuth 2.0 + PKCE for acting on behalf of Blackbird members. About 10 minutes.
+- [Pagination + errors](https://docs.flynet.org/concepts/pagination-errors.md): List pagination, optional filters, and observed error response shapes.
+- [Payments](https://docs.flynet.org/concepts/payments.md): Accept payments from Blackbird members in FLY. Modeled on Stripe Payment Intents.
+- [TypeScript client](https://docs.flynet.org/concepts/typescript-client.md): A single typed file that handles both auth schemes and the API's error envelopes.
+- [Getting started](https://docs.flynet.org/getting-started.md): From sandbox access to your first integration.
+- [About Blackbird](https://docs.flynet.org/index.md): The membership network for restaurant lovers, and the API to build on it.
+- [Quickstart](https://docs.flynet.org/quickstart.md): From zero to three authenticated calls in five minutes.
+- [Hello API Key](https://docs.flynet.org/recipes/appetizers/hello-api-key.md): Confirm your API key works against a Discovery route.
+- [Hello OAuth](https://docs.flynet.org/recipes/appetizers/hello-oauth.md): Confirm your OAuth access token works against an OAuth-protected route.
+- [Fetch a restaurant list](https://docs.flynet.org/recipes/appetizers/restaurant-list.md): One paginated GET to populate a picker or first screen.
+- [Cookbook](https://docs.flynet.org/recipes/index.md): The build kit for Flynet. Drop-in components and working recipes.
+- [Check-in feed](https://docs.flynet.org/recipes/mains/check-in-feed.md): Filtered timeline with embedded venue context.
+- [First payment](https://docs.flynet.org/recipes/mains/first-payment.md): Create, confirm, and verify a Payment Intent end-to-end. About 15 minutes.
+- [Wallet badge](https://docs.flynet.org/recipes/mains/flylevel-badge.md): Show a member's Flynet wallets in profile chrome.
+- [Member dining app](https://docs.flynet.org/recipes/mains/member-dining-app.md): Connect with Blackbird, list restaurants, and show a member passport — composed from the SDK.
+- [Restaurant explorer](https://docs.flynet.org/recipes/mains/restaurant-explorer.md): Brands, locations, and open hours for list or map UIs.
+- [User passport](https://docs.flynet.org/recipes/mains/user-passport.md): Who a member is plus where they've been — profile and visit history in one view.
+- [Real-time check-in reactions](https://docs.flynet.org/recipes/specials/check-in-webhook.md): Coming soon: react to check-ins as they happen.
+- [Nearby and paid](https://docs.flynet.org/recipes/specials/nearby-paid.md): Location-aware commerce with Flynet Payment Intents.
+- [Reward a user with FLY](https://docs.flynet.org/recipes/specials/reward-fly.md): Coming soon: credit FLY to a user's wallet.
+- [Industry staff leaderboard](https://docs.flynet.org/recipes/specials/staff-leaderboard.md): Coming soon: staff-scoped check-in rankings.
+- [Brand & naming](https://docs.flynet.org/resources/brand.md): How to name, credit, and brand what you build on Flynet — and how to use the Blackbird name and logo.
+- [Changelog](https://docs.flynet.org/resources/changelog.md): Recent Flynet API and documentation updates.
+- [Debugging](https://docs.flynet.org/resources/debugging.md): Common error codes and what to do about them.
+- [FAQ](https://docs.flynet.org/resources/faq.md): Common questions and gotchas.
+- [Request access](https://docs.flynet.org/resources/request-access.md): Apply for Flynet staging credentials. Tell us what you are building and we will get you a working set of keys.
+- [Support](https://docs.flynet.org/resources/support.md): How to get help building on Flynet.
+- [About Flynet](https://docs.flynet.org/what-is-flynet.md): Build on the restaurant economy. Get FLY.
+
+## OpenAPI Specs
+
+- [openapi](https://docs.flynet.org/api-reference/openapi.yaml)
+
+## Optional
+
+- [Build](https://flynet.org/build)

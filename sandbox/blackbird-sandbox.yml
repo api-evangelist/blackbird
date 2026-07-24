@@ -1,0 +1,46 @@
+generated: '2026-07-18'
+method: searched
+source: >-
+  https://docs.flynet.org/concepts/environments, /concepts/api-keys,
+  /resources/request-access — Flynet's staging vs production separation and how
+  test credentials are provisioned.
+description: >-
+  Flynet's sandbox surface. Staging and production are fully separate
+  environments, each with its own base URLs, OAuth credential set, and API key.
+  The API key prefix identifies the environment: fly_test_ is a staging/dev key,
+  fly_live_ is production. Staging credentials are issued on request via the
+  access form; production credentials are issued at production sign-off after
+  partner approval. Flynet does not publish universal magic test values (no
+  shared test cards) — payments in v1 are FLY-to-FLY and each partner receives
+  its own scoped credentials and flynet_merchant_id.
+docs:
+  - https://docs.flynet.org/concepts/environments
+  - https://docs.flynet.org/concepts/api-keys
+  - https://docs.flynet.org/resources/request-access
+modes:
+  - name: staging
+    api_base: https://api.staging.blackbird.xyz/flynet/v1
+    oauth_base: https://api.staging.blackbird.xyz/oauth
+    consent_host: https://passport.staging.flynet.org
+    jwt_issuer: https://api-staging.blackbird.xyz
+    api_key_prefix: fly_test_
+    use_for: Local dev, integration testing
+  - name: production
+    api_base: https://api.blackbird.xyz/flynet/v1
+    oauth_base: https://api.blackbird.xyz/oauth
+    consent_host: https://passport.flynet.org
+    jwt_issuer: https://api.blackbird.xyz
+    api_key_prefix: fly_live_
+    use_for: Live traffic (gated by partner approval)
+credentials:
+  request_access: https://docs.flynet.org/resources/request-access
+  per_environment_set: [client_id, client_secret, registered redirect URI, API key, flynet_merchant_id (if payments)]
+  redirect_uri: must be a public, exact-match allowlisted URL; localhost is not registered — use a reserved ngrok domain for local testing
+key_prefixes:
+  test: fly_test_
+  live: fly_live_
+test_values_published: false
+notes: >-
+  The two-credential-set binding is enforced server-side via the DeveloperApp
+  that minted the key; keys cannot be swapped across environments. Payment Intent
+  amounts on staging use the same FLY wei wire shape as production.

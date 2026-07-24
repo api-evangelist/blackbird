@@ -1,0 +1,49 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.flynet.org/concepts/typescript-client
+description: >-
+  First-party Flynet (Blackbird) client libraries and developer tooling,
+  published under the @flynetdev npm scope. Versions confirmed against
+  registry.npmjs.org at fetch time. @flynetdev/core is the framework-agnostic
+  TypeScript client (two clients, OAuth + PKCE, typed FlynetError, money +
+  pagination helpers); @flynetdev/react adds the provider, TanStack-Query hooks,
+  and drop-in components; @flynetdev/mcp is the local MCP server; @flynetdev/skills
+  installs the Claude Code agent skill and Cursor rules.
+packages:
+  - language: typescript
+    registry: npm
+    name: "@flynetdev/core"
+    version: 0.8.1
+    url: https://www.npmjs.com/package/@flynetdev/core
+    install: npm install @flynetdev/core
+    official: true
+    note: Framework-agnostic TypeScript client for the Flynet API.
+  - language: typescript
+    registry: npm
+    name: "@flynetdev/react"
+    version: 0.7.2
+    url: https://www.npmjs.com/package/@flynetdev/react
+    install: npm install @flynetdev/react
+    official: true
+    note: React provider, hooks, and components; wraps @flynetdev/core.
+  - language: typescript
+    registry: npm
+    name: "@flynetdev/mcp"
+    version: 0.2.0
+    url: https://www.npmjs.com/package/@flynetdev/mcp
+    install: npx -y @flynetdev/mcp
+    official: true
+    note: Local (stdio) MCP server exposing 9 read-only Flynet tools.
+  - language: typescript
+    registry: npm
+    name: "@flynetdev/skills"
+    version: 0.1.0
+    url: https://www.npmjs.com/package/@flynetdev/skills
+    install: npx -y @flynetdev/skills
+    official: true
+    note: Installs the Flynet agent skill (Claude Code) and rules (Cursor).
+registries_probed:
+  - {registry: npm, status: 200, found: 4}
+  - {registry: pypi, status: not-found, found: 0}
+  - {registry: rubygems, status: not-found, found: 0}
+  - {registry: packagist, status: not-found, found: 0}

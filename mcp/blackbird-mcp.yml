@@ -1,0 +1,67 @@
+generated: '2026-07-18'
+method: searched
+status: published
+source: https://docs.flynet.org/build-with-ai/mcp-servers
+description: >-
+  Flynet (Blackbird) ships two official MCP servers. The Docs MCP is a hosted,
+  remote HTTP server (Mintlify-hosted, no credentials) that lets any MCP-aware
+  agent search the live Flynet docs. The API MCP is a published npm package
+  (@flynetdev/mcp) that runs locally via npx and exposes 9 read-only tools that
+  call the Flynet API with the developer's own credentials (API key for
+  Discovery, OAuth access token for member routes) — nothing to host, no secrets
+  leave the machine. Tool list captured verbatim from the Flynet MCP docs.
+servers:
+  - name: flynet-docs
+    kind: docs
+    transport: http
+    url: https://docs.flynet.org/mcp
+    auth: none
+    hosted_by: Mintlify
+    install: claude mcp add --transport http flynet-docs https://docs.flynet.org/mcp
+    description: Live documentation search over the Flynet docs.
+  - name: flynet
+    kind: api
+    transport: stdio
+    package: "@flynetdev/mcp"
+    install: claude mcp add flynet --env FLYNET_API_KEY=fly_... --env FLYNET_ACCESS_TOKEN=ey... -- npx -y @flynetdev/mcp
+    npm: https://www.npmjs.com/package/@flynetdev/mcp
+    auth: developer-supplied (FLYNET_API_KEY and/or FLYNET_ACCESS_TOKEN)
+    wraps: "@flynetdev/core"
+    description: 9 read-only tools that call the Flynet API directly while an agent reasons.
+tools:
+  - name: list_restaurants
+    description: List restaurants in the network.
+    credential: api-key
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#listRestaurants
+  - name: get_restaurant
+    description: Fetch one restaurant by id.
+    credential: api-key
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#getRestaurant
+  - name: list_locations
+    description: List venue locations.
+    credential: api-key
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#listLocations
+  - name: get_location
+    description: Fetch one location, with open hours.
+    credential: api-key
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#getLocation
+  - name: get_my_profile
+    description: The signed-in member's profile and status.
+    credential: access-token
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#getMe
+  - name: get_my_wallets
+    description: The member's wallets and balance.
+    credential: access-token
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#listMyWallets
+  - name: list_my_check_ins
+    description: The member's own check-ins.
+    credential: access-token
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#listMyCheckIns
+  - name: list_check_ins
+    description: A venue's recent check-ins (anonymized).
+    credential: api-key
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#listCheckIns
+  - name: list_my_memberships
+    description: The member's per-restaurant memberships.
+    credential: access-token
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#listMemberships

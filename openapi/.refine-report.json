@@ -1,0 +1,32 @@
+{
+  "provider": "blackbird",
+  "sources": [
+    "blackbird-app-api-openapi.yml",
+    "blackbird-challenges-api-openapi.yml",
+    "blackbird-check-ins-api-openapi.yml",
+    "blackbird-locations-api-openapi.yml",
+    "blackbird-memberships-api-openapi.yml",
+    "blackbird-payments-api-openapi.yml",
+    "blackbird-restaurants-api-openapi.yml",
+    "blackbird-rewards-api-openapi.yml",
+    "blackbird-specials-api-openapi.yml",
+    "blackbird-users-api-openapi.yml"
+  ],
+  "outputs": [
+    "blackbird-app-api-openapi.yml",
+    "blackbird-challenges-api-openapi.yml",
+    "blackbird-check-ins-api-openapi.yml",
+    "blackbird-locations-api-openapi.yml",
+    "blackbird-memberships-api-openapi.yml",
+    "blackbird-payments-api-openapi.yml",
+    "blackbird-restaurants-api-openapi.yml",
+    "blackbird-rewards-api-openapi.yml",
+    "blackbird-specials-api-openapi.yml",
+    "blackbird-users-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

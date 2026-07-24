@@ -1,0 +1,41 @@
+generated: '2026-07-18'
+method: derived
+source: >-
+  Derived from openapi/blackbird-flynet-openapi-original.yml (securitySchemes,
+  error shapes, pagination + idempotency parameters) and the Flynet docs
+  (concepts/oauth, concepts/pagination-errors, concepts/payments). No published
+  compliance/certification program (SOC 2 / ISO 27001 / PCI DSS) was found, so
+  no Compliance pointer is emitted.
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      OAuth 2.0 + PKCE (Token-Mediating Backend) for member routes
+      (docs.flynet.org/concepts/oauth); authorize/token endpoints under /oauth.
+  - id: oauth2-pkce
+    conforms: true
+    evidence: PKCE with code_challenge_method=S256 is mandatory on /oauth/authorize.
+  - id: oidc
+    conforms: false
+    evidence: No /.well-known/openid-configuration served; tokens are JWT bearer but no OIDC discovery.
+  - id: http-bearer-jwt
+    conforms: true
+    evidence: openapi securityScheme oauthBearer is http/bearer, bearerFormat JWT.
+  - id: api-key-auth
+    conforms: true
+    evidence: openapi securityScheme apiKey in header X-API-Key (fly_live_/fly_test_).
+  - id: idempotency
+    conforms: true
+    evidence: idempotency_key required on POST /payment_intents, scoped per (flynet_merchant_id, idempotency_key).
+  - id: pagination
+    conforms: true
+    evidence: zero-indexed page/page_size with a pagination wrapper on list responses.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: 'Errors use a custom error object (type/code/message/param), not application/problem+json.'
+  - id: rfc8594-sunset
+    conforms: false
+    evidence: No Sunset/Deprecation header support documented.
+  - id: pci-dss
+    conforms: false
+    evidence: No published PCI DSS certification found; v1 payments are FLY-to-FLY (no card data at launch).

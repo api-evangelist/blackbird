@@ -1,0 +1,28 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Blackbird Flynet API
+  version: 1.0.0
+extends: openapi/blackbird-flynet-openapi-original.yml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: blackbird
+      x-apievangelist-product: Flynet
+      x-apievangelist-production-server: https://api.blackbird.xyz/flynet/v1
+      x-apievangelist-conventions: conventions/blackbird-conventions.yml
+      x-apievangelist-errors: errors/blackbird-problem-types.yml
+      x-apievangelist-scopes: scopes/blackbird-scopes.yml
+      x-apievangelist-authentication: authentication/blackbird-authentication.yml
+      x-apievangelist-data-model: data-model/blackbird-data-model.yml
+  - target: $.info
+    update:
+      x-apievangelist-notes: >-
+        Enhancements captured by the API Evangelist enrichment pipeline. The
+        oauthBearer scheme is modeled as http/bearer JWT in the source spec but
+        is a full OAuth 2.0 + PKCE flow (scopes documented in
+        scopes/blackbird-scopes.yml). Idempotency is supported on
+        POST /payment_intents via the idempotency_key body field.
+  - target: $.servers
+    update:
+      - url: https://api.blackbird.xyz/flynet/v1
+        description: Production (added by API Evangelist; source spec ships staging only)

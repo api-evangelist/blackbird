@@ -1,0 +1,33 @@
+generated: '2026-07-18'
+method: searched
+source: >-
+  https://docs.flynet.org/concepts/environments, /concepts/payments,
+  /resources/changelog — versioning and capability lifecycle for the Flynet API.
+description: >-
+  Lifecycle posture for the Flynet (Blackbird) API. Versioning is URI-path (v1).
+  The API is at v1 with a documented capability roadmap (card-funded payments,
+  partial refunds, webhook delivery, hosted checkout are "coming soon"). No
+  public numeric SLA, no RFC 8594 Sunset/Deprecation header support, and no
+  active public status page were found at enrichment time (blackbird.statuspage.io
+  is an unrelated inactive page; flynet.instatus.com is an unclaimed default).
+versioning:
+  scheme: uri-path
+  current: v1
+  base_path: /flynet/v1
+  docs: https://docs.flynet.org/concepts/environments
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: >-
+    No formal deprecation policy or RFC 8594 Sunset/Deprecation headers
+    documented at launch. Changes are announced in the docs changelog.
+sla:
+  url: null
+  public_uptime_target: null
+status_page: null
+changelog: https://docs.flynet.org/resources/changelog
+block_explorer: https://explorer.flynet.org/
+roadmap_capabilities:
+  live: [FLY-to-FLY transfers, Idempotent create, Cancel pending intents, Full refunds, Receipt emails]
+  coming_soon: [Card-funded payments, Partial refunds, Webhook delivery, Hosted checkout page]
+deprecated_operations: []

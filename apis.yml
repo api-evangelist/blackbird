@@ -1,23 +1,154 @@
 aid: blackbird
 name: Blackbird
-description: Blackbird is a company surfaced as a portfolio company of a16z, dcvc, multicoin-capital and
-  added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment
-  pipeline.
+description: >-
+  Blackbird Labs is the membership network for restaurant lovers, founded by
+  Eater and Resy co-founder Ben Leventhal. Its consumer app lets diners earn
+  status, perks, and points at world-class restaurants and pay their check in
+  FLY, Blackbird's loyalty token. Blackbird's developer platform is the Flynet
+  API — read access to the dining network (restaurants, locations, check-ins,
+  member identity, and memberships) plus FLY Payment Intents modeled on Stripe —
+  backed by an OpenAPI spec, first-party TypeScript SDKs (@flynetdev/core and
+  @flynetdev/react), two MCP servers, a published agent skill, and llms.txt.
+  Flynet is a layer-3 network built on Coinbase's Base chain. Backed by a16z,
+  dcvc, and multicoin-capital.
 url: https://raw.githubusercontent.com/api-evangelist/blackbird/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://www.blackbird.xyz/opengraph-image.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - a16z
 - dcvc
 - multicoin-capital
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: enriched
+x-tier-reason: developer-platform-found
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
 tags:
 - Company
-apis: []
+- Restaurants
+- Loyalty
+- Payments
+- Dining
+- Membership
+- Crypto
+- Blockchain
+- Web3
+apis:
+- aid: blackbird:blackbird-app-api
+  name: Blackbird App API
+  description: The App API from Blackbird — 1 operation(s) for app.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - App
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-app-api-openapi.yml
+- aid: blackbird:blackbird-challenges-api
+  name: Blackbird Challenges API
+  description: The Challenges API from Blackbird — 1 operation(s) for challenges.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Challenges
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-challenges-api-openapi.yml
+- aid: blackbird:blackbird-check-ins-api
+  name: Blackbird Check-ins API
+  description: Filtered visit records.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Check-ins
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-check-ins-api-openapi.yml
+- aid: blackbird:blackbird-locations-api
+  name: Blackbird Locations API
+  description: Physical venues and open hours.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Locations
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-locations-api-openapi.yml
+- aid: blackbird:blackbird-memberships-api
+  name: Blackbird Memberships API
+  description: Per-(member, restaurant) loyalty records carrying check-in counts and tiers.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Memberships
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-memberships-api-openapi.yml
+- aid: blackbird:blackbird-payments-api
+  name: Blackbird Payments API
+  description: Payment Intents for FLY-funded payments.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-payments-api-openapi.yml
+- aid: blackbird:blackbird-restaurants-api
+  name: Blackbird Restaurants API
+  description: Brand-level restaurant discovery.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Restaurants
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-restaurants-api-openapi.yml
+- aid: blackbird:blackbird-rewards-api
+  name: Blackbird Rewards API
+  description: The Rewards API from Blackbird — 2 operation(s) for rewards.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Rewards
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-rewards-api-openapi.yml
+- aid: blackbird:blackbird-specials-api
+  name: Blackbird Specials API
+  description: The Specials API from Blackbird — 1 operation(s) for specials.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Specials
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-specials-api-openapi.yml
+- aid: blackbird:blackbird-users-api
+  name: Blackbird Users API
+  description: >-
+    The authenticated member — profile, status, wallets, tags, and check-in history. Subject resolved
+    from the token.
+  humanURL: https://docs.flynet.org
+  baseURL: https://api.blackbird.xyz/flynet/v1
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/blackbird-users-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -26,3 +157,58 @@ maintainers:
 common:
 - type: Website
   url: https://blackbird.xyz
+- type: DeveloperPortal
+  url: https://docs.flynet.org
+- type: Documentation
+  url: https://docs.flynet.org
+- type: APIReference
+  url: https://docs.flynet.org/api-reference/introduction
+- type: GettingStarted
+  url: https://docs.flynet.org/getting-started
+- type: Support
+  url: https://docs.flynet.org/resources/support
+- type: Blog
+  url: https://www.thesupersonic.blackbird.xyz
+- type: SignUp
+  url: https://docs.flynet.org/resources/request-access
+- type: Authentication
+  url: authentication/blackbird-authentication.yml
+- type: OAuthScopes
+  url: scopes/blackbird-scopes.yml
+- type: Conventions
+  url: conventions/blackbird-conventions.yml
+- type: Idempotency
+  url: conventions/blackbird-conventions.yml
+- type: ErrorCatalog
+  url: errors/blackbird-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/blackbird-lifecycle.yml
+- type: ChangeLog
+  url: changelog/blackbird-changelog.yml
+- type: DataModel
+  url: data-model/blackbird-data-model.yml
+- type: Conformance
+  url: conformance/blackbird-conformance.yml
+- type: Sandbox
+  url: sandbox/blackbird-sandbox.yml
+- type: Components
+  url: components/blackbird-components.yml
+- type: MCPServer
+  url: mcp/blackbird-mcp.yml
+- type: Packages
+  url: packages/blackbird-packages.yml
+- type: SDKs
+  url: packages/blackbird-packages.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/blackbird-agentic-access.yml
+- type: LLMsTxt
+  url: llms/blackbird-llms.txt
+- type: DomainSecurity
+  url: security/blackbird-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

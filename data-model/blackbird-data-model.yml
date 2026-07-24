@@ -1,0 +1,41 @@
+generated: '2026-07-18'
+method: searched
+source: >-
+  Derived from openapi/blackbird-flynet-openapi-original.yml schema shapes and
+  enriched from the Flynet object reference (https://docs.flynet.org/concepts/data-model).
+docs: https://docs.flynet.org/concepts/data-model
+notation: >-
+  relationships use has_one / has_many / belongs_to with the foreign-key field
+  name; direction is from the entity that owns the reference.
+entities:
+  - {name: Restaurant, object: restaurant, domain: discovery, description: Brand-level restaurant entity.}
+  - {name: Location, object: location, domain: discovery, description: Physical venue belonging to a restaurant; embeds restaurant + neighborhood.}
+  - {name: Neighborhood, object: neighborhood, domain: discovery, description: Geographic grouping; only appears embedded inside a Location.}
+  - {name: CheckIn, object: check_in, domain: activity, description: Visit record linking a member to a location; embeds the full location. No user identity on the venue feed.}
+  - {name: Member, object: user, domain: member, description: The authenticated member's profile (via /users/me).}
+  - {name: MemberStatus, object: user_status, domain: member, description: Member standing / tier context.}
+  - {name: Wallet, object: user_wallet, domain: member, description: Member wallet, MEMBERSHIP or SPENDING; auto-provisioned on first OAuth completion.}
+  - {name: Tag, object: user_tag, domain: member, description: Member metadata (public type industry identifies restaurant employees).}
+  - {name: Membership, object: membership, domain: member, description: Member-to-restaurant membership record.}
+  - {name: PaymentIntent, object: payment_intent, domain: payments, description: Payment from member to merchant in FLY.}
+  - {name: AccountBalance, object: null, domain: payments, description: FLY-denominated balance referenced by payer/payee foreign keys on PaymentIntent; not fetchable directly.}
+relationships:
+  - {from: Restaurant, to: Location, kind: has_many, via: restaurant}
+  - {from: Restaurant, to: Membership, kind: has_many, via: restaurant}
+  - {from: Location, to: Restaurant, kind: belongs_to, via: restaurant}
+  - {from: Location, to: Neighborhood, kind: belongs_to, via: neighborhood}
+  - {from: Location, to: CheckIn, kind: has_many, via: location}
+  - {from: Member, to: CheckIn, kind: has_many, via: user}
+  - {from: Member, to: Wallet, kind: has_many, via: user}
+  - {from: Member, to: Tag, kind: has_many, via: user}
+  - {from: Member, to: MemberStatus, kind: has_one, via: user}
+  - {from: Member, to: Membership, kind: has_many, via: user}
+  - {from: Member, to: AccountBalance, kind: has_many, via: user}
+  - {from: CheckIn, to: Location, kind: belongs_to, via: location}
+  - {from: PaymentIntent, to: AccountBalance, kind: belongs_to, via: payer_account_balance_id}
+  - {from: PaymentIntent, to: AccountBalance, kind: belongs_to, via: payee_account_balance_id}
+notes: >-
+  A typical member has two wallets (MEMBERSHIP + SPENDING), zero or more tags,
+  check-ins, and memberships, a status record, and account balances that fund
+  Payment Intents. Member-context resources live under /users/me/* — the subject
+  is resolved from the OAuth token's sub claim, so no UUID appears in the path.

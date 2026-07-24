@@ -1,0 +1,73 @@
+generated: '2026-07-18'
+method: searched
+source: >-
+  Derived from OpenAPI 4xx/5xx responses in
+  openapi/blackbird-flynet-openapi-original.yml and enriched from the docs error
+  reference (https://docs.flynet.org/concepts/pagination-errors and
+  https://docs.flynet.org/resources/debugging).
+format: custom-json
+description: >-
+  Flynet does not use RFC 9457 application/problem+json. Three error envelope
+  shapes occur; branch on the HTTP status code first, then read the matching
+  shape. Envelope A (modern) has an `error` object with type/code/message/param.
+  Envelope C (routing layer) is a flat object with status/message/error/error_code/
+  timestamp. Missing-credential 401s and insufficient-scope 403s on member routes
+  return an empty body with the reason in the WWW-Authenticate header.
+envelopes:
+  - id: A
+    name: modern
+    shape: '{ "error": { "type", "code", "message", "param" } }'
+    returned_by: [/check_ins, /users/me/*, /payment_intents/*, invalid X-API-Key on /restaurants* and /locations*]
+    note: status-agnostic — the same shape appears on 400 and 404, so branch on HTTP status.
+  - id: C
+    name: routing-layer 404
+    shape: '{ "status", "display_message", "message", "error", "error_code", "timestamp" }'
+    returned_by: [unknown routes, typos, version-prefix mistakes]
+  - id: empty-401
+    name: missing credential
+    shape: 'HTTP 401, empty body, WWW-Authenticate: Bearer (error=invalid_token for a bad JWT)'
+    returned_by: [member routes with missing/malformed/expired bearer, Discovery routes with absent X-API-Key]
+  - id: empty-403
+    name: insufficient scope
+    shape: HTTP 403, empty body (member routes) or JSON insufficient_scope (API-key routes), WWW-Authenticate header
+    returned_by: [valid bearer/key lacking the required scope]
+problems:
+  - code: invalid_request_error
+    status: 400
+    title: Request body or parameters are malformed.
+  - code: invalid_parameter
+    status: 400
+    title: A specific parameter is invalid or missing.
+  - code: resource_not_found
+    status: 404
+    title: The resource does not exist.
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#getPaymentIntent
+  - code: payment0030
+    status: 400
+    title: Member has insufficient FLY for Payment Intent confirm.
+    remediation: Pre-check GET /users/me/wallets; v1 cannot card-fund or auto-load FLY.
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#confirmPaymentIntent
+  - code: paymentIntent0003
+    status: 400
+    title: The Payment Intent is not in a state that allows this operation.
+    source_operation: openapi/blackbird-flynet-openapi-original.yml#confirmPaymentIntent
+  - code: invalid_api_key
+    status: 401
+    title: The X-API-Key is expired or revoked (envelope A JSON). A missing key returns an empty-body 401 instead.
+  - code: insufficient_scope
+    status: 403
+    title: The bearer token or API key lacks the OAuth scope the route requires (in the WWW-Authenticate header).
+  - code: EndpointNotFoundException
+    status: 404
+    title: The route does not exist (envelope C). Check the path and version prefix.
+    error_code: internal0007
+  - code: invalid_grant
+    status: 400
+    title: OAuth authorization code expired/consumed/mismatched code_verifier, or a rotated refresh token was reused.
+  - code: invalid_client
+    status: 400
+    title: Wrong client_id or client_secret on OAuth token exchange.
+  - code: invalid_request
+    status: 400
+    title: Malformed OAuth request, missing parameter, or wrong scope name.
+sdk_error_kinds: [unauthorized, insufficient_scope, forbidden, not_found, validation, rate_limited, server, network, unknown]

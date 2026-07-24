@@ -1,0 +1,1595 @@
+openapi: 3.0.3
+info:
+  title: Flynet API
+  version: "1.0"
+  description: |
+    Flynet's partner API. Read access to member context, restaurants,
+    locations, check-ins, and memberships; write access for payment
+    intents.
+
+    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
+
+    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
+    member-scoped routes, API key (`X-API-Key`) for restaurant and
+    location discovery. See Concepts → Authentication.
+
+    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
+    default `50`. List responses include a `pagination` wrapper except
+    `GET /locations/{id}/open_hours`.
+
+    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
+    are documented there.
+servers:
+  - url: https://api.staging.blackbird.xyz/flynet/v1
+    description: Staging
+tags:
+  - name: Users
+    description: The authenticated member — profile, status, wallets, tags, and check-in history. Subject resolved from the token.
+  - name: Memberships
+    description: Per-(member, restaurant) loyalty records carrying check-in counts and tiers.
+  - name: Restaurants
+    description: Brand-level restaurant discovery.
+  - name: Locations
+    description: Physical venues and open hours.
+  - name: Check-ins
+    description: Filtered visit records.
+  - name: Payments
+    description: Payment Intents for FLY-funded payments.
+# Default security scheme. Pins the generated SDK's global security to the
+# Bearer (member) scheme so it never flips with the API-key/Bearer operation
+# count; API-key operations declare their own `security` to override.
+security:
+  - oauthBearer: []
+paths:
+  /app:
+    get:
+      tags: [App]
+      summary: Get the calling app
+      operationId: getApp
+      description: |
+        Returns the calling application's own record, resolved from the
+        API key — including its `flynet_merchant_id`, `allowed_scopes`, and
+        owning account. Use it to look up your `flynet_merchant_id` for
+        payment-intent creation without waiting on the onboarding email.
+        Requires the `read:app` scope; API-key auth only.
+      security:
+        - apiKey: []
+      responses:
+        "200":
+          description: The calling app.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+              example:
+                id: 7b3c6d8e-0f12-4a5b-8c9d-1e2f3a4b5c6d
+                object: app
+                name: Corner Suite
+                flynet_merchant_id: 2c8f0e5a-1d4b-4c9e-9f2a-7b3c6d8e0f12
+                allowed_scopes: [read:app, read:checkins, read:profile, read:wallets]
+                active: true
+                created_at: "2026-05-07T18:18:31.078859Z"
+                account:
+                  id: 9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d
+                  company_name: Corner Suite, Inc.
+                  contact_email: dev@cornersuite.example
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "403":
+          description: Key lacks the `read:app` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+  /issue_reward:
+    post:
+      tags: [Rewards]
+      summary: Issue a reward
+      operationId: issueReward
+      description: |
+        Issue a FLY reward from your app's wallet to a member. The transfer
+        is immediate and **irreversible** — there is no refund. Idempotent:
+        replaying the same `idempotency_key` returns the existing reward
+        instead of issuing a second one. API-key auth only; requires the
+        `write:rewards` scope and enough FLY in your app's wallet.
+      security:
+        - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, amount, description, idempotency_key]
+              properties:
+                user_id:
+                  type: string
+                  format: uuid
+                  description: The member receiving the reward.
+                amount:
+                  $ref: "#/components/schemas/Money"
+                description:
+                  type: string
+                idempotency_key:
+                  type: string
+                  description: Replaying the same key returns the existing reward.
+                metadata:
+                  type: object
+                  additionalProperties: true
+            example:
+              user_id: "{uuid}"
+              amount:
+                value: "1000000000000000000"
+                currency: FLY
+              description: Loyalty streak reward
+              idempotency_key: reward-12345
+              metadata:
+                campaign: summer-2026
+      responses:
+        "201":
+          description: Reward issued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reward"
+        "200":
+          description: Idempotent replay; returns the existing reward.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reward"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "403":
+          description: Key lacks the `write:rewards` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+  /balance:
+    get:
+      tags: [Rewards]
+      summary: Get your app's wallet balance
+      operationId: getBalance
+      description: |
+        Returns your app's own FLY wallet balance — the source wallet that
+        `POST /issue_reward` draws from — alongside its USD equivalent.
+        API-key auth only; requires the `read:balance` scope.
+      security:
+        - apiKey: []
+      responses:
+        "200":
+          description: Your app's account balance.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountBalance"
+              example:
+                id: 3f1c6d8e-0f12-4a5b-8c9d-1e2f3a4b5c6d
+                object: account_balance
+                owner_id: 2c8f0e5a-1d4b-4c9e-9f2a-7b3c6d8e0f12
+                owner_type: flynet_merchant
+                balance:
+                  value: "2500000000000000000"
+                  currency: fly
+                balance_usd:
+                  value: 250
+                  currency: usd
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "403":
+          description: Key lacks the `read:balance` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+  /challenges:
+    get:
+      tags: [Challenges]
+      summary: List challenges
+      operationId: listChallenges
+      description: |
+        Lists restaurant challenges — reward campaigns a member completes
+        (by payment, referrals, dines, or passport milestones) to earn FLY.
+        API-key auth only; requires the `read:restaurant_challenges` scope.
+      security:
+        - apiKey: []
+      parameters:
+        - name: restaurant
+          in: query
+          required: true
+          description: Restaurant UUID to list challenges for.
+          schema: { type: string, format: uuid }
+          example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
+        - name: location
+          in: query
+          required: false
+          description: Optional location UUID to filter by.
+          schema: { type: string, format: uuid }
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: A page of challenges.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChallengeList"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "403":
+          description: Key lacks the `read:restaurant_challenges` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+  /specials:
+    get:
+      tags: [Specials]
+      summary: List specials
+      operationId: listSpecials
+      description: |
+        Lists restaurant specials — limited menu items or offers, each
+        optionally carrying a FLY reward and a check-in threshold. API-key
+        auth only; requires the `read:restaurant_specials` scope.
+      security:
+        - apiKey: []
+      parameters:
+        - name: restaurant
+          in: query
+          required: true
+          description: Restaurant UUID to list specials for.
+          schema: { type: string, format: uuid }
+          example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: A page of specials.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpecialList"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "403":
+          description: Key lacks the `read:restaurant_specials` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get the authenticated member
+      operationId: getMe
+      description: |
+        Returns the authenticated member's profile — the subject is
+        resolved from the access token, so there is no member ID in the
+        path. Requires the `read:profile` scope.
+      security:
+        - oauthBearer: []
+      responses:
+        "200":
+          description: The authenticated member.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              example:
+                id: be9caffa-7f30-462a-b7ab-9cca9edb8ab8
+                object: user
+                first_name: David
+                last_name: Zhou
+                email: member@example.com
+                phone_number: "+18585551234"
+                birthdate: "1997-01-11"
+                zipcode: "11249"
+                avatar: null
+                account_status: ok
+                created_at: "2026-05-07T18:18:31.078859Z"
+                updated_at: "2026-05-12T18:06:00.874082Z"
+        "401":
+          description: Missing or invalid token. Empty body.
+        "403":
+          description: Token lacks the `read:profile` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /users/me/status:
+    get:
+      tags: [Users]
+      summary: Get the authenticated member's status
+      operationId: getMyStatus
+      description: |
+        Returns the authenticated member's membership status — tier,
+        level, track, benefits, and progress toward the next level. The
+        subject is resolved from the access token. Requires the
+        `read:profile` scope.
+
+        A member with no active status record returns `404` with
+        `code: "resource_not_found"` (envelope A), not an empty status.
+      security:
+        - oauthBearer: []
+      responses:
+        "200":
+          description: The member's status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+              example:
+                id: 54245b01-5de2-4608-91d3-be7ddabf28ea
+                object: status
+                user: be9caffa-7f30-462a-b7ab-9cca9edb8ab8
+                tier: "$FLY\nwith us"
+                level: 1
+                track: regular
+                fly_multiplier: 3
+                state: active
+                benefits:
+                  - title: Dining Points
+                    description: Earn 3X on Blackbird Pay.
+                  - title: Coffee Club
+                    description: Earn 10X points at all Blackbird coffee shops.
+                progress:
+                  check_ins: 1
+                  check_in_threshold: 0
+                  spend: { value: 0, currency: usd }
+                  spend_threshold: { value: 0, currency: usd }
+                  fly_deposit: { value: "0", currency: fly }
+                  fly_deposit_threshold: { value: "0", currency: fly }
+                year_start: 1767225600
+                year_end: 1798761600
+                started_at: "2026-05-12T18:06:00.660572Z"
+                created_at: "2026-05-12T18:06:00.665635Z"
+                updated_at: "2026-05-12T18:06:00.665646Z"
+        "401":
+          description: Missing or invalid token. Empty body.
+        "403":
+          description: Token lacks the `read:profile` scope. Empty body; reason in the `WWW-Authenticate` header.
+        "404":
+          description: No active status record for the member.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/me/check_ins:
+    get:
+      tags: [Users]
+      summary: List the authenticated member's check-ins
+      operationId: listMyCheckIns
+      description: |
+        Returns the authenticated member's own check-ins, newest first —
+        the subject is resolved from the access token. Same shape as
+        `GET /check_ins`, scoped to the member. Requires the
+        `read:user_checkins` scope.
+      security:
+        - oauthBearer: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated check-ins for the member.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckInList"
+        "401":
+          description: Missing or invalid token. Empty body.
+        "403":
+          description: Token lacks the `read:user_checkins` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /users/me/wallets:
+    get:
+      tags: [Users]
+      summary: List the authenticated member's wallets
+      operationId: listMyWallets
+      description: |
+        Returns the wallets of the authenticated member — the subject is
+        resolved from the access token, so there is no member ID in the
+        path. Each member has a MEMBERSHIP wallet and a SPENDING wallet,
+        both auto-provisioned on their first OAuth completion. Requires
+        the `read:wallets` scope.
+      security:
+        - oauthBearer: []
+      responses:
+        "200":
+          description: The member's wallets.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [wallets, balance]
+                properties:
+                  wallets:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Wallet"
+                  balance:
+                    $ref: "#/components/schemas/AccountBalance"
+              example:
+                wallets:
+                  - id: 726182e2-865d-4660-b07d-c58e47f482d6
+                    object: user_wallet
+                    wallet_type: MEMBERSHIP
+                    address: "0xaF8A2609EEaf253838E90353881987d8218c8056"
+                    created_at: "2026-05-11T20:21:07.812609Z"
+                    updated_at: "2026-05-11T20:21:07.812621Z"
+                  - id: 1a11f75b-f893-4eb2-976b-0b35a9ffd410
+                    object: user_wallet
+                    wallet_type: SPENDING
+                    address: "0x0DC3837d4Ec7732733fD72736279B365DbC10229"
+                    created_at: "2026-05-11T20:21:07.824437Z"
+                    updated_at: "2026-05-11T20:21:07.824449Z"
+                balance:
+                  id: 0b9c2d3e-4f5a-6b7c-8d9e-0a1b2c3d4e5f
+                  object: account_balance
+                  owner_id: 9f8e7d6c-5b4a-3c2d-1e0f-a9b8c7d6e5f4
+                  owner_type: user
+                  balance:
+                    value: "500250000000000000000"
+                    currency: fly
+                  balance_usd:
+                    value: 500
+                    currency: usd
+        "401":
+          description: Missing or invalid token. Empty body.
+        "403":
+          description: Token lacks the `read:wallets` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /users/me/tags:
+    get:
+      tags: [Users]
+      summary: List the authenticated member's tags
+      operationId: listMyTags
+      description: |
+        Returns metadata tags attached to the authenticated member — the
+        subject is resolved from the access token, so there is no member
+        ID in the path. A tag with `type: "industry"` identifies the
+        member as a restaurant employee. Empty array if the member has
+        no tags.
+      security:
+        - oauthBearer: []
+      responses:
+        "200":
+          description: The member's tags.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tags]
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Tag"
+              example:
+                tags:
+                  - object: user_tag
+                    type: industry
+                    metadata:
+                      - key: Employer
+                        value: ["FLYBAR"]
+                    created_at: "2026-01-15T21:47:02.273075Z"
+                    updated_at: "2026-02-19T18:50:38.512641Z"
+        "401":
+          description: Missing or invalid token. Empty body.
+        "403":
+          description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
+  /restaurants:
+    get:
+      tags: [Restaurants]
+      summary: List restaurants
+      operationId: listRestaurants
+      description: Paginated list of restaurants.
+      security:
+        - apiKey: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated restaurants.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantList"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+  /restaurants/{id}:
+    get:
+      tags: [Restaurants]
+      summary: Get a restaurant
+      operationId: getRestaurant
+      description: Single restaurant by UUID.
+      security:
+        - apiKey: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantId"
+      responses:
+        "200":
+          description: Restaurant found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Restaurant"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /restaurants/{id}/locations:
+    get:
+      tags: [Restaurants]
+      summary: List a restaurant's locations
+      operationId: listRestaurantLocations
+      description: Paginated list of locations belonging to a restaurant.
+      security:
+        - apiKey: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated locations.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocationList"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /locations:
+    get:
+      tags: [Locations]
+      summary: List locations
+      operationId: listLocations
+      description: Paginated list of locations.
+      security:
+        - apiKey: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated locations.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocationList"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+  /locations/{id}:
+    get:
+      tags: [Locations]
+      summary: Get a location
+      operationId: getLocation
+      description: Single location by UUID. Embeds parent restaurant and neighborhood.
+      security:
+        - apiKey: []
+      parameters:
+        - $ref: "#/components/parameters/LocationId"
+      responses:
+        "200":
+          description: Location found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /locations/{id}/open_hours:
+    get:
+      tags: [Locations]
+      summary: List a location's open hours
+      operationId: listLocationOpenHours
+      description: |
+        Weekly open hours for a location. Not paginated — always returns
+        the full set, with missing days implying the location is closed.
+      security:
+        - apiKey: []
+      parameters:
+        - $ref: "#/components/parameters/LocationId"
+      responses:
+        "200":
+          description: Open hours for the location.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenHoursList"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /check_ins:
+    get:
+      tags: [Check-ins]
+      summary: List check-ins
+      operationId: listCheckIns
+      description: |
+        Returns paginated check-ins for a restaurant or location — an
+        anonymized venue activity feed for dashboards, heatmaps, and
+        recent-visit displays. Responses carry no member identity (see the
+        check-in schema). Filters — `[restaurant, location, created_after,
+        created_before]` — are optional and AND together; a bare unfiltered
+        list returns the full set. For the authenticated member's own
+        history, use `GET /users/me/check_ins`.
+
+        Unknown query parameters are silently ignored. A typo in a filter
+        name is treated as no filter supplied, so you get the full
+        unfiltered set rather than an error.
+
+        Auth: API key in `X-API-Key`, minted with the `read:checkins` scope —
+        no member token needed. (A member's own history at
+        `GET /users/me/check_ins` uses their OAuth token instead.)
+      security:
+        - apiKey: []
+      parameters:
+        - name: restaurant
+          in: query
+          description: Restaurant UUID — every location of this brand.
+          schema:
+            type: string
+            format: uuid
+        - name: location
+          in: query
+          description: Location UUID — one specific venue.
+          schema:
+            type: string
+            format: uuid
+        - name: created_after
+          in: query
+          description: ISO 8601 timestamp. Epoch seconds are rejected.
+          schema:
+            type: string
+            format: date-time
+        - name: created_before
+          in: query
+          description: ISO 8601 timestamp. Epoch seconds are rejected.
+          schema:
+            type: string
+            format: date-time
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated check-ins.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckInList"
+        "400":
+          description: Bad timestamp (epoch seconds rejected) or invalid sort order.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Missing or invalid token. Empty body.
+        "403":
+          description: Token lacks the `read:checkins` scope. Empty body; reason in the `WWW-Authenticate` header.
+  /check_ins/{id}:
+    get:
+      tags: [Check-ins]
+      summary: Get a check-in
+      operationId: getCheckIn
+      description: |
+        Single check-in by UUID. Responses carry no member identity.
+
+        Auth: API key in `X-API-Key`, minted with the `read:checkins`
+        scope — the same credential as the `/check_ins` venue feed.
+      security:
+        - apiKey: []
+      parameters:
+        - $ref: "#/components/parameters/CheckInId"
+      responses:
+        "200":
+          description: Check-in found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckIn"
+        "401":
+          $ref: "#/components/responses/MissingApiKey"
+        "403":
+          description: Key lacks the `read:checkins` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /users/me/memberships:
+    get:
+      tags: [Memberships]
+      summary: List the authenticated member's memberships
+      operationId: listMemberships
+      description: |
+        Returns the authenticated member's paginated membership records —
+        one per restaurant — each carrying a `check_in_count` and the
+        member's `membership_tier` at that restaurant. The subject is
+        resolved from the access token, so there is no member ID in the
+        path. This is the canonical source for the member's per-restaurant
+        check-in totals: filter by `restaurant` and sum `check_in_count`
+        across the result.
+
+        Accessible with a token carrying `read:memberships`.
+
+        There is no `GET /users/me/memberships/{id}` — the list, with
+        filters, is the only accessor. Server-side sorting is not applied:
+        `sort` and related parameters are silently ignored, so sort
+        client-side.
+      security:
+        - oauthBearer: []
+      parameters:
+        - name: restaurant
+          in: query
+          description: |
+            Restaurant UUID to filter by. Note the asymmetry: the filter
+            key is `restaurant`, but the field on each record is
+            `restaurant_id`. Passing `restaurant_id` is silently ignored
+            and returns the full unfiltered list.
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated memberships.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembershipList"
+              example:
+                memberships:
+                  - id: 011ac10e-7f27-4355-847a-c51e2e7e5625
+                    object: membership
+                    restaurant_id: 2cb56d03-4417-4b60-afe3-be819ecde8ac
+                    check_in_count: 1
+                    last_check_in_date: "2026-05-26T16:30:45.825827Z"
+                    membership_tier:
+                      id: 8a71471b-c07c-4e05-9888-7ecd8e1bc609
+                      object: membership_tier
+                      name: Member
+                      artist: Andrew Braswell
+                      asset:
+                        preview_1x: "https://images.blackbird.xyz/.../343_490.png"
+                        web_2x: "https://images.blackbird.xyz/.../343_490.png"
+                        full_3x: "https://images.blackbird.xyz/.../343_490.png"
+                pagination:
+                  total_count: 875
+                  total_pages: 18
+                  current_page: 0
+                  next_page: 1
+                  page_size: 50
+        "401":
+          description: Missing or invalid token. Empty body.
+        "403":
+          description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
+  /payment_intents:
+    post:
+      tags: [Payments]
+      summary: Create a Payment Intent
+      operationId: createPaymentIntent
+      description: |
+        Create a new Payment Intent. The intent enters `pending` status
+        until you call `/confirm`. `flynet_merchant_id` is optional — omit
+        it to credit your own app's merchant, or pass one to route the
+        payment to a specific merchant.
+      security:
+        - oauthBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [customer_user_id, amount, description, idempotency_key]
+              properties:
+                flynet_merchant_id:
+                  type: string
+                  format: uuid
+                customer_user_id:
+                  type: string
+                  format: uuid
+                amount:
+                  $ref: "#/components/schemas/Money"
+                description:
+                  type: string
+                idempotency_key:
+                  type: string
+                  description: Unique per `(flynet_merchant_id, key)`.
+                expires_at:
+                  type: string
+                  format: date-time
+                metadata:
+                  type: object
+                  additionalProperties: true
+            example:
+              flynet_merchant_id: "{merchant_uuid}"
+              customer_user_id: "{uuid}"
+              amount:
+                value: "1000000000000000000"
+                currency: FLY
+              description: Event ticket
+              idempotency_key: order-12345
+              expires_at: "2026-05-30T00:00:00Z"
+              metadata:
+                order_id: "12345"
+      responses:
+        "201":
+          description: New Payment Intent created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        "200":
+          description: Idempotent replay; returns the existing intent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Missing or invalid token. Empty body.
+    get:
+      tags: [Payments]
+      summary: List Payment Intents
+      operationId: listPaymentIntents
+      security:
+        - oauthBearer: []
+      parameters:
+        - name: payee_account_balance_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: payer_account_balance_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntentList"
+        "401":
+          description: Missing or invalid token. Empty body.
+  /payment_intents/{id}:
+    get:
+      tags: [Payments]
+      summary: Retrieve a Payment Intent
+      operationId: getPaymentIntent
+      security:
+        - oauthBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PaymentIntentId"
+      responses:
+        "200":
+          description: The Payment Intent with derived status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        "401":
+          description: Missing or invalid token. Empty body.
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /payment_intents/{id}/cancel:
+    post:
+      tags: [Payments]
+      summary: Cancel a pending Payment Intent
+      operationId: cancelPaymentIntent
+      description: |
+        Cancels a `pending` intent. Re-canceling a canceled intent returns
+        200 with the same intent. Rejects with 400 if the intent has already
+        been paid or refunded.
+      security:
+        - oauthBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PaymentIntentId"
+      responses:
+        "200":
+          description: Updated intent with status `canceled`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Missing or invalid token. Empty body.
+  /payment_intents/{id}/confirm:
+    post:
+      tags: [Payments]
+      summary: Confirm and execute a Payment Intent
+      operationId: confirmPaymentIntent
+      description: |
+        Transfers FLY from the customer's wallet to the merchant. Customer
+        must already hold enough FLY — v1 does not card-fund or auto-load.
+      security:
+        - oauthBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PaymentIntentId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id]
+              properties:
+                user_id:
+                  type: string
+                  format: uuid
+                  description: Must own the intent's payer wallet.
+            example:
+              user_id: "{uuid}"
+      responses:
+        "200":
+          description: Intent paid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        "400":
+          description: Insufficient FLY or not confirmable.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Missing or invalid token. Empty body.
+  /payment_intents/{id}/refund:
+    post:
+      tags: [Payments]
+      summary: Refund a paid Payment Intent
+      operationId: refundPaymentIntent
+      description: |
+        Reverses the FLY transfer. Full refund only in v1; partial refunds
+        are not supported.
+      security:
+        - oauthBearer: []
+      parameters:
+        - $ref: "#/components/parameters/PaymentIntentId"
+      responses:
+        "200":
+          description: Intent refunded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Missing or invalid token. Empty body.
+components:
+  securitySchemes:
+    oauthBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        OAuth 2.0 access token. Required for the `/users/me/*` routes
+        (profile, status, wallets, tags, check-ins, memberships) and all
+        payment intent routes.
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: |
+        Server-to-server API key prefixed `fly_live_...` (production) or
+        `fly_test_...` (staging/dev). Required on restaurant and location
+        Discovery routes and on the `/check_ins` venue feed (key minted
+        with `read:checkins`).
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    RestaurantId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
+    LocationId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: c54a3b6a-c31b-49b4-8af1-2dfb70ff3eec
+    CheckInId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: "{uuid}"
+    PaymentIntentId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: "{uuid}"
+  responses:
+    MissingApiKey:
+      description: >
+        Unauthorized. A **missing** `X-API-Key` returns an empty body with a
+        `WWW-Authenticate: Bearer` header (read the header, not the body). An
+        **invalid or revoked** key returns the JSON body below with
+        `code: "invalid_api_key"`.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Pagination:
+      type: object
+      required: [total_count, total_pages, current_page, next_page, page_size]
+      properties:
+        total_count: { type: integer }
+        total_pages: { type: integer }
+        current_page: { type: integer }
+        next_page: { type: integer, nullable: true }
+        page_size: { type: integer }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [type, code, message]
+          properties:
+            type: { type: string }
+            code: { type: string }
+            message: { type: string }
+            param: { type: string, nullable: true }
+    Money:
+      type: object
+      required: [value, currency]
+      properties:
+        value:
+          type: string
+          description: |
+            Amount as a stringified integer in the smallest unit of
+            `currency`. For FLY, this is wei (18-decimal precision).
+          example: "1000000000000000000"
+        currency:
+          type: string
+          enum: [FLY]
+    Reward:
+      type: object
+      required: [id, object, user_id, amount, description, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The reward id (the underlying payment-intent id).
+        object: { type: string, enum: [reward] }
+        user_id: { type: string, format: uuid }
+        amount:
+          $ref: "#/components/schemas/Money"
+        description: { type: string }
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+        created_at: { type: string, format: date-time }
+    Wallet:
+      type: object
+      required: [id, object, wallet_type, address, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [user_wallet] }
+        wallet_type:
+          type: string
+          enum: [MEMBERSHIP, SPENDING]
+        address:
+          type: string
+          pattern: "^0x[a-fA-F0-9]{40}$"
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    AccountBalance:
+      type: object
+      description: >
+        Owner-level aggregate FLY balance — a single record across all of an
+        owner's wallets, not a per-wallet figure. The owner is the
+        authenticated member on `/users/me/wallets`, or your app's merchant
+        wallet on `/balance`.
+      required: [id, object, owner_id, owner_type, balance, balance_usd]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [account_balance] }
+        owner_id: { type: string, format: uuid }
+        owner_type: { type: string, enum: [user, flynet_merchant] }
+        balance:
+          type: object
+          description: FLY balance. `value` is a base-unit big-integer string with 18 decimals (wei-style) — divide by 10^18 for human FLY. Never parse with a float.
+          required: [value, currency]
+          properties:
+            value: { type: string }
+            currency: { type: string, enum: [fly] }
+        balance_usd:
+          type: object
+          description: USD equivalent. `value` is integer cents.
+          required: [value, currency]
+          properties:
+            value: { type: integer }
+            currency: { type: string, enum: [usd] }
+    Tag:
+      type: object
+      required: [object, type, metadata, created_at, updated_at]
+      properties:
+        object: { type: string, enum: [user_tag] }
+        type:
+          type: string
+          enum: [industry]
+        metadata:
+          type: array
+          items:
+            type: object
+            required: [key, value]
+            properties:
+              key: { type: string }
+              value:
+                type: array
+                items: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    Restaurant:
+      type: object
+      required: [id, object, name, cuisine, cohort, tags, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [restaurant] }
+        name: { type: string }
+        cuisine:
+          type: array
+          items: { type: string }
+        cohort:
+          type: string
+          nullable: true
+        price:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        asset:
+          type: object
+          nullable: true
+          required: [preview_1x, web_2x, full_3x]
+          properties:
+            preview_1x: { type: string, format: uri, nullable: true }
+            web_2x: { type: string, format: uri, nullable: true }
+            full_3x: { type: string, format: uri, nullable: true }
+        website_url: { type: string, format: uri, nullable: true }
+        instagram_url: { type: string, format: uri, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    RestaurantList:
+      type: object
+      required: [restaurants, pagination]
+      properties:
+        restaurants:
+          type: array
+          items:
+            $ref: "#/components/schemas/Restaurant"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    Neighborhood:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [neighborhood] }
+        name: { type: string }
+        region: { type: string }
+    Address:
+      type: object
+      properties:
+        street: { type: string }
+        street2: { type: string, nullable: true }
+        city: { type: string }
+        state: { type: string }
+        zipcode: { type: string }
+        country: { type: string }
+    Coordinate:
+      type: object
+      properties:
+        latitude: { type: number, format: double }
+        longitude: { type: number, format: double }
+    Location:
+      type: object
+      required: [id, object, restaurant, neighborhood, address, time_zone, payments_enabled, is_club, reservations_enabled, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [location] }
+        name: { type: string, nullable: true }
+        restaurant:
+          $ref: "#/components/schemas/Restaurant"
+        neighborhood:
+          $ref: "#/components/schemas/Neighborhood"
+        slug: { type: string }
+        address:
+          $ref: "#/components/schemas/Address"
+        coordinate:
+          allOf:
+            - $ref: "#/components/schemas/Coordinate"
+          nullable: true
+        phone_number: { type: string, nullable: true }
+        time_zone: { type: string }
+        payments_enabled: { type: boolean }
+        is_club: { type: boolean }
+        reservations_enabled: { type: boolean }
+        reservation_url: { type: string, format: uri, nullable: true }
+        google_place_id: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    LocationList:
+      type: object
+      required: [locations, pagination]
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    OpenHour:
+      type: object
+      required: [object, day_of_week, open_time, close_time]
+      properties:
+        object: { type: string, enum: [open_hour] }
+        day_of_week:
+          type: string
+          enum: [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+        open_time: { type: string }
+        close_time: { type: string }
+    OpenHoursList:
+      type: object
+      required: [open_hours]
+      properties:
+        open_hours:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpenHour"
+    CheckIn:
+      type: object
+      # No `user` field by design: check-in responses omit member identity so
+      # partners cannot enumerate Blackbird's user base via /check_ins.
+      required: [id, object, location, blackbird_pay_enabled, created_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [check_in] }
+        location:
+          $ref: "#/components/schemas/Location"
+        blackbird_pay_enabled: { type: boolean }
+        created_at: { type: string, format: date-time }
+        ended_at: { type: string, format: date-time, nullable: true }
+    CheckInList:
+      type: object
+      required: [check_ins, pagination]
+      properties:
+        check_ins:
+          type: array
+          items:
+            $ref: "#/components/schemas/CheckIn"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    App:
+      type: object
+      required: [id, object, name, flynet_merchant_id, allowed_scopes, active, created_at, account]
+      properties:
+        id: { type: string, format: uuid, description: The app's client ID. }
+        object: { type: string, enum: [app] }
+        name: { type: string }
+        flynet_merchant_id: { type: string, format: uuid }
+        allowed_scopes:
+          type: array
+          items: { type: string }
+        active: { type: boolean }
+        created_at: { type: string, format: date-time }
+        account:
+          $ref: "#/components/schemas/AppAccount"
+    AppAccount:
+      type: object
+      required: [id, company_name, contact_email]
+      properties:
+        id: { type: string, format: uuid }
+        company_name: { type: string }
+        contact_email: { type: string, format: email }
+    Amount:
+      type: object
+      description: |
+        A monetary amount. `value` is a stringified integer in the smallest
+        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
+        opaque — never parse it as a float. `currency` is the token or fiat
+        symbol; its casing is not guaranteed stable across endpoints, so
+        compare it case-insensitively.
+      required: [value, currency]
+      properties:
+        value: { type: string, example: "1000000000000000000" }
+        currency: { type: string, example: FLY }
+    Challenge:
+      type: object
+      required: [id, object, type, title, description, threshold, fly_reward, terms, accepted_currencies, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, example: challenge }
+        type:
+          type: string
+          enum: [PAYMENT, REFERRALS, DINES, PASSPORT]
+        title: { type: string }
+        description: { type: string }
+        image: { type: string, nullable: true }
+        threshold:
+          $ref: "#/components/schemas/ChallengeThreshold"
+        fly_reward:
+          $ref: "#/components/schemas/Amount"
+        start_time: { type: string, format: date-time, nullable: true }
+        end_time: { type: string, format: date-time, nullable: true }
+        terms:
+          type: array
+          items: { type: string }
+        accepted_currencies:
+          type: array
+          items: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    ChallengeThreshold:
+      type: object
+      description: >
+        Completion thresholds. Which fields are populated depends on the
+        challenge `type`.
+      properties:
+        spend_threshold:
+          allOf: [{ $ref: "#/components/schemas/Amount" }]
+          nullable: true
+        minimum_spend:
+          allOf: [{ $ref: "#/components/schemas/Amount" }]
+          nullable: true
+        dine_threshold: { type: integer, nullable: true }
+        referral_threshold: { type: integer, nullable: true }
+    ChallengeList:
+      type: object
+      required: [challenges, pagination]
+      properties:
+        challenges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Challenge"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    Special:
+      type: object
+      required: [id, object, label, description, emoji, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, example: special }
+        restaurant_id: { type: string, format: uuid, nullable: true }
+        label: { type: string }
+        description: { type: string }
+        emoji: { type: string }
+        image: { type: string, nullable: true }
+        fly_reward:
+          allOf: [{ $ref: "#/components/schemas/Amount" }]
+          nullable: true
+        fly_reward_bips: { type: integer, nullable: true }
+        check_in_threshold: { type: integer, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    SpecialList:
+      type: object
+      required: [specials, pagination]
+      properties:
+        specials:
+          type: array
+          items:
+            $ref: "#/components/schemas/Special"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    PaymentIntent:
+      type: object
+      required: [id, object, payer_account_balance_id, payee_account_balance_id, amount, description, status, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [payment_intent] }
+        payer_account_balance_id:
+          type: string
+          format: uuid
+        payee_account_balance_id:
+          type: string
+          format: uuid
+        amount:
+          $ref: "#/components/schemas/Money"
+        description: { type: string }
+        status:
+          type: string
+          enum: [pending, paid, canceled, refunded, expired]
+        expires_at: { type: string, format: date-time, nullable: true }
+        canceled_at: { type: string, format: date-time, nullable: true }
+        paid_at: { type: string, format: date-time, nullable: true }
+        refunded_at: { type: string, format: date-time, nullable: true }
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    PaymentIntentList:
+      type: object
+      required: [payment_intents, pagination]
+      properties:
+        payment_intents:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentIntent"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    User:
+      type: object
+      required: [id, object, first_name, last_name, email, account_status, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [user] }
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string, format: email }
+        phone_number: { type: string, nullable: true }
+        birthdate:
+          type: string
+          format: date
+          nullable: true
+          description: "YYYY-MM-DD."
+        zipcode: { type: string, nullable: true }
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          description: Profile image URL, or null.
+        account_status:
+          type: string
+          enum: [ok, suspended, payment_disputed, payment_failed, unpaid_check, negative_balance]
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    Status:
+      type: object
+      required: [id, object, user, tier, level, track, state, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [status] }
+        user:
+          type: string
+          format: uuid
+          description: The member's UUID (the token subject).
+        tier:
+          type: string
+          description: Display string. May contain newlines (e.g. "$FLY\nwith us").
+        level:
+          type: integer
+          minimum: 1
+          maximum: 7
+        track:
+          type: string
+          enum: [regular, pro]
+        fly_multiplier: { type: integer }
+        state:
+          type: string
+          enum: [active, expired, replaced, deactivated]
+        benefits:
+          type: array
+          items:
+            type: object
+            required: [title, description]
+            properties:
+              title: { type: string }
+              description: { type: string }
+        progress:
+          type: object
+          description: Current standing vs. the threshold to advance a level.
+          properties:
+            check_ins: { type: integer }
+            check_in_threshold: { type: integer }
+            spend:
+              type: object
+              properties:
+                value: { type: integer, description: "Cents. 500 = $5.00." }
+                currency: { type: string, enum: [usd] }
+            spend_threshold:
+              type: object
+              properties:
+                value: { type: integer }
+                currency: { type: string, enum: [usd] }
+            fly_deposit:
+              type: object
+              properties:
+                value: { type: string, description: "FLY in wei (18-decimal string)." }
+                currency: { type: string, enum: [fly] }
+            fly_deposit_threshold:
+              type: object
+              properties:
+                value: { type: string }
+                currency: { type: string, enum: [fly] }
+        year_start:
+          type: integer
+          description: Unix epoch seconds — not an ISO string.
+        year_end:
+          type: integer
+          description: Unix epoch seconds — not an ISO string.
+        started_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    Membership:
+      type: object
+      required: [id, object, restaurant_id, check_in_count, membership_tier]
+      properties:
+        id: { type: string, format: uuid }
+        object: { type: string, enum: [membership] }
+        restaurant_id:
+          type: string
+          format: uuid
+          description: The restaurant this membership belongs to. (The filter param is `restaurant`, not `restaurant_id`.)
+        check_in_count:
+          type: integer
+          description: This member's check-ins at this restaurant. Sum across a filtered list for the per-restaurant total.
+        last_check_in_date: { type: string, format: date-time, nullable: true }
+        membership_tier:
+          type: object
+          required: [id, object, name]
+          properties:
+            id: { type: string, format: uuid }
+            object: { type: string, enum: [membership_tier] }
+            name:
+              type: string
+              description: Open string (e.g. Member, VIP, Friend), not a fixed enum.
+            artist:
+              type: string
+              nullable: true
+              description: Card-art creator.
+            asset:
+              type: object
+              nullable: true
+              properties:
+                preview_1x: { type: string, format: uri, nullable: true }
+                web_2x: { type: string, format: uri, nullable: true }
+                full_3x: { type: string, format: uri, nullable: true }
+    MembershipList:
+      type: object
+      required: [memberships, pagination]
+      properties:
+        memberships:
+          type: array
+          items:
+            $ref: "#/components/schemas/Membership"
+        pagination:
+          $ref: "#/components/schemas/Pagination"

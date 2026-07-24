@@ -1,0 +1,35 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.flynet.org/components
+description: >-
+  Flynet's client-side, embeddable UI components — drop-in React components for
+  auth, member context, and discovery, shipped in @flynetdev/react and built on
+  @flynetdev/core. Distinct from the server-side client library in
+  packages/blackbird-packages.yml. Components read from FlynetProvider (which
+  owns the TanStack QueryClient); presentational components take props directly.
+docs:
+  - https://docs.flynet.org/components
+  - https://docs.flynet.org/recipes
+library:
+  name: "@flynetdev/react"
+  npm: https://www.npmjs.com/package/@flynetdev/react
+  provider: FlynetProvider
+families:
+  auth:
+    components:
+      - {name: ConnectWithBlackbird, description: Kicks off the OAuth + PKCE connect flow for a member.}
+  member_context:
+    description: Components that read the signed-in member from the provider.
+    components:
+      - {name: UserPassport, description: Who a member is plus where they've been — profile and visit history in one view.}
+      - {name: WalletBadge, description: Shows a member's Flynet wallets in profile chrome.}
+      - {name: RecentVisits, description: A member's recent check-ins.}
+      - {name: CheckInFeed, description: Filtered check-in timeline with embedded venue context.}
+  discovery:
+    components:
+      - {name: RestaurantList, description: Presentational list of restaurants (pass restaurants prop).}
+      - {name: RestaurantCard, description: Single restaurant card.}
+      - {name: LocationCard, description: Single location card.}
+      - {name: OpenHoursBadge, description: Open-hours badge for a location.}
+      - {name: NearbyLocations, description: Location-aware nearby venues.}
+hooks: [useWallet, useCheckIns, usePassport, useVenueCheckIns]
