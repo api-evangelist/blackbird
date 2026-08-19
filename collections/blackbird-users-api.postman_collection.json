@@ -1,0 +1,982 @@
+{
+  "item": [
+    {
+      "id": "ca454e66-9288-49b5-ac4e-00908b037ed4",
+      "name": "Users",
+      "description": {
+        "content": "The authenticated member — profile, status, wallets, tags, and check-in history. Subject resolved from the token.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e4ee3ab9-d883-4c5e-b147-b1ac03e7671f",
+          "name": "Get the authenticated member",
+          "request": {
+            "name": "Get the authenticated member",
+            "description": {
+              "content": "Returns the authenticated member's profile — the subject is\nresolved from the access token, so there is no member ID in the\npath. Requires the `read:profile` scope.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5d294e00-46e4-4e53-be91-33d1a88392fc",
+              "name": "The authenticated member.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"be9caffa-7f30-462a-b7ab-9cca9edb8ab8\",\n  \"object\": \"user\",\n  \"first_name\": \"David\",\n  \"last_name\": \"Zhou\",\n  \"email\": \"member@example.com\",\n  \"phone_number\": \"+18585551234\",\n  \"birthdate\": \"1997-01-11\",\n  \"zipcode\": \"11249\",\n  \"avatar\": null,\n  \"account_status\": \"ok\",\n  \"created_at\": \"2026-05-07T18:18:31.078859Z\",\n  \"updated_at\": \"2026-05-12T18:06:00.874082Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dac74c95-3fde-479a-90ea-a53aaae5ab0d",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f3f92c8a-54f1-4827-b63a-98eb1dc52538",
+              "name": "Token lacks the `read:profile` scope. Empty body; reason in the `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "996cd886-83d4-4337-8790-92172ec8d654",
+          "name": "Get the authenticated member's status",
+          "request": {
+            "name": "Get the authenticated member's status",
+            "description": {
+              "content": "Returns the authenticated member's membership status — tier,\nlevel, track, benefits, and progress toward the next level. The\nsubject is resolved from the access token. Requires the\n`read:profile` scope.\n\nA member with no active status record returns `404` with\n`code: \"resource_not_found\"` (envelope A), not an empty status.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3cd66337-a787-4c3b-8f05-d3b1f69135c4",
+              "name": "The member's status.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"54245b01-5de2-4608-91d3-be7ddabf28ea\",\n  \"object\": \"status\",\n  \"user\": \"be9caffa-7f30-462a-b7ab-9cca9edb8ab8\",\n  \"tier\": \"$FLY\\nwith us\",\n  \"level\": 1,\n  \"track\": \"regular\",\n  \"fly_multiplier\": 3,\n  \"state\": \"active\",\n  \"benefits\": [\n    {\n      \"title\": \"Dining Points\",\n      \"description\": \"Earn 3X on Blackbird Pay.\"\n    },\n    {\n      \"title\": \"Coffee Club\",\n      \"description\": \"Earn 10X points at all Blackbird coffee shops.\"\n    }\n  ],\n  \"progress\": {\n    \"check_ins\": 1,\n    \"check_in_threshold\": 0,\n    \"spend\": {\n      \"value\": 0,\n      \"currency\": \"usd\"\n    },\n    \"spend_threshold\": {\n      \"value\": 0,\n      \"currency\": \"usd\"\n    },\n    \"fly_deposit\": {\n      \"value\": \"0\",\n      \"currency\": \"fly\"\n    },\n    \"fly_deposit_threshold\": {\n      \"value\": \"0\",\n      \"currency\": \"fly\"\n    }\n  },\n  \"year_start\": 1767225600,\n  \"year_end\": 1798761600,\n  \"started_at\": \"2026-05-12T18:06:00.660572Z\",\n  \"created_at\": \"2026-05-12T18:06:00.665635Z\",\n  \"updated_at\": \"2026-05-12T18:06:00.665646Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd42e840-a371-4993-882d-13a3b7517c08",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "04844a69-3a7b-49dd-945b-f0e4579da948",
+              "name": "Token lacks the `read:profile` scope. Empty body; reason in the `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6464bb35-ee6f-414e-9661-5ca17866d5a1",
+              "name": "No active status record for the member.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8e8b7c9d-c2bc-4958-a35d-0fc264fffb09",
+          "name": "List the authenticated member's check-ins",
+          "request": {
+            "name": "List the authenticated member's check-ins",
+            "description": {
+              "content": "Returns the authenticated member's own check-ins, newest first —\nthe subject is resolved from the access token. Same shape as\n`GET /check_ins`, scoped to the member. Requires the\n`read:user_checkins` scope.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me",
+                "check_ins"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8a66fd47-269d-41e2-b944-cf34d1b80a94",
+              "name": "Paginated check-ins for the member.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "check_ins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"check_ins\": [\n    {\n      \"id\": \"04e23aa1-af5f-46c6-2914-b453ce4f6483\",\n      \"object\": \"check_in\",\n      \"location\": {\n        \"id\": \"b15782a1-f0d1-e846-ff3a-1a50f8de88f7\",\n        \"object\": \"location\",\n        \"restaurant\": {\n          \"id\": \"91f7ad4f-f430-f706-7c40-59eb74cf3387\",\n          \"object\": \"restaurant\",\n          \"name\": \"string\",\n          \"cuisine\": [\n            \"string\",\n            \"string\"\n          ],\n          \"cohort\": \"string\",\n          \"tags\": [\n            {\n              \"key_0\": true\n            },\n            {\n              \"key_0\": 4684.951907515553,\n              \"key_1\": 4950\n            }\n          ],\n          \"created_at\": \"2013-01-13T12:21:13.090Z\",\n          \"updated_at\": \"1973-04-28T08:46:25.497Z\",\n          \"price\": 1853,\n          \"asset\": {\n            \"preview_1x\": \"http://MDqlIpfhrklYPZmHTseoHQEO.wyV7ad1vAjyBuYfhRX+dArI\",\n            \"web_2x\": \"http://MTCI.ehyzwApu3IuPOe9Z,qgSeWzjnvQ+VRXkJuuX.d,rSDHkDV.ZsrWBoz-ChUFPuyn\",\n            \"full_3x\": \"https://xjzESqkpDSaIDCqrtppOZaAWIXrOoaUd.vwkiZwYL17O.e8s3uP\"\n          },\n          \"website_url\": \"https://yeNGVKygO.wvswSwgOF\",\n          \"instagram_url\": \"http://pDZREBjBAMJZFFANYmGYTMstL.oosjZ4MtV68Yee6FqDva,almPEE+nH\"\n        },\n        \"neighborhood\": {\n          \"id\": \"3c8aa8b3-a937-c987-cd4a-c5bb0a6d652d\",\n          \"object\": \"neighborhood\",\n          \"name\": \"string\",\n          \"region\": \"string\"\n        },\n        \"address\": {\n          \"street\": \"string\",\n          \"street2\": \"string\",\n          \"city\": \"string\",\n          \"state\": \"string\",\n          \"zipcode\": \"string\",\n          \"country\": \"string\"\n        },\n        \"time_zone\": \"string\",\n        \"payments_enabled\": false,\n        \"is_club\": true,\n        \"reservations_enabled\": false,\n        \"created_at\": \"1978-12-17T04:48:29.350Z\",\n        \"updated_at\": \"2009-01-12T22:22:49.864Z\",\n        \"name\": \"string\",\n        \"slug\": \"string\",\n        \"coordinate\": {\n          \"latitude\": 6878.392909721385,\n          \"longitude\": 7373.94868802799\n        },\n        \"phone_number\": \"string\",\n        \"reservation_url\": \"http://hHRFqwTYbQTuSXJHJPorzbvfrDF.npnhyG\",\n        \"google_place_id\": \"string\"\n      },\n      \"blackbird_pay_enabled\": false,\n      \"created_at\": \"2017-11-19T02:07:03.394Z\",\n      \"ended_at\": \"2025-01-07T01:02:36.502Z\"\n    },\n    {\n      \"id\": \"a4d1ffd9-80b2-058b-4b0b-1b29540bc857\",\n      \"object\": \"check_in\",\n      \"location\": {\n        \"id\": \"f5fda609-d550-6a36-2f88-58f7c7dbce53\",\n        \"object\": \"location\",\n        \"restaurant\": {\n          \"id\": \"4a70c285-4ccb-73d2-0e10-17d8929dc400\",\n          \"object\": \"restaurant\",\n          \"name\": \"string\",\n          \"cuisine\": [\n            \"string\",\n            \"string\"\n          ],\n          \"cohort\": \"string\",\n          \"tags\": [\n            {\n              \"key_0\": 9165\n            },\n            {\n              \"key_0\": 9112\n            }\n          ],\n          \"created_at\": \"1970-04-22T04:12:48.337Z\",\n          \"updated_at\": \"1975-04-28T11:04:17.091Z\",\n          \"price\": 1373,\n          \"asset\": {\n            \"preview_1x\": \"https://qXKz.zohfVBYBqDeD.jlXLoSEHx8VvHo9HWiiDx9dtxi,.vX\",\n            \"web_2x\": \"https://T.dvfpNIHxXdf5dizJNc6S6B5n+t0WWMUbdMxo6ufkE0YG0BGyufGNSBE71WM0kXPSJJc9\",\n            \"full_3x\": \"http://ZHAvfyDxHp.blis4D4fhDrvX6PPApwVo,JSaAim1O\"\n          },\n          \"website_url\": \"https://lMGIVwBQAdUKbpDJiZScd.iyjWKlUK1FsHeQ4ddM-ixK.M1YVwIJoplgM,N7KtsXPv2+CeD6TXVLDy-cEwTHlEWt\",\n          \"instagram_url\": \"http://xtgipxskdLfYPPwEntWVdldXUoR.lcdlwno.S40ZkTeNAYq6jgNYa8\"\n        },\n        \"neighborhood\": {\n          \"id\": \"659aa414-20d2-8de7-d7a9-b43f6eaaf820\",\n          \"object\": \"neighborhood\",\n          \"name\": \"string\",\n          \"region\": \"string\"\n        },\n        \"address\": {\n          \"street\": \"string\",\n          \"street2\": \"string\",\n          \"city\": \"string\",\n          \"state\": \"string\",\n          \"zipcode\": \"string\",\n          \"country\": \"string\"\n        },\n        \"time_zone\": \"string\",\n        \"payments_enabled\": false,\n        \"is_club\": false,\n        \"reservations_enabled\": false,\n        \"created_at\": \"1973-12-27T12:53:46.384Z\",\n        \"updated_at\": \"2013-03-31T02:48:51.321Z\",\n        \"name\": \"string\",\n        \"slug\": \"string\",\n        \"coordinate\": {\n          \"latitude\": 8134.762566904127,\n          \"longitude\": 933.4354879425277\n        },\n        \"phone_number\": \"string\",\n        \"reservation_url\": \"https://MZbODdJepLkmdQSVgciDx.xcRCBQvRU7fEqyFxD6v9i9CECETaT1,Cq+PC057dw6rZ2kEvIaV+km,73KhSjOaV5B5FaFMKo\",\n        \"google_place_id\": \"string\"\n      },\n      \"blackbird_pay_enabled\": true,\n      \"created_at\": \"1984-09-09T18:25:27.292Z\",\n      \"ended_at\": \"1987-08-16T20:02:12.352Z\"\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 1803,\n    \"total_pages\": 7012,\n    \"current_page\": 3385,\n    \"next_page\": 535,\n    \"page_size\": 9667\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "12feea68-5f35-4b99-8b7c-f537eb6fcdf4",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "check_ins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "737350cb-0c06-4795-ac03-70908c97d602",
+              "name": "Token lacks the `read:user_checkins` scope. Empty body; reason in the `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "check_ins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d1fd846f-eed5-4c76-8d1a-eb3b67e642bd",
+          "name": "List the authenticated member's wallets",
+          "request": {
+            "name": "List the authenticated member's wallets",
+            "description": {
+              "content": "Returns the wallets of the authenticated member — the subject is\nresolved from the access token, so there is no member ID in the\npath. Each member has a MEMBERSHIP wallet and a SPENDING wallet,\nboth auto-provisioned on their first OAuth completion. Requires\nthe `read:wallets` scope.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me",
+                "wallets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "1974e90b-1427-4a02-b91a-794018147414",
+              "name": "The member's wallets.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "wallets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"wallets\": [\n    {\n      \"id\": \"726182e2-865d-4660-b07d-c58e47f482d6\",\n      \"object\": \"user_wallet\",\n      \"wallet_type\": \"MEMBERSHIP\",\n      \"address\": \"0xaF8A2609EEaf253838E90353881987d8218c8056\",\n      \"created_at\": \"2026-05-11T20:21:07.812609Z\",\n      \"updated_at\": \"2026-05-11T20:21:07.812621Z\"\n    },\n    {\n      \"id\": \"1a11f75b-f893-4eb2-976b-0b35a9ffd410\",\n      \"object\": \"user_wallet\",\n      \"wallet_type\": \"SPENDING\",\n      \"address\": \"0x0DC3837d4Ec7732733fD72736279B365DbC10229\",\n      \"created_at\": \"2026-05-11T20:21:07.824437Z\",\n      \"updated_at\": \"2026-05-11T20:21:07.824449Z\"\n    }\n  ],\n  \"balance\": {\n    \"id\": \"0b9c2d3e-4f5a-6b7c-8d9e-0a1b2c3d4e5f\",\n    \"object\": \"account_balance\",\n    \"owner_id\": \"9f8e7d6c-5b4a-3c2d-1e0f-a9b8c7d6e5f4\",\n    \"owner_type\": \"user\",\n    \"balance\": {\n      \"value\": \"500250000000000000000\",\n      \"currency\": \"fly\"\n    },\n    \"balance_usd\": {\n      \"value\": 500,\n      \"currency\": \"usd\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f1d669a-99bf-4ad2-a468-3f14b6f9f50c",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "wallets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "95f9a5eb-93d0-492f-a794-0a255ef61dd3",
+              "name": "Token lacks the `read:wallets` scope. Empty body; reason in the `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "wallets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "56eb0901-f45f-4ff0-b052-cc0a40398a6a",
+          "name": "List the authenticated member's tags",
+          "request": {
+            "name": "List the authenticated member's tags",
+            "description": {
+              "content": "Returns metadata tags attached to the authenticated member — the\nsubject is resolved from the access token, so there is no member\nID in the path. A tag with `type: \"industry\"` identifies the\nmember as a restaurant employee. Empty array if the member has\nno tags.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me",
+                "tags"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "01b474f0-f4ee-4be0-ac6e-ae7832a3956e",
+              "name": "The member's tags.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "tags"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"tags\": [\n    {\n      \"object\": \"user_tag\",\n      \"type\": \"industry\",\n      \"metadata\": [\n        {\n          \"key\": \"Employer\",\n          \"value\": [\n            \"FLYBAR\"\n          ]\n        }\n      ],\n      \"created_at\": \"2026-01-15T21:47:02.273075Z\",\n      \"updated_at\": \"2026-02-19T18:50:38.512641Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e99169fc-5f68-4d4a-9714-f6c787251e2e",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "tags"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "72e1b373-1665-46db-96b4-986f074089d9",
+              "name": "Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "tags"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3ca1adf3-7f59-4545-a560-ac68774d0156",
+    "name": "Flynet App Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

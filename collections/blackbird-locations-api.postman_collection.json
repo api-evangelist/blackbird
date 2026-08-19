@@ -1,0 +1,645 @@
+{
+  "item": [
+    {
+      "id": "9cae43d7-78d6-46dd-8e3f-6396d9c0cbcb",
+      "name": "Locations",
+      "description": {
+        "content": "Physical venues and open hours.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d915f42d-4747-4571-839e-03d2414571d1",
+          "name": "List locations",
+          "request": {
+            "name": "List locations",
+            "description": {
+              "content": "Paginated list of locations.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "locations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "96d7ea39-6359-42af-88c2-eb440c566e02",
+              "name": "Paginated locations.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"locations\": [\n    {\n      \"id\": \"2c5cd6f7-ceec-db84-f890-070ccfbde2ab\",\n      \"object\": \"location\",\n      \"restaurant\": {\n        \"id\": \"b3fe3b8e-af40-a88c-b8ce-79a474f41334\",\n        \"object\": \"restaurant\",\n        \"name\": \"string\",\n        \"cuisine\": [\n          \"string\",\n          \"string\"\n        ],\n        \"cohort\": \"string\",\n        \"tags\": [\n          {\n            \"key_0\": true\n          },\n          {\n            \"key_0\": 6864,\n            \"key_1\": 3425.0720276393786\n          }\n        ],\n        \"created_at\": \"2023-03-14T09:48:38.960Z\",\n        \"updated_at\": \"2010-08-14T20:56:22.894Z\",\n        \"price\": 4234,\n        \"asset\": {\n          \"preview_1x\": \"http://ZXxeYBwgrDyCtRGzrDZq.rwPb-EUKzXQRw4xol4Zb.E99pF\",\n          \"web_2x\": \"http://GOHRFDqABqkVZkpBCQIyl.iljqQDkUf3xc4B6ddwgyBpipVeTW0Rtd,p\",\n          \"full_3x\": \"http://boHJpdrfTpjpgCXZK.noLjlFAtk6zg\"\n        },\n        \"website_url\": \"http://nZTYLTRnjtgpbCsFHpzohsUSHb.vcsjPYu2LPvcGOqHwK+gytqKVNk6fSJse2wsF8\",\n        \"instagram_url\": \"https://TlUQSPXznUalIqjZMNIUv.bdZkYok13zspcMhInQ-Dz-pGb-2xUu0k\"\n      },\n      \"neighborhood\": {\n        \"id\": \"bc5440fd-36bb-5abb-51c1-483a06342dba\",\n        \"object\": \"neighborhood\",\n        \"name\": \"string\",\n        \"region\": \"string\"\n      },\n      \"address\": {\n        \"street\": \"string\",\n        \"street2\": \"string\",\n        \"city\": \"string\",\n        \"state\": \"string\",\n        \"zipcode\": \"string\",\n        \"country\": \"string\"\n      },\n      \"time_zone\": \"string\",\n      \"payments_enabled\": false,\n      \"is_club\": true,\n      \"reservations_enabled\": true,\n      \"created_at\": \"2018-10-30T13:19:22.334Z\",\n      \"updated_at\": \"2019-12-22T12:27:16.151Z\",\n      \"name\": \"string\",\n      \"slug\": \"string\",\n      \"coordinate\": {\n        \"latitude\": 6414.473660705772,\n        \"longitude\": 7741.888850764045\n      },\n      \"phone_number\": \"string\",\n      \"reservation_url\": \"http://CgsXEvQq.phmcvd8hmv8U0gYWP6iycv,iw+JkW38KYy.kswVLbhGwzs-psOqZ2JkqD\",\n      \"google_place_id\": \"string\"\n    },\n    {\n      \"id\": \"4eef77b4-459a-f96a-e4c4-a4205901e27f\",\n      \"object\": \"location\",\n      \"restaurant\": {\n        \"id\": \"99307b28-098c-756f-ac9e-a73684e8d0a5\",\n        \"object\": \"restaurant\",\n        \"name\": \"string\",\n        \"cuisine\": [\n          \"string\",\n          \"string\"\n        ],\n        \"cohort\": \"string\",\n        \"tags\": [\n          {\n            \"key_0\": 8568,\n            \"key_1\": 5457.614732477626\n          },\n          {\n            \"key_0\": 6895\n          }\n        ],\n        \"created_at\": \"2021-08-16T15:35:20.273Z\",\n        \"updated_at\": \"1951-10-14T14:28:10.551Z\",\n        \"price\": 6072,\n        \"asset\": {\n          \"preview_1x\": \"https://eEEgvvjpKSBwHzCMUaiqF.sczdI82Jqi0BMTS\",\n          \"web_2x\": \"https://duWZvEhNsDyqOX.dqeMvUVwBJw3QDGvEvgG\",\n          \"full_3x\": \"https://RbtVEEraAFjseakWXdsvsjtZBbyI.gccsBcd3Ivcpql,OKjH5pioYkvfWxYt\"\n        },\n        \"website_url\": \"https://SmVkOCyYVrJZrBbmJsvNsy.kpwT,WoS4,WZ0my+3tA-unaAbkiIE-gzvjxbBmHYiKcC2VK,FJcL\",\n        \"instagram_url\": \"https://jnXNupQVlatUjLeeHpg.lrmlWIRl+imc8Ukr02xRZRRgLVjGA\"\n      },\n      \"neighborhood\": {\n        \"id\": \"5f857450-65dc-072b-dae5-15077b9d744e\",\n        \"object\": \"neighborhood\",\n        \"name\": \"string\",\n        \"region\": \"string\"\n      },\n      \"address\": {\n        \"street\": \"string\",\n        \"street2\": \"string\",\n        \"city\": \"string\",\n        \"state\": \"string\",\n        \"zipcode\": \"string\",\n        \"country\": \"string\"\n      },\n      \"time_zone\": \"string\",\n      \"payments_enabled\": false,\n      \"is_club\": true,\n      \"reservations_enabled\": true,\n      \"created_at\": \"1973-12-02T13:59:39.296Z\",\n      \"updated_at\": \"2009-06-24T04:40:20.793Z\",\n      \"name\": \"string\",\n      \"slug\": \"string\",\n      \"coordinate\": {\n        \"latitude\": 4308.098998759719,\n        \"longitude\": 6051.317406408607\n      },\n      \"phone_number\": \"string\",\n      \"reservation_url\": \"http://eKlT.ops6EkhOSE1JjgqKhaITNU.84oXII8hjJcQlN6caU4D1GE64gs7YiLkuPt9ztcp75wfU4EOdAp\",\n      \"google_place_id\": \"string\"\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 8917,\n    \"total_pages\": 315,\n    \"current_page\": 1519,\n    \"next_page\": 3441,\n    \"page_size\": 6984\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d8a0608b-fc55-44c1-872c-a186bc8b4a30",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "53650ec1-1b29-4c9a-bb8c-252b096c5c66",
+          "name": "Get a location",
+          "request": {
+            "name": "Get a location",
+            "description": {
+              "content": "Single location by UUID. Embeds parent restaurant and neighborhood.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "locations",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9167fbcb-14b6-47c5-8718-56a7a262809b",
+              "name": "Location found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"42dcfd82-3d73-d0da-fd95-bffb92b3a25d\",\n  \"object\": \"location\",\n  \"restaurant\": {\n    \"id\": \"4bede964-8e09-91fe-a75b-de90c875f099\",\n    \"object\": \"restaurant\",\n    \"name\": \"string\",\n    \"cuisine\": [\n      \"string\",\n      \"string\"\n    ],\n    \"cohort\": \"string\",\n    \"tags\": [\n      {\n        \"key_0\": 3320.197034292104,\n        \"key_1\": \"string\"\n      },\n      {\n        \"key_0\": 2802,\n        \"key_1\": true\n      }\n    ],\n    \"created_at\": \"1980-03-07T22:20:58.262Z\",\n    \"updated_at\": \"1962-07-03T23:33:07.409Z\",\n    \"price\": 2245,\n    \"asset\": {\n      \"preview_1x\": \"http://oKTxPjGAxIZjiCZTTLMjcknsKzMexSNjC.dhxgACkMkn8OdDGKkMQiwZubtZ6p92F0.19\",\n      \"web_2x\": \"https://lkPOTsXdfYmiHjgfkmBSbqEHCfKBVC.xlasZj.x6MjrOZkdC,YDw11eATBclG\",\n      \"full_3x\": \"https://cve.dtydkFVX2iDSeYTFMM\"\n    },\n    \"website_url\": \"http://EsCFKB.ifgc0Pnl+IGZuKFljMWJr5TT9WE2DixB+oXGthEVM6t\",\n    \"instagram_url\": \"http://jVODekjfXlVCHfATTw.gnu-JIy\"\n  },\n  \"neighborhood\": {\n    \"id\": \"37dfa01c-04a8-51f6-7916-d709783396f6\",\n    \"object\": \"neighborhood\",\n    \"name\": \"string\",\n    \"region\": \"string\"\n  },\n  \"address\": {\n    \"street\": \"string\",\n    \"street2\": \"string\",\n    \"city\": \"string\",\n    \"state\": \"string\",\n    \"zipcode\": \"string\",\n    \"country\": \"string\"\n  },\n  \"time_zone\": \"string\",\n  \"payments_enabled\": true,\n  \"is_club\": true,\n  \"reservations_enabled\": false,\n  \"created_at\": \"1990-09-22T09:03:06.484Z\",\n  \"updated_at\": \"1956-12-02T02:52:13.926Z\",\n  \"name\": \"string\",\n  \"slug\": \"string\",\n  \"coordinate\": {\n    \"latitude\": 7972.503985699279,\n    \"longitude\": 7584.101102736773\n  },\n  \"phone_number\": \"string\",\n  \"reservation_url\": \"https://xjSKCkusGH.ewrmvC\",\n  \"google_place_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "57e3112b-9461-446e-9c8d-6c13af269a63",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4c73ca8-5b43-4c5a-9569-f9e0c1ee16c3",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f5392c39-fbb3-4115-bfe4-216fbc1c7382",
+          "name": "List a location's open hours",
+          "request": {
+            "name": "List a location's open hours",
+            "description": {
+              "content": "Weekly open hours for a location. Not paginated — always returns\nthe full set, with missing days implying the location is closed.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "locations",
+                ":id",
+                "open_hours"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "deb7a5f4-3159-489e-ac94-44f65f6c905b",
+              "name": "Open hours for the location.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations",
+                    ":id",
+                    "open_hours"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"open_hours\": [\n    {\n      \"object\": \"open_hour\",\n      \"day_of_week\": \"friday\",\n      \"open_time\": \"string\",\n      \"close_time\": \"string\"\n    },\n    {\n      \"object\": \"open_hour\",\n      \"day_of_week\": \"saturday\",\n      \"open_time\": \"string\",\n      \"close_time\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9844125a-0d0b-454e-a3b8-edb80188eebb",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations",
+                    ":id",
+                    "open_hours"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e512c1a3-2a63-4b07-9238-5d48740986dd",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "locations",
+                    ":id",
+                    "open_hours"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ef2adac9-a9c4-4ce8-96d4-b808b7555149",
+    "name": "Flynet App Locations API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

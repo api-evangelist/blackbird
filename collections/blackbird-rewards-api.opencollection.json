@@ -1,0 +1,62 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flynet App Rewards API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Rewards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Issue a reward",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/issue_reward",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Issue a FLY reward from your app's wallet to a member. The transfer\nis immediate and **irreversible** — there is no refund. Idempotent:\nreplaying the same `idempotency_key` returns the existing reward\ninstead of issuing a second one. API-key auth only; requires the\n`write:rewards` scope and enough FLY in your app's wallet.\n"
+        },
+        {
+          "info": {
+            "name": "Get your app's wallet balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/balance",
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns your app's own FLY wallet balance — the source wallet that\n`POST /issue_reward` draws from — alongside its USD equivalent.\nAPI-key auth only; requires the `read:balance` scope.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

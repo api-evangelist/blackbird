@@ -1,0 +1,678 @@
+{
+  "item": [
+    {
+      "id": "05283b01-1444-473e-8945-2abbd93ee83c",
+      "name": "Check-ins",
+      "description": {
+        "content": "Filtered visit records.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ab0fadb7-8489-4b01-8e58-e32543dae2bc",
+          "name": "List check-ins",
+          "request": {
+            "name": "List check-ins",
+            "description": {
+              "content": "Returns paginated check-ins for a restaurant or location — an\nanonymized venue activity feed for dashboards, heatmaps, and\nrecent-visit displays. Responses carry no member identity (see the\ncheck-in schema). Filters — `[restaurant, location, created_after,\ncreated_before]` — are optional and AND together; a bare unfiltered\nlist returns the full set. For the authenticated member's own\nhistory, use `GET /users/me/check_ins`.\n\nUnknown query parameters are silently ignored. A typo in a filter\nname is treated as no filter supplied, so you get the full\nunfiltered set rather than an error.\n\nAuth: API key in `X-API-Key`, minted with the `read:checkins` scope —\nno member token needed. (A member's own history at\n`GET /users/me/check_ins` uses their OAuth token instead.)\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "check_ins"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "restaurant",
+                  "value": "<uuid>",
+                  "description": "Restaurant UUID — every location of this brand."
+                },
+                {
+                  "disabled": false,
+                  "key": "location",
+                  "value": "<uuid>",
+                  "description": "Location UUID — one specific venue."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_after",
+                  "value": "<dateTime>",
+                  "description": "ISO 8601 timestamp. Epoch seconds are rejected."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_before",
+                  "value": "<dateTime>",
+                  "description": "ISO 8601 timestamp. Epoch seconds are rejected."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_order",
+                  "value": "desc"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "184a9642-ab8f-4e63-bbf7-d963d10e0bb4",
+              "name": "Paginated check-ins.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "created_after",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "sort_order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"check_ins\": [\n    {\n      \"id\": \"25414c3e-473c-844f-a27f-a538fe62f9a4\",\n      \"object\": \"check_in\",\n      \"location\": {\n        \"id\": \"d5b3c46c-ab50-0ef9-a0ac-d0e3af8d8917\",\n        \"object\": \"location\",\n        \"restaurant\": {\n          \"id\": \"81af5f1a-7091-17c3-959a-b343315021f7\",\n          \"object\": \"restaurant\",\n          \"name\": \"string\",\n          \"cuisine\": [\n            \"string\",\n            \"string\"\n          ],\n          \"cohort\": \"string\",\n          \"tags\": [\n            {\n              \"key_0\": \"string\",\n              \"key_1\": 7008,\n              \"key_2\": \"string\"\n            },\n            {\n              \"key_0\": 4643.586427521198\n            }\n          ],\n          \"created_at\": \"1973-11-08T18:23:42.903Z\",\n          \"updated_at\": \"2013-07-27T13:26:50.774Z\",\n          \"price\": 8614,\n          \"asset\": {\n            \"preview_1x\": \"https://CYJ.jrjQQfu\",\n            \"web_2x\": \"https://Yd.xeayOIxcTVXI,JFzaUMcpdlYQwIxsnldJMziTAWuje0w+lVH,OWq+\",\n            \"full_3x\": \"https://hvtp.zzdhBlGQaYJeUDfC.qig8DxVBBmGrN3M\"\n          },\n          \"website_url\": \"http://aQkFXTMzcVzgQRacdamWyuzpMFGEzlC.yipdrVabbAFlE4XkciVZDm9+8gQBz\",\n          \"instagram_url\": \"https://zPhCLkOdwxDRWwZokVYZNcEEmJQnY.nqaIt6qj,k7KicJ6PuFXCtU3MVD,43PgIb3Xkr,O+DHliYppbq-3boPdGHI8VdNCBcmCbY8\"\n        },\n        \"neighborhood\": {\n          \"id\": \"e6b6dd26-a502-853c-d08a-de118a2a44f9\",\n          \"object\": \"neighborhood\",\n          \"name\": \"string\",\n          \"region\": \"string\"\n        },\n        \"address\": {\n          \"street\": \"string\",\n          \"street2\": \"string\",\n          \"city\": \"string\",\n          \"state\": \"string\",\n          \"zipcode\": \"string\",\n          \"country\": \"string\"\n        },\n        \"time_zone\": \"string\",\n        \"payments_enabled\": true,\n        \"is_club\": true,\n        \"reservations_enabled\": true,\n        \"created_at\": \"1998-07-05T20:33:46.565Z\",\n        \"updated_at\": \"2003-04-15T05:33:51.560Z\",\n        \"name\": \"string\",\n        \"slug\": \"string\",\n        \"coordinate\": {\n          \"latitude\": 9873.011291658684,\n          \"longitude\": 5377.46431581937\n        },\n        \"phone_number\": \"string\",\n        \"reservation_url\": \"http://SkEimUBa.hsizNtuLDanrzNy4d6vCtJ97ljhvcvBLt7vmNgK6Z.rcd62s07LGM+a9rdIMet\",\n        \"google_place_id\": \"string\"\n      },\n      \"blackbird_pay_enabled\": false,\n      \"created_at\": \"1970-09-06T15:08:35.428Z\",\n      \"ended_at\": \"1974-07-02T17:16:11.514Z\"\n    },\n    {\n      \"id\": \"8a722f82-8bcb-608f-ee4b-81cd52512bbd\",\n      \"object\": \"check_in\",\n      \"location\": {\n        \"id\": \"27d5cc27-45e3-b417-92b9-ad0bbf3e87a4\",\n        \"object\": \"location\",\n        \"restaurant\": {\n          \"id\": \"b24da83d-55e3-e40a-a321-fb85c93993e4\",\n          \"object\": \"restaurant\",\n          \"name\": \"string\",\n          \"cuisine\": [\n            \"string\",\n            \"string\"\n          ],\n          \"cohort\": \"string\",\n          \"tags\": [\n            {\n              \"key_0\": 3585.4509479492135,\n              \"key_1\": true,\n              \"key_2\": 5389.207539643132\n            },\n            {\n              \"key_0\": 1252\n            }\n          ],\n          \"created_at\": \"1977-09-19T20:09:12.263Z\",\n          \"updated_at\": \"1975-03-03T03:04:42.277Z\",\n          \"price\": 7515,\n          \"asset\": {\n            \"preview_1x\": \"https://tZiqA.fjncz\",\n            \"web_2x\": \"https://nKjWFV.pamkoPJ+nFlBvPAmG5LAVS0\",\n            \"full_3x\": \"https://uVqGvYPSlIrgx.kaxBEO3n8jx4H+Ko\"\n          },\n          \"website_url\": \"http://coV.uaoSY4gJbSyDqBkA\",\n          \"instagram_url\": \"http://FWhK.ghuKr.FJLZ\"\n        },\n        \"neighborhood\": {\n          \"id\": \"fae3d30a-ba20-b0ba-c0ee-5693d6235546\",\n          \"object\": \"neighborhood\",\n          \"name\": \"string\",\n          \"region\": \"string\"\n        },\n        \"address\": {\n          \"street\": \"string\",\n          \"street2\": \"string\",\n          \"city\": \"string\",\n          \"state\": \"string\",\n          \"zipcode\": \"string\",\n          \"country\": \"string\"\n        },\n        \"time_zone\": \"string\",\n        \"payments_enabled\": true,\n        \"is_club\": true,\n        \"reservations_enabled\": false,\n        \"created_at\": \"1962-11-09T00:06:26.994Z\",\n        \"updated_at\": \"1984-07-28T11:31:36.493Z\",\n        \"name\": \"string\",\n        \"slug\": \"string\",\n        \"coordinate\": {\n          \"latitude\": 1384.3530942096816,\n          \"longitude\": 37.65798011336252\n        },\n        \"phone_number\": \"string\",\n        \"reservation_url\": \"http://DvqAFufSIcymRSNUDZDdDIkfqNfOag.fvvee5j\",\n        \"google_place_id\": \"string\"\n      },\n      \"blackbird_pay_enabled\": false,\n      \"created_at\": \"1963-02-25T03:51:48.422Z\",\n      \"ended_at\": \"1993-05-25T05:09:11.771Z\"\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 8432,\n    \"total_pages\": 1621,\n    \"current_page\": 2632,\n    \"next_page\": 4896,\n    \"page_size\": 5963\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "75a4c14b-b3a3-4dfd-8007-b84a06f615b6",
+              "name": "Bad timestamp (epoch seconds rejected) or invalid sort order.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "created_after",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "sort_order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e47952be-c88c-428f-9103-2526a92b85c9",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "created_after",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "sort_order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bd5c2f6a-c696-4ee7-b64f-d8047dc0af65",
+              "name": "Token lacks the `read:checkins` scope. Empty body; reason in the `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "created_after",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "sort_order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "38261c41-2dd0-4299-8566-fd1d87264ee8",
+          "name": "Get a check-in",
+          "request": {
+            "name": "Get a check-in",
+            "description": {
+              "content": "Single check-in by UUID. Responses carry no member identity.\n\nAuth: API key in `X-API-Key`, minted with the `read:checkins`\nscope — the same credential as the `/check_ins` venue feed.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "check_ins",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6437a6a9-c941-4438-9601-ef3e9bb8aec2",
+              "name": "Check-in found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"34ff07ea-a0eb-5699-13b7-fa6112c208f1\",\n  \"object\": \"check_in\",\n  \"location\": {\n    \"id\": \"f84d0a4f-4dbf-3f80-3222-62972d100ace\",\n    \"object\": \"location\",\n    \"restaurant\": {\n      \"id\": \"41c17a51-063e-e8d9-9fc4-db903f994f5d\",\n      \"object\": \"restaurant\",\n      \"name\": \"string\",\n      \"cuisine\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cohort\": \"string\",\n      \"tags\": [\n        {\n          \"key_0\": 6905\n        },\n        {\n          \"key_0\": 22\n        }\n      ],\n      \"created_at\": \"1998-11-08T06:24:06.007Z\",\n      \"updated_at\": \"2020-02-09T06:05:23.983Z\",\n      \"price\": 366,\n      \"asset\": {\n        \"preview_1x\": \"http://yUmaZnomoT.zja39JyzRRzqQdBImS8HNv-VHYuHOf8wh3E1MjRxTOWK2bML2YZg+f7JcaQD\",\n        \"web_2x\": \"http://Zdrv.yslroFGN9qt9ssD\",\n        \"full_3x\": \"https://JGSKapa.sovsXj+nqog4SBoVBME,tqN0bMl.-dUZLh,XF0l7tQzyYxWmxcV8CNnax.A5n9\"\n      },\n      \"website_url\": \"http://lJkbYUzFnYJioIYyNTxmOuchWO.caRJTpbUVB.XhES\",\n      \"instagram_url\": \"http://ekjrslGYJfqgALttUvxPWAxPjbWpzSWPL.lppPKO3TubCH89sufspuWvM05Y3okd\"\n    },\n    \"neighborhood\": {\n      \"id\": \"966c1009-273b-0e69-dd18-8e6914f1f681\",\n      \"object\": \"neighborhood\",\n      \"name\": \"string\",\n      \"region\": \"string\"\n    },\n    \"address\": {\n      \"street\": \"string\",\n      \"street2\": \"string\",\n      \"city\": \"string\",\n      \"state\": \"string\",\n      \"zipcode\": \"string\",\n      \"country\": \"string\"\n    },\n    \"time_zone\": \"string\",\n    \"payments_enabled\": false,\n    \"is_club\": true,\n    \"reservations_enabled\": true,\n    \"created_at\": \"1987-11-07T13:41:27.637Z\",\n    \"updated_at\": \"2007-12-27T06:27:22.039Z\",\n    \"name\": \"string\",\n    \"slug\": \"string\",\n    \"coordinate\": {\n      \"latitude\": 1549.7287237164826,\n      \"longitude\": 25.18517848179691\n    },\n    \"phone_number\": \"string\",\n    \"reservation_url\": \"https://znrWPCYORXGOCalBZcm.grjQ.YIiMc6j9e9hOysAO54MTJUfEDByQ6ePt\",\n    \"google_place_id\": \"string\"\n  },\n  \"blackbird_pay_enabled\": true,\n  \"created_at\": \"1967-05-30T11:32:49.791Z\",\n  \"ended_at\": \"1978-04-01T08:47:28.822Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71f070c7-2a74-40c6-9625-d644567a28fb",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "063b2e3d-bc0b-40cf-8001-3e47a1230a03",
+              "name": "Key lacks the `read:checkins` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fcd5910c-6c47-40c0-8179-9861935a29b7",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "check_ins",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "36c521e2-a51d-4498-a8f7-0344b6d2653b",
+    "name": "Flynet App Check-ins API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,685 @@
+{
+  "item": [
+    {
+      "id": "3466c095-6fc3-43a5-9d6c-6b0f77c503bb",
+      "name": "Restaurants",
+      "description": {
+        "content": "Brand-level restaurant discovery.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1cac98aa-4aea-4fa7-b15c-774d79086827",
+          "name": "List restaurants",
+          "request": {
+            "name": "List restaurants",
+            "description": {
+              "content": "Paginated list of restaurants.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "restaurants"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "705a3f2a-9677-4663-b4ca-840de3ad536e",
+              "name": "Paginated restaurants.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"restaurants\": [\n    {\n      \"id\": \"c984197f-42f6-cf1b-d808-5f3e86648cb0\",\n      \"object\": \"restaurant\",\n      \"name\": \"string\",\n      \"cuisine\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cohort\": \"string\",\n      \"tags\": [\n        {\n          \"key_0\": \"string\",\n          \"key_1\": 6047,\n          \"key_2\": false\n        },\n        {\n          \"key_0\": \"string\"\n        }\n      ],\n      \"created_at\": \"1991-03-12T22:32:45.740Z\",\n      \"updated_at\": \"1958-10-17T21:15:21.698Z\",\n      \"price\": 8775,\n      \"asset\": {\n        \"preview_1x\": \"http://yXdmbpDZYnEtV.qvmX9r7S2x6PtFo,9i8Pd\",\n        \"web_2x\": \"http://XyekvJpHmqL.ofJUb4,Um12HYrQqzik98qGMwOahj+12PfojkacSjszb.Tx2qNWqQGFQwSu\",\n        \"full_3x\": \"https://FUeRqYXsewcNMfrkXie.kxhmeShzNwcKFswGBthCDWNAjktzRLO4D8lSH+E4MYAVPjn\"\n      },\n      \"website_url\": \"https://mMzHYIc.fyN9x7yrECpK.8\",\n      \"instagram_url\": \"http://opDuTfFzUThHhRCTpOpi.djlwOi\"\n    },\n    {\n      \"id\": \"051793f3-7fd5-0068-bc6d-2a053726e071\",\n      \"object\": \"restaurant\",\n      \"name\": \"string\",\n      \"cuisine\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cohort\": \"string\",\n      \"tags\": [\n        {\n          \"key_0\": 7787.390073180155,\n          \"key_1\": \"string\",\n          \"key_2\": 9654\n        },\n        {\n          \"key_0\": true\n        }\n      ],\n      \"created_at\": \"1967-04-15T09:07:05.266Z\",\n      \"updated_at\": \"1963-10-16T03:31:52.845Z\",\n      \"price\": 1822,\n      \"asset\": {\n        \"preview_1x\": \"https://EgKdTMIlUUTjrSEyNil.slxexBafhyA8DmL32ei5XEGZ4ydKe80249p+sMaVGJDoWmQqkkxNHMj8j\",\n        \"web_2x\": \"https://qczCKmjxedSlnClZellgPXMzjfU.zanbzZiYvtF15VRBg3KbzAR3WqFzTUPddPU6qssZZ8\",\n        \"full_3x\": \"http://rStjtDMdLDlFFANZKjxoHjomL.ipOJy8.hqKHQ\"\n      },\n      \"website_url\": \"https://ntTDcLT.opbSe7.dCm8EnagQJfd\",\n      \"instagram_url\": \"http://URpoqaPrHdClCqPslYqrpgUGmX.wxygPIkcn3Rl-XSwoHjFBkxXXgW.n4uD9E\"\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 1967,\n    \"total_pages\": 5117,\n    \"current_page\": 6957,\n    \"next_page\": 4312,\n    \"page_size\": 3725\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aa7662e6-523f-4939-b465-bf2451d86a48",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ef819b6c-d755-4264-a69d-7041c8240bc8",
+          "name": "Get a restaurant",
+          "request": {
+            "name": "Get a restaurant",
+            "description": {
+              "content": "Single restaurant by UUID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "restaurants",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "18df4a98-29e5-474b-bdea-547b020314e7",
+              "name": "Restaurant found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"cf620eb6-490c-82f8-6f3b-1bbe84475f37\",\n  \"object\": \"restaurant\",\n  \"name\": \"string\",\n  \"cuisine\": [\n    \"string\",\n    \"string\"\n  ],\n  \"cohort\": \"string\",\n  \"tags\": [\n    {\n      \"key_0\": 1190.564773063859,\n      \"key_1\": false\n    },\n    {\n      \"key_0\": 5265\n    }\n  ],\n  \"created_at\": \"1966-04-07T16:42:55.386Z\",\n  \"updated_at\": \"1977-02-12T20:27:44.525Z\",\n  \"price\": 8102,\n  \"asset\": {\n    \"preview_1x\": \"https://XtaEsaTfaQmgGnizt.rsbOa8mD,Zd0EZpWPqHI4TcB\",\n    \"web_2x\": \"http://YjMJUVKYmTQ.kykfE0fPUtiBcJrEvsMveOWLv\",\n    \"full_3x\": \"http://CmE.dpgVfWpGWKKvEcJL7X5phICIyTF5n\"\n  },\n  \"website_url\": \"http://fVDTOAGzuk.zhhwOw+tjN4tsLio33at-yBvIWQqDwQkPGT\",\n  \"instagram_url\": \"http://eZjNYmDrahHWGOtNPUWZnHUSW.xtx\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c7ca3663-e2bb-4adf-9111-1d373eac6dde",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "142b443f-46ad-41eb-a692-d927bb273852",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3e49ef53-fb95-4865-b72c-cd90a75cabe7",
+          "name": "List a restaurant's locations",
+          "request": {
+            "name": "List a restaurant's locations",
+            "description": {
+              "content": "Paginated list of locations belonging to a restaurant.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "restaurants",
+                ":id",
+                "locations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a7464a9c-b603-46aa-bd9b-9efdf51877e2",
+              "name": "Paginated locations.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants",
+                    ":id",
+                    "locations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"locations\": [\n    {\n      \"id\": \"6b569ad8-c94a-df22-dc76-ad9e63eceb4e\",\n      \"object\": \"location\",\n      \"restaurant\": {\n        \"id\": \"9af3d8e6-cf9b-ec82-449c-f50d44870243\",\n        \"object\": \"restaurant\",\n        \"name\": \"string\",\n        \"cuisine\": [\n          \"string\",\n          \"string\"\n        ],\n        \"cohort\": \"string\",\n        \"tags\": [\n          {\n            \"key_0\": true,\n            \"key_1\": 7265.5996060009875,\n            \"key_2\": \"string\"\n          },\n          {\n            \"key_0\": \"string\",\n            \"key_1\": \"string\"\n          }\n        ],\n        \"created_at\": \"1948-08-10T08:59:38.396Z\",\n        \"updated_at\": \"2007-03-22T13:00:16.753Z\",\n        \"price\": 4182,\n        \"asset\": {\n          \"preview_1x\": \"http://rfmWxLAQoBUwAhsPVhHxpXfHqz.iwsVFRqolALy,W0oGfb3Vzu\",\n          \"web_2x\": \"https://vexcolZu.gydTVZylZaJ\",\n          \"full_3x\": \"https://TBLulFmwmWlQAkTnvJwTM.dbnrxlhtRCBCjIi+jqOEeA2RXFoyg8oGZzBpj4s63XkuKVyOUJ78RBJh3IZI5c6..\"\n        },\n        \"website_url\": \"https://eIkCdYvqZ.ijRTgvJqvVpA1sxC\",\n        \"instagram_url\": \"http://mDYQawBk.lzkllkO5+BnlulF2KdYwCrvF\"\n      },\n      \"neighborhood\": {\n        \"id\": \"c697000a-d916-cc26-cd3a-5d107b4a2029\",\n        \"object\": \"neighborhood\",\n        \"name\": \"string\",\n        \"region\": \"string\"\n      },\n      \"address\": {\n        \"street\": \"string\",\n        \"street2\": \"string\",\n        \"city\": \"string\",\n        \"state\": \"string\",\n        \"zipcode\": \"string\",\n        \"country\": \"string\"\n      },\n      \"time_zone\": \"string\",\n      \"payments_enabled\": false,\n      \"is_club\": true,\n      \"reservations_enabled\": false,\n      \"created_at\": \"1960-06-27T22:57:11.060Z\",\n      \"updated_at\": \"2010-01-21T22:36:23.307Z\",\n      \"name\": \"string\",\n      \"slug\": \"string\",\n      \"coordinate\": {\n        \"latitude\": 3657.452613208473,\n        \"longitude\": 9650.450164128782\n      },\n      \"phone_number\": \"string\",\n      \"reservation_url\": \"http://FcrMqrLKCietYzWeXPFAeR.bhlG7wS3uIKOPXYR5cCzCXvRiabeeNKorXM,8cRdAIwfRKxIoTc,nWpoCAE\",\n      \"google_place_id\": \"string\"\n    },\n    {\n      \"id\": \"17dd6e94-3d55-eef8-51dc-69a56ca16437\",\n      \"object\": \"location\",\n      \"restaurant\": {\n        \"id\": \"694c0592-d19d-1f6a-84f2-a7d808d9e549\",\n        \"object\": \"restaurant\",\n        \"name\": \"string\",\n        \"cuisine\": [\n          \"string\",\n          \"string\"\n        ],\n        \"cohort\": \"string\",\n        \"tags\": [\n          {\n            \"key_0\": 7625.943440138294,\n            \"key_1\": 8634.880596442756,\n            \"key_2\": 3131.7274373467953\n          },\n          {\n            \"key_0\": false\n          }\n        ],\n        \"created_at\": \"1997-08-21T16:36:37.209Z\",\n        \"updated_at\": \"1962-08-06T10:31:19.794Z\",\n        \"price\": 6140,\n        \"asset\": {\n          \"preview_1x\": \"http://guRxGArVtoyHTyfv.ivn.Z,tBiHs0XpBuFXGeCDB\",\n          \"web_2x\": \"http://pXaAxjJTkOUHqEIZrXoKDSEgudPfsFnNW.ezoEaFnedtTusQ6nyOUhDbSGFxme,DlVeDax62oiLEkvN-f9NdJ\",\n          \"full_3x\": \"https://CiZRVij.aojhPfy.fwEsjwlnUs3wbGs1igk-GVrWlgWM7wwt\"\n        },\n        \"website_url\": \"http://kfgHHQknCVpxlO.vkcnW\",\n        \"instagram_url\": \"https://SGsbIXKKd.mkfkZb,qQwx4T1HTKAWSXuSTljCKm0zi3OrZOs2TnqsCfLL4b4x0oEGQBUHChi,ed\"\n      },\n      \"neighborhood\": {\n        \"id\": \"957980a0-a529-ddd7-fdf8-9456ae788bc7\",\n        \"object\": \"neighborhood\",\n        \"name\": \"string\",\n        \"region\": \"string\"\n      },\n      \"address\": {\n        \"street\": \"string\",\n        \"street2\": \"string\",\n        \"city\": \"string\",\n        \"state\": \"string\",\n        \"zipcode\": \"string\",\n        \"country\": \"string\"\n      },\n      \"time_zone\": \"string\",\n      \"payments_enabled\": false,\n      \"is_club\": false,\n      \"reservations_enabled\": false,\n      \"created_at\": \"1946-10-25T09:52:09.825Z\",\n      \"updated_at\": \"2002-08-24T01:38:13.197Z\",\n      \"name\": \"string\",\n      \"slug\": \"string\",\n      \"coordinate\": {\n        \"latitude\": 5972.336576249423,\n        \"longitude\": 7582.252496523637\n      },\n      \"phone_number\": \"string\",\n      \"reservation_url\": \"https://naGoVLbKHTFOVEUKb.ganiaG6ZFKGJYP-KzY+Ungb2fFqpeGOaU+bz3bv3nc+nmeRO3C\",\n      \"google_place_id\": \"string\"\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 6268,\n    \"total_pages\": 7473,\n    \"current_page\": 6672,\n    \"next_page\": 9917,\n    \"page_size\": 5071\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1ed69893-5604-43de-b4e3-a09a4f1ff201",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants",
+                    ":id",
+                    "locations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ccb0c77a-640f-4ec7-b939-f7ed9d1679fd",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "restaurants",
+                    ":id",
+                    "locations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "cd1a764b-982d-479a-a003-7305c8fbcf6e",
+    "name": "Flynet App Restaurants API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

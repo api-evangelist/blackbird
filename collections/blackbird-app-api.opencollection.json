@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flynet App API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "App",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the calling app",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/app",
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns the calling application's own record, resolved from the\nAPI key — including its `flynet_merchant_id`, `allowed_scopes`, and\nowning account. Use it to look up your `flynet_merchant_id` for\npayment-intent creation without waiting on the onboarding email.\nRequires the `read:app` scope; API-key auth only.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,1338 @@
+{
+  "item": [
+    {
+      "id": "2ce02fe9-7427-48d4-802c-1414d0fae5f6",
+      "name": "Payments",
+      "description": {
+        "content": "Payment Intents for FLY-funded payments.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f4266190-f425-4cd9-a1cb-ddd24d4b556b",
+          "name": "Create a Payment Intent",
+          "request": {
+            "name": "Create a Payment Intent",
+            "description": {
+              "content": "Create a new Payment Intent. The intent enters `pending` status\nuntil you call `/confirm`. `flynet_merchant_id` is optional — omit\nit to credit your own app's merchant, or pass one to route the\npayment to a specific merchant.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment_intents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_user_id\": \"<uuid>\",\n  \"amount\": {\n    \"value\": \"<string>\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"<string>\",\n  \"idempotency_key\": \"<string>\",\n  \"flynet_merchant_id\": \"<uuid>\",\n  \"expires_at\": \"<dateTime>\",\n  \"metadata\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d0f55647-6048-4c0b-85e9-c34fb8bbe32b",
+              "name": "Idempotent replay; returns the existing intent.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"flynet_merchant_id\": \"{merchant_uuid}\",\n  \"customer_user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Event ticket\",\n  \"idempotency_key\": \"order-12345\",\n  \"expires_at\": \"2026-05-30T00:00:00Z\",\n  \"metadata\": {\n    \"order_id\": \"12345\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"117e6db1-134d-1e08-7a4f-0caa0e0bc910\",\n  \"object\": \"payment_intent\",\n  \"payer_account_balance_id\": \"7a9099b5-a634-97a8-5efd-6c67010c38df\",\n  \"payee_account_balance_id\": \"20dabf43-a138-0801-b8b6-98ca07c4ed3b\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"status\": \"expired\",\n  \"created_at\": \"1962-10-03T06:47:44.767Z\",\n  \"updated_at\": \"1970-09-16T13:10:48.815Z\",\n  \"expires_at\": \"2014-08-02T07:55:06.486Z\",\n  \"canceled_at\": \"1961-02-01T04:18:46.698Z\",\n  \"paid_at\": \"1957-07-29T08:19:49.645Z\",\n  \"refunded_at\": \"2000-08-22T16:31:58.859Z\",\n  \"metadata\": {\n    \"key_0\": 3984,\n    \"key_1\": 9087\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "76322c73-2bc3-403a-a456-da06939ae074",
+              "name": "New Payment Intent created.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"flynet_merchant_id\": \"{merchant_uuid}\",\n  \"customer_user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Event ticket\",\n  \"idempotency_key\": \"order-12345\",\n  \"expires_at\": \"2026-05-30T00:00:00Z\",\n  \"metadata\": {\n    \"order_id\": \"12345\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"117e6db1-134d-1e08-7a4f-0caa0e0bc910\",\n  \"object\": \"payment_intent\",\n  \"payer_account_balance_id\": \"7a9099b5-a634-97a8-5efd-6c67010c38df\",\n  \"payee_account_balance_id\": \"20dabf43-a138-0801-b8b6-98ca07c4ed3b\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"status\": \"expired\",\n  \"created_at\": \"1962-10-03T06:47:44.767Z\",\n  \"updated_at\": \"1970-09-16T13:10:48.815Z\",\n  \"expires_at\": \"2014-08-02T07:55:06.486Z\",\n  \"canceled_at\": \"1961-02-01T04:18:46.698Z\",\n  \"paid_at\": \"1957-07-29T08:19:49.645Z\",\n  \"refunded_at\": \"2000-08-22T16:31:58.859Z\",\n  \"metadata\": {\n    \"key_0\": 3984,\n    \"key_1\": 9087\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5864ab8a-f860-473d-84ca-f67514f60275",
+              "name": "Invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"flynet_merchant_id\": \"{merchant_uuid}\",\n  \"customer_user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Event ticket\",\n  \"idempotency_key\": \"order-12345\",\n  \"expires_at\": \"2026-05-30T00:00:00Z\",\n  \"metadata\": {\n    \"order_id\": \"12345\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1cdc4ccd-0878-488f-b67b-9d353978db17",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"flynet_merchant_id\": \"{merchant_uuid}\",\n  \"customer_user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Event ticket\",\n  \"idempotency_key\": \"order-12345\",\n  \"expires_at\": \"2026-05-30T00:00:00Z\",\n  \"metadata\": {\n    \"order_id\": \"12345\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e6ccd650-d3c5-4e22-b42f-03cad5e501d9",
+          "name": "List Payment Intents",
+          "request": {
+            "name": "List Payment Intents",
+            "description": {},
+            "url": {
+              "path": [
+                "payment_intents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "payee_account_balance_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "payer_account_balance_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "43d32a4f-b558-4871-a5f4-7ae3375c4895",
+              "name": "Paginated list.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payee_account_balance_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "payer_account_balance_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payment_intents\": [\n    {\n      \"id\": \"cbbb4262-d8f4-73fd-10b0-82c14b87b51b\",\n      \"object\": \"payment_intent\",\n      \"payer_account_balance_id\": \"c8e8a75d-2f71-bb66-be2f-5b19707503aa\",\n      \"payee_account_balance_id\": \"091e5a9d-6dd6-01ce-0e66-3180a3c13b83\",\n      \"amount\": {\n        \"value\": \"1000000000000000000\",\n        \"currency\": \"<string>\"\n      },\n      \"description\": \"string\",\n      \"status\": \"pending\",\n      \"created_at\": \"1977-01-18T22:53:46.744Z\",\n      \"updated_at\": \"1956-09-07T13:26:37.614Z\",\n      \"expires_at\": \"2023-05-23T14:17:43.081Z\",\n      \"canceled_at\": \"2010-11-11T22:50:02.790Z\",\n      \"paid_at\": \"1978-05-13T20:27:00.995Z\",\n      \"refunded_at\": \"1991-01-30T07:29:06.652Z\",\n      \"metadata\": {\n        \"key_0\": 6459\n      }\n    },\n    {\n      \"id\": \"c822a3cb-94e2-9a5e-043e-37ca27be4ddb\",\n      \"object\": \"payment_intent\",\n      \"payer_account_balance_id\": \"713ac7e3-1634-87ef-c9f9-d15f5fa00a61\",\n      \"payee_account_balance_id\": \"9e49033e-9c0d-ba02-82eb-ce93cf070909\",\n      \"amount\": {\n        \"value\": \"1000000000000000000\",\n        \"currency\": \"<string>\"\n      },\n      \"description\": \"string\",\n      \"status\": \"expired\",\n      \"created_at\": \"1972-05-20T04:38:10.951Z\",\n      \"updated_at\": \"1963-06-26T15:58:02.040Z\",\n      \"expires_at\": \"1966-06-11T15:38:08.945Z\",\n      \"canceled_at\": \"2009-08-14T15:20:39.634Z\",\n      \"paid_at\": \"2024-03-20T10:43:36.521Z\",\n      \"refunded_at\": \"2019-10-19T00:43:11.144Z\",\n      \"metadata\": {\n        \"key_0\": false,\n        \"key_1\": \"string\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 706,\n    \"total_pages\": 4923,\n    \"current_page\": 1366,\n    \"next_page\": 8026,\n    \"page_size\": 1586\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85257b2c-cccd-4cff-b7c9-26fd5f1f7852",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payee_account_balance_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "payer_account_balance_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d6a8397a-9851-41da-9faa-77b53eeeb352",
+          "name": "Retrieve a Payment Intent",
+          "request": {
+            "name": "Retrieve a Payment Intent",
+            "description": {},
+            "url": {
+              "path": [
+                "payment_intents",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a4d44ddb-1872-43d2-960e-95cef896483d",
+              "name": "The Payment Intent with derived status.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"117e6db1-134d-1e08-7a4f-0caa0e0bc910\",\n  \"object\": \"payment_intent\",\n  \"payer_account_balance_id\": \"7a9099b5-a634-97a8-5efd-6c67010c38df\",\n  \"payee_account_balance_id\": \"20dabf43-a138-0801-b8b6-98ca07c4ed3b\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"status\": \"expired\",\n  \"created_at\": \"1962-10-03T06:47:44.767Z\",\n  \"updated_at\": \"1970-09-16T13:10:48.815Z\",\n  \"expires_at\": \"2014-08-02T07:55:06.486Z\",\n  \"canceled_at\": \"1961-02-01T04:18:46.698Z\",\n  \"paid_at\": \"1957-07-29T08:19:49.645Z\",\n  \"refunded_at\": \"2000-08-22T16:31:58.859Z\",\n  \"metadata\": {\n    \"key_0\": 3984,\n    \"key_1\": 9087\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d544d98f-bfc6-4ae3-acf1-54922ca93592",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f137e897-38ce-4627-b1e5-8d8a3513a368",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "be469c54-0357-4552-9917-4756ab16fad3",
+          "name": "Cancel a pending Payment Intent",
+          "request": {
+            "name": "Cancel a pending Payment Intent",
+            "description": {
+              "content": "Cancels a `pending` intent. Re-canceling a canceled intent returns\n200 with the same intent. Rejects with 400 if the intent has already\nbeen paid or refunded.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment_intents",
+                ":id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f532fe5d-1945-449f-91a6-2b01a54f82ba",
+              "name": "Updated intent with status `canceled`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"117e6db1-134d-1e08-7a4f-0caa0e0bc910\",\n  \"object\": \"payment_intent\",\n  \"payer_account_balance_id\": \"7a9099b5-a634-97a8-5efd-6c67010c38df\",\n  \"payee_account_balance_id\": \"20dabf43-a138-0801-b8b6-98ca07c4ed3b\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"status\": \"expired\",\n  \"created_at\": \"1962-10-03T06:47:44.767Z\",\n  \"updated_at\": \"1970-09-16T13:10:48.815Z\",\n  \"expires_at\": \"2014-08-02T07:55:06.486Z\",\n  \"canceled_at\": \"1961-02-01T04:18:46.698Z\",\n  \"paid_at\": \"1957-07-29T08:19:49.645Z\",\n  \"refunded_at\": \"2000-08-22T16:31:58.859Z\",\n  \"metadata\": {\n    \"key_0\": 3984,\n    \"key_1\": 9087\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3bc9aa43-7b81-457c-859c-9a53c807212e",
+              "name": "Invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "48c860f5-e812-4dff-ae84-b57cc7aa0899",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "29fa1861-2b8c-42e4-854a-5cc0d0f546e1",
+          "name": "Confirm and execute a Payment Intent",
+          "request": {
+            "name": "Confirm and execute a Payment Intent",
+            "description": {
+              "content": "Transfers FLY from the customer's wallet to the merchant. Customer\nmust already hold enough FLY — v1 does not card-fund or auto-load.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment_intents",
+                ":id",
+                "confirm"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5736eb35-e0fa-45a5-a627-5cefd455e84d",
+              "name": "Intent paid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"117e6db1-134d-1e08-7a4f-0caa0e0bc910\",\n  \"object\": \"payment_intent\",\n  \"payer_account_balance_id\": \"7a9099b5-a634-97a8-5efd-6c67010c38df\",\n  \"payee_account_balance_id\": \"20dabf43-a138-0801-b8b6-98ca07c4ed3b\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"status\": \"expired\",\n  \"created_at\": \"1962-10-03T06:47:44.767Z\",\n  \"updated_at\": \"1970-09-16T13:10:48.815Z\",\n  \"expires_at\": \"2014-08-02T07:55:06.486Z\",\n  \"canceled_at\": \"1961-02-01T04:18:46.698Z\",\n  \"paid_at\": \"1957-07-29T08:19:49.645Z\",\n  \"refunded_at\": \"2000-08-22T16:31:58.859Z\",\n  \"metadata\": {\n    \"key_0\": 3984,\n    \"key_1\": 9087\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b3623f3-2dae-413e-84bd-7f9d2ca6058f",
+              "name": "Insufficient FLY or not confirmable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "af0b34a1-8dfd-42dd-9fe4-25abdcb3f3f4",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6ef25f8b-9e60-45c4-a555-85d8e510891b",
+          "name": "Refund a paid Payment Intent",
+          "request": {
+            "name": "Refund a paid Payment Intent",
+            "description": {
+              "content": "Reverses the FLY transfer. Full refund only in v1; partial refunds\nare not supported.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment_intents",
+                ":id",
+                "refund"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "50b48566-bc7b-4b5c-9630-955f20096398",
+              "name": "Intent refunded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "refund"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"117e6db1-134d-1e08-7a4f-0caa0e0bc910\",\n  \"object\": \"payment_intent\",\n  \"payer_account_balance_id\": \"7a9099b5-a634-97a8-5efd-6c67010c38df\",\n  \"payee_account_balance_id\": \"20dabf43-a138-0801-b8b6-98ca07c4ed3b\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"status\": \"expired\",\n  \"created_at\": \"1962-10-03T06:47:44.767Z\",\n  \"updated_at\": \"1970-09-16T13:10:48.815Z\",\n  \"expires_at\": \"2014-08-02T07:55:06.486Z\",\n  \"canceled_at\": \"1961-02-01T04:18:46.698Z\",\n  \"paid_at\": \"1957-07-29T08:19:49.645Z\",\n  \"refunded_at\": \"2000-08-22T16:31:58.859Z\",\n  \"metadata\": {\n    \"key_0\": 3984,\n    \"key_1\": 9087\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "949646fc-ddfc-49fc-995e-eb4f2ad81316",
+              "name": "Invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "refund"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "68e6438a-9ff8-4495-9dfa-9aca8ff16d3a",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_intents",
+                    ":id",
+                    "refund"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "24f8b6dd-bf65-461c-be3a-adabd3d454fa",
+    "name": "Flynet App Payments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

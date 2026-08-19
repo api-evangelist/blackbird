@@ -1,0 +1,532 @@
+{
+  "item": [
+    {
+      "id": "0a2d1536-562e-40d4-8965-5f77ca512527",
+      "name": "Rewards",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bbcf9d76-d11a-424b-828e-bb326092fb27",
+          "name": "Issue a reward",
+          "request": {
+            "name": "Issue a reward",
+            "description": {
+              "content": "Issue a FLY reward from your app's wallet to a member. The transfer\nis immediate and **irreversible** — there is no refund. Idempotent:\nreplaying the same `idempotency_key` returns the existing reward\ninstead of issuing a second one. API-key auth only; requires the\n`write:rewards` scope and enough FLY in your app's wallet.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "issue_reward"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"<uuid>\",\n  \"amount\": {\n    \"value\": \"<string>\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"<string>\",\n  \"idempotency_key\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": true,\n    \"key_1\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "37c44352-1c1e-4ecf-b821-d607895f12d1",
+              "name": "Idempotent replay; returns the existing reward.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "issue_reward"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Loyalty streak reward\",\n  \"idempotency_key\": \"reward-12345\",\n  \"metadata\": {\n    \"campaign\": \"summer-2026\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ca624217-ee6a-f845-afc0-010007b019a5\",\n  \"object\": \"reward\",\n  \"user_id\": \"81c2cc5f-f443-76b5-a2ef-c002a526915c\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"created_at\": \"2019-12-18T21:11:36.459Z\",\n  \"metadata\": {\n    \"key_0\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9c2df675-3b79-4b52-8637-ffa6f08fc023",
+              "name": "Reward issued.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "issue_reward"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Loyalty streak reward\",\n  \"idempotency_key\": \"reward-12345\",\n  \"metadata\": {\n    \"campaign\": \"summer-2026\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ca624217-ee6a-f845-afc0-010007b019a5\",\n  \"object\": \"reward\",\n  \"user_id\": \"81c2cc5f-f443-76b5-a2ef-c002a526915c\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"<string>\"\n  },\n  \"description\": \"string\",\n  \"created_at\": \"2019-12-18T21:11:36.459Z\",\n  \"metadata\": {\n    \"key_0\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f4fcfa9-6b83-49d7-a9db-c1038bf3cdb1",
+              "name": "Invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "issue_reward"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Loyalty streak reward\",\n  \"idempotency_key\": \"reward-12345\",\n  \"metadata\": {\n    \"campaign\": \"summer-2026\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"string\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "77d39915-0e5b-44e1-ac0f-e4116c989998",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "issue_reward"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Loyalty streak reward\",\n  \"idempotency_key\": \"reward-12345\",\n  \"metadata\": {\n    \"campaign\": \"summer-2026\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f562c044-d030-4f95-a115-f275bdc59174",
+              "name": "Key lacks the `write:rewards` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "issue_reward"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"{uuid}\",\n  \"amount\": {\n    \"value\": \"1000000000000000000\",\n    \"currency\": \"FLY\"\n  },\n  \"description\": \"Loyalty streak reward\",\n  \"idempotency_key\": \"reward-12345\",\n  \"metadata\": {\n    \"campaign\": \"summer-2026\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8771e024-4ec1-4425-8b2e-2f56159628cd",
+          "name": "Get your app's wallet balance",
+          "request": {
+            "name": "Get your app's wallet balance",
+            "description": {
+              "content": "Returns your app's own FLY wallet balance — the source wallet that\n`POST /issue_reward` draws from — alongside its USD equivalent.\nAPI-key auth only; requires the `read:balance` scope.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "balance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4939b56d-92b9-4ab2-a673-35623b1ae9df",
+              "name": "Your app's account balance.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"3f1c6d8e-0f12-4a5b-8c9d-1e2f3a4b5c6d\",\n  \"object\": \"account_balance\",\n  \"owner_id\": \"2c8f0e5a-1d4b-4c9e-9f2a-7b3c6d8e0f12\",\n  \"owner_type\": \"flynet_merchant\",\n  \"balance\": {\n    \"value\": \"2500000000000000000\",\n    \"currency\": \"fly\"\n  },\n  \"balance_usd\": {\n    \"value\": 250,\n    \"currency\": \"usd\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad00870a-fdd5-4856-9955-430d8cbf505c",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "52e1c5f9-5a77-49e3-8dfa-da28ae599a95",
+              "name": "Key lacks the `read:balance` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "15d5a699-a225-4e45-af83-bd368cc24e6e",
+    "name": "Flynet App Rewards API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

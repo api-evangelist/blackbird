@@ -1,0 +1,271 @@
+{
+  "item": [
+    {
+      "id": "974f0bbd-c89a-41a7-a51c-7eb6a66b8316",
+      "name": "Memberships",
+      "description": {
+        "content": "Per-(member, restaurant) loyalty records carrying check-in counts and tiers.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9af325f8-6f19-4fbb-a3a0-a17c4bbca6f4",
+          "name": "List the authenticated member's memberships",
+          "request": {
+            "name": "List the authenticated member's memberships",
+            "description": {
+              "content": "Returns the authenticated member's paginated membership records —\none per restaurant — each carrying a `check_in_count` and the\nmember's `membership_tier` at that restaurant. The subject is\nresolved from the access token, so there is no member ID in the\npath. This is the canonical source for the member's per-restaurant\ncheck-in totals: filter by `restaurant` and sum `check_in_count`\nacross the result.\n\nAccessible with a token carrying `read:memberships`.\n\nThere is no `GET /users/me/memberships/{id}` — the list, with\nfilters, is the only accessor. Server-side sorting is not applied:\n`sort` and related parameters are silently ignored, so sort\nclient-side.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me",
+                "memberships"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "restaurant",
+                  "value": "<uuid>",
+                  "description": "Restaurant UUID to filter by. Note the asymmetry: the filter\nkey is `restaurant`, but the field on each record is\n`restaurant_id`. Passing `restaurant_id` is silently ignored\nand returns the full unfiltered list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c16478ce-039d-436a-a780-b1cf1778385b",
+              "name": "Paginated memberships.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "memberships"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"memberships\": [\n    {\n      \"id\": \"011ac10e-7f27-4355-847a-c51e2e7e5625\",\n      \"object\": \"membership\",\n      \"restaurant_id\": \"2cb56d03-4417-4b60-afe3-be819ecde8ac\",\n      \"check_in_count\": 1,\n      \"last_check_in_date\": \"2026-05-26T16:30:45.825827Z\",\n      \"membership_tier\": {\n        \"id\": \"8a71471b-c07c-4e05-9888-7ecd8e1bc609\",\n        \"object\": \"membership_tier\",\n        \"name\": \"Member\",\n        \"artist\": \"Andrew Braswell\",\n        \"asset\": {\n          \"preview_1x\": \"https://images.blackbird.xyz/.../343_490.png\",\n          \"web_2x\": \"https://images.blackbird.xyz/.../343_490.png\",\n          \"full_3x\": \"https://images.blackbird.xyz/.../343_490.png\"\n        }\n      }\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 875,\n    \"total_pages\": 18,\n    \"current_page\": 0,\n    \"next_page\": 1,\n    \"page_size\": 50\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6bb30141-ba27-4b37-966e-6996e8f70e8b",
+              "name": "Missing or invalid token. Empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "memberships"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "99f6098d-b1ce-4ee5-8086-1823a5dc6d07",
+              "name": "Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "memberships"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "c3c73e53-f64a-4bba-a8f4-0c0f92094dd5",
+    "name": "Flynet App Memberships API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

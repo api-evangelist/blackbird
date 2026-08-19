@@ -1,0 +1,108 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flynet App Check-ins API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Check-ins",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List check-ins",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/check_ins",
+            "params": [
+              {
+                "name": "restaurant",
+                "value": "",
+                "type": "query",
+                "description": "Restaurant UUID — every location of this brand."
+              },
+              {
+                "name": "location",
+                "value": "",
+                "type": "query",
+                "description": "Location UUID — one specific venue."
+              },
+              {
+                "name": "created_after",
+                "value": "",
+                "type": "query",
+                "description": "ISO 8601 timestamp. Epoch seconds are rejected."
+              },
+              {
+                "name": "created_before",
+                "value": "",
+                "type": "query",
+                "description": "ISO 8601 timestamp. Epoch seconds are rejected."
+              },
+              {
+                "name": "sort_order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Zero-indexed page number."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Default `50`."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns paginated check-ins for a restaurant or location — an\nanonymized venue activity feed for dashboards, heatmaps, and\nrecent-visit displays. Responses carry no member identity (see the\ncheck-in schema). Filters — `[restaurant, location, created_after,\ncreated_before]` — are optional and AND together; a bare unfiltered\nlist returns the full set. For the authenticated member's own\nhistory, use `GET /users/me/check_ins`.\n\nUnknown query parameters are silently ignored. A typo in a filter\nname i"
+        },
+        {
+          "info": {
+            "name": "Get a check-in",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/check_ins/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "{uuid}",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Single check-in by UUID. Responses carry no member identity.\n\nAuth: API key in `X-API-Key`, minted with the `read:checkins`\nscope — the same credential as the `/check_ins` venue feed.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

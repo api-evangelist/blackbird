@@ -1,0 +1,174 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flynet App Payments API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Payment Intents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/payment_intents",
+            "params": [
+              {
+                "name": "payee_account_balance_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "payer_account_balance_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Zero-indexed page number."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Default `50`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List Payment Intents"
+        },
+        {
+          "info": {
+            "name": "Create a Payment Intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/payment_intents",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new Payment Intent. The intent enters `pending` status\nuntil you call `/confirm`. `flynet_merchant_id` is optional — omit\nit to credit your own app's merchant, or pass one to route the\npayment to a specific merchant.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Payment Intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/payment_intents/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "{uuid}",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a Payment Intent"
+        },
+        {
+          "info": {
+            "name": "Cancel a pending Payment Intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/payment_intents/:id/cancel",
+            "params": [
+              {
+                "name": "id",
+                "value": "{uuid}",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Cancels a `pending` intent. Re-canceling a canceled intent returns\n200 with the same intent. Rejects with 400 if the intent has already\nbeen paid or refunded.\n"
+        },
+        {
+          "info": {
+            "name": "Confirm and execute a Payment Intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/payment_intents/:id/confirm",
+            "params": [
+              {
+                "name": "id",
+                "value": "{uuid}",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Transfers FLY from the customer's wallet to the merchant. Customer\nmust already hold enough FLY — v1 does not card-fund or auto-load.\n"
+        },
+        {
+          "info": {
+            "name": "Refund a paid Payment Intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/payment_intents/:id/refund",
+            "params": [
+              {
+                "name": "id",
+                "value": "{uuid}",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Reverses the FLY transfer. Full refund only in v1; partial refunds\nare not supported.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

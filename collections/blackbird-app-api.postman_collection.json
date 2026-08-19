@@ -1,0 +1,217 @@
+{
+  "item": [
+    {
+      "id": "84f952c7-27b5-4d3b-8dea-7311b1f815af",
+      "name": "App",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1694472b-04e7-43c7-a567-c36eeab22ba4",
+          "name": "Get the calling app",
+          "request": {
+            "name": "Get the calling app",
+            "description": {
+              "content": "Returns the calling application's own record, resolved from the\nAPI key — including its `flynet_merchant_id`, `allowed_scopes`, and\nowning account. Use it to look up your `flynet_merchant_id` for\npayment-intent creation without waiting on the onboarding email.\nRequires the `read:app` scope; API-key auth only.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "app"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6313b2f5-f751-4b03-a5df-249e9750e6cc",
+              "name": "The calling app.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "app"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"7b3c6d8e-0f12-4a5b-8c9d-1e2f3a4b5c6d\",\n  \"object\": \"app\",\n  \"name\": \"Corner Suite\",\n  \"flynet_merchant_id\": \"2c8f0e5a-1d4b-4c9e-9f2a-7b3c6d8e0f12\",\n  \"allowed_scopes\": [\n    \"read:app\",\n    \"read:checkins\",\n    \"read:profile\",\n    \"read:wallets\"\n  ],\n  \"active\": true,\n  \"created_at\": \"2026-05-07T18:18:31.078859Z\",\n  \"account\": {\n    \"id\": \"9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d\",\n    \"company_name\": \"Corner Suite, Inc.\",\n    \"contact_email\": \"dev@cornersuite.example\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "30276150-3cc8-4296-b307-960c45804f05",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "app"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3106f030-4351-458e-99d8-3804f5a09031",
+              "name": "Key lacks the `read:app` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "app"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "e918117d-739c-46b9-a58f-1a6db6d907d4",
+    "name": "Flynet App API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flynet App Users API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the authenticated member",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/users/me",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the authenticated member's profile — the subject is\nresolved from the access token, so there is no member ID in the\npath. Requires the `read:profile` scope.\n"
+        },
+        {
+          "info": {
+            "name": "Get the authenticated member's status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/users/me/status",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the authenticated member's membership status — tier,\nlevel, track, benefits, and progress toward the next level. The\nsubject is resolved from the access token. Requires the\n`read:profile` scope.\n\nA member with no active status record returns `404` with\n`code: \"resource_not_found\"` (envelope A), not an empty status.\n"
+        },
+        {
+          "info": {
+            "name": "List the authenticated member's check-ins",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/users/me/check_ins",
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Zero-indexed page number."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Default `50`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the authenticated member's own check-ins, newest first —\nthe subject is resolved from the access token. Same shape as\n`GET /check_ins`, scoped to the member. Requires the\n`read:user_checkins` scope.\n"
+        },
+        {
+          "info": {
+            "name": "List the authenticated member's wallets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/users/me/wallets",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the wallets of the authenticated member — the subject is\nresolved from the access token, so there is no member ID in the\npath. Each member has a MEMBERSHIP wallet and a SPENDING wallet,\nboth auto-provisioned on their first OAuth completion. Requires\nthe `read:wallets` scope.\n"
+        },
+        {
+          "info": {
+            "name": "List the authenticated member's tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/users/me/tags",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns metadata tags attached to the authenticated member — the\nsubject is resolved from the access token, so there is no member\nID in the path. A tag with `type: \"industry\"` identifies the\nmember as a restaurant employee. Empty array if the member has\nno tags.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,67 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flynet App Challenges API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Challenges",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List challenges",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/challenges",
+            "params": [
+              {
+                "name": "restaurant",
+                "value": "14339db3-2e7a-42c4-aa98-4c0fb18679eb",
+                "type": "query",
+                "description": "Restaurant UUID to list challenges for."
+              },
+              {
+                "name": "location",
+                "value": "",
+                "type": "query",
+                "description": "Optional location UUID to filter by."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Zero-indexed page number."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Default `50`."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Lists restaurant challenges — reward campaigns a member completes\n(by payment, referrals, dines, or passport milestones) to earn FLY.\nAPI-key auth only; requires the `read:restaurant_challenges` scope.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,59 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flynet App Memberships API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Memberships",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List the authenticated member's memberships",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.staging.blackbird.xyz/flynet/v1/users/me/memberships",
+            "params": [
+              {
+                "name": "restaurant",
+                "value": "",
+                "type": "query",
+                "description": "Restaurant UUID to filter by. Note the asymmetry: the filter\nkey is `restaurant`, but the field on each record is\n`restaurant_id`. Passing `restaurant_id` is silently ignored\nand returns the full unfiltered list.\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Zero-indexed page number."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Default `50`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the authenticated member's paginated membership records —\none per restaurant — each carrying a `check_in_count` and the\nmember's `membership_tier` at that restaurant. The subject is\nresolved from the access token, so there is no member ID in the\npath. This is the canonical source for the member's per-restaurant\ncheck-in totals: filter by `restaurant` and sum `check_in_count`\nacross the result.\n\nAccessible with a token carrying `read:memberships`.\n\nThere is no `GET /users/me/memberships/{"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,293 @@
+{
+  "item": [
+    {
+      "id": "0317b68f-aaaf-4b97-8e64-367340489e10",
+      "name": "Challenges",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9900af8a-0478-438e-b94d-326a2c435f79",
+          "name": "List challenges",
+          "request": {
+            "name": "List challenges",
+            "description": {
+              "content": "Lists restaurant challenges — reward campaigns a member completes\n(by payment, referrals, dines, or passport milestones) to earn FLY.\nAPI-key auth only; requires the `read:restaurant_challenges` scope.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "challenges"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "restaurant",
+                  "value": "<uuid>",
+                  "description": "(Required) Restaurant UUID to list challenges for."
+                },
+                {
+                  "disabled": false,
+                  "key": "location",
+                  "value": "<uuid>",
+                  "description": "Optional location UUID to filter by."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "0",
+                  "description": "Zero-indexed page number."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "50",
+                  "description": "Items per page. Default `50`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "635117e9-37f8-4bd4-94dc-9e4dbb7cbe3e",
+              "name": "A page of challenges.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "challenges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "14339db3-2e7a-42c4-aa98-4c0fb18679eb"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"challenges\": [\n    {\n      \"id\": \"db4b0228-4e6e-a84c-33ac-bc0f80cc3bf0\",\n      \"object\": \"challenge\",\n      \"type\": \"DINES\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"threshold\": {\n        \"spend_threshold\": {\n          \"value\": \"1000000000000000000\",\n          \"currency\": \"FLY\"\n        },\n        \"minimum_spend\": {\n          \"value\": \"1000000000000000000\",\n          \"currency\": \"FLY\"\n        },\n        \"dine_threshold\": 6908,\n        \"referral_threshold\": 8342\n      },\n      \"fly_reward\": {\n        \"value\": \"1000000000000000000\",\n        \"currency\": \"FLY\"\n      },\n      \"terms\": [\n        \"string\",\n        \"string\"\n      ],\n      \"accepted_currencies\": [\n        \"string\",\n        \"string\"\n      ],\n      \"created_at\": \"1965-06-02T23:13:57.583Z\",\n      \"updated_at\": \"1964-09-27T18:30:19.111Z\",\n      \"image\": \"string\",\n      \"start_time\": \"1968-04-17T11:41:56.332Z\",\n      \"end_time\": \"1985-12-22T08:21:53.001Z\"\n    },\n    {\n      \"id\": \"aaffcf81-195e-1aa3-51c1-64630bad534c\",\n      \"object\": \"challenge\",\n      \"type\": \"REFERRALS\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"threshold\": {\n        \"spend_threshold\": {\n          \"value\": \"1000000000000000000\",\n          \"currency\": \"FLY\"\n        },\n        \"minimum_spend\": {\n          \"value\": \"1000000000000000000\",\n          \"currency\": \"FLY\"\n        },\n        \"dine_threshold\": 4359,\n        \"referral_threshold\": 4022\n      },\n      \"fly_reward\": {\n        \"value\": \"1000000000000000000\",\n        \"currency\": \"FLY\"\n      },\n      \"terms\": [\n        \"string\",\n        \"string\"\n      ],\n      \"accepted_currencies\": [\n        \"string\",\n        \"string\"\n      ],\n      \"created_at\": \"1961-02-13T05:13:38.843Z\",\n      \"updated_at\": \"1949-07-23T16:34:49.805Z\",\n      \"image\": \"string\",\n      \"start_time\": \"2005-07-21T06:44:32.335Z\",\n      \"end_time\": \"1975-04-11T02:46:00.658Z\"\n    }\n  ],\n  \"pagination\": {\n    \"total_count\": 2311,\n    \"total_pages\": 7585,\n    \"current_page\": 9423,\n    \"next_page\": 2763,\n    \"page_size\": 3716\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4df7234b-b62e-47cc-879f-fc01cea31908",
+              "name": "Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: \"invalid_api_key\"`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "challenges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "14339db3-2e7a-42c4-aa98-4c0fb18679eb"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"authentication_error\",\n    \"code\": \"invalid_api_key\",\n    \"message\": \"Invalid or revoked API key.\",\n    \"param\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b7796b9-7854-407e-bab1-5773b8b744ce",
+              "name": "Key lacks the `read:restaurant_challenges` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "challenges"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "restaurant",
+                      "value": "14339db3-2e7a-42c4-aa98-4c0fb18679eb"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.staging.blackbird.xyz/flynet/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "22ac7dc1-188b-48cf-afbe-25c1bd2a34fa",
+    "name": "Flynet App Challenges API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Flynet's partner API. Read access to member context, restaurants,\nlocations, check-ins, and memberships; write access for payment\nintents.\n\n**Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.\n\n**Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for\nmember-scoped routes, API key (`X-API-Key`) for restaurant and\nlocation discovery. See Concepts → Authentication.\n\n**Pagination:** `page` is zero-indexed (default `0`); `page_size`\ndefault `50`. List responses include a `pagination` wrapper except\n`GET /locations/{id}/open_hours`.\n\n**Errors:** see Concepts → Pagination + errors. Three envelope shapes\nare documented there.\n",
+      "type": "text/plain"
+    }
+  }
+}
