@@ -38,6 +38,16 @@ created: '2026-07-17'
 modified: '2026-07-18'
 tags:
 - Company
+- Restaurant
+- Loyalty
+- Payments
+- Dining
+- Membership
+- Crypto
+- Blockchain
+- Web3
+tags_raw:
+- Company
 - Restaurants
 - Loyalty
 - Payments
@@ -113,6 +123,8 @@ apis:
   humanURL: https://docs.flynet.org
   baseURL: https://api.blackbird.xyz/flynet/v1
   tags:
+  - Restaurant
+  tags_raw:
   - Restaurants
   properties:
   - type: OpenAPI
@@ -145,6 +157,8 @@ apis:
   humanURL: https://docs.flynet.org
   baseURL: https://api.blackbird.xyz/flynet/v1
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
