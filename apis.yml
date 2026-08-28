@@ -12,6 +12,18 @@ description: >-
   Flynet is a layer-3 network built on Coinbase's Base chain. Backed by a16z,
   dcvc, and multicoin-capital.
 url: https://raw.githubusercontent.com/api-evangelist/blackbird/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
