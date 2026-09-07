@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Flynet App Rewards API
   version: '1.0'
@@ -226,6 +226,46 @@ components:
               type: string
               enum:
               - usd
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Money:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: 'Amount as a stringified integer in the smallest unit of
+
+            `currency`. For FLY, this is wei (18-decimal precision).
+
+            '
+          example: '1000000000000000000'
+        currency:
+          type: string
+          enum:
+          - FLY
     Reward:
       type: object
       required:
@@ -252,51 +292,13 @@ components:
         description:
           type: string
         metadata:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
         created_at:
           type: string
           format: date-time
-    Money:
-      type: object
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          description: 'Amount as a stringified integer in the smallest unit of
-
-            `currency`. For FLY, this is wei (18-decimal precision).
-
-            '
-          example: '1000000000000000000'
-        currency:
-          type: string
-          enum:
-          - FLY
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type: string
-              nullable: true
   securitySchemes:
     oauthBearer:
       type: http

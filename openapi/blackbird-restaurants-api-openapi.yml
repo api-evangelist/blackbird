@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Flynet App Restaurants API
   version: '1.0'
@@ -108,6 +108,30 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    RestaurantId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
   responses:
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
@@ -130,6 +154,59 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
     Location:
       type: object
       required:
@@ -153,8 +230,9 @@ components:
           enum:
           - location
         name:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         restaurant:
           $ref: '#/components/schemas/Restaurant'
         neighborhood:
@@ -166,10 +244,10 @@ components:
         coordinate:
           allOf:
           - $ref: '#/components/schemas/Coordinate'
-          nullable: true
         phone_number:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         time_zone:
           type: string
         payments_enabled:
@@ -179,57 +257,32 @@ components:
         reservations_enabled:
           type: boolean
         reservation_url:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         google_place_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-    Address:
+    RestaurantList:
       type: object
+      required:
+      - restaurants
+      - pagination
       properties:
-        street:
-          type: string
-        street2:
-          type: string
-          nullable: true
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
-    Neighborhood:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
-    Coordinate:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
+        restaurants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Restaurant'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Restaurant:
       type: object
       required:
@@ -256,83 +309,58 @@ components:
           items:
             type: string
         cohort:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         price:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         tags:
           type: array
           items:
             type: object
             additionalProperties: true
         asset:
-          type: object
-          nullable: true
+          type:
+          - object
+          - 'null'
           required:
           - preview_1x
           - web_2x
           - full_3x
           properties:
             preview_1x:
-              type: string
+              type:
+              - string
+              - 'null'
               format: uri
-              nullable: true
             web_2x:
-              type: string
+              type:
+              - string
+              - 'null'
               format: uri
-              nullable: true
             full_3x:
-              type: string
+              type:
+              - string
+              - 'null'
               format: uri
-              nullable: true
         website_url:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         instagram_url:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-    RestaurantList:
-      type: object
-      required:
-      - restaurants
-      - pagination
-      properties:
-        restaurants:
-          type: array
-          items:
-            $ref: '#/components/schemas/Restaurant'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type: string
-              nullable: true
     Pagination:
       type: object
       required:
@@ -349,10 +377,20 @@ components:
         current_page:
           type: integer
         next_page:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         page_size:
           type: integer
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
     LocationList:
       type: object
       required:
@@ -365,30 +403,6 @@ components:
             $ref: '#/components/schemas/Location'
         pagination:
           $ref: '#/components/schemas/Pagination'
-  parameters:
-    RestaurantId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
   securitySchemes:
     oauthBearer:
       type: http

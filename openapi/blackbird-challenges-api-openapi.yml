@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Flynet App Challenges API
   version: '1.0'
@@ -84,54 +84,7 @@ paths:
         '403':
           description: Key lacks the `read:restaurant_challenges` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
   schemas:
-    ChallengeList:
-      type: object
-      required:
-      - challenges
-      - pagination
-      properties:
-        challenges:
-          type: array
-          items:
-            $ref: '#/components/schemas/Challenge'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    ChallengeThreshold:
-      type: object
-      description: 'Completion thresholds. Which fields are populated depends on the challenge `type`.
-
-        '
-      properties:
-        spend_threshold:
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-          nullable: true
-        minimum_spend:
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-          nullable: true
-        dine_threshold:
-          type: integer
-          nullable: true
-        referral_threshold:
-          type: integer
-          nullable: true
     Challenge:
       type: object
       required:
@@ -165,20 +118,23 @@ components:
         description:
           type: string
         image:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         threshold:
           $ref: '#/components/schemas/ChallengeThreshold'
         fly_reward:
           $ref: '#/components/schemas/Amount'
         start_time:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         end_time:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         terms:
           type: array
           items:
@@ -193,26 +149,40 @@ components:
         updated_at:
           type: string
           format: date-time
-    Pagination:
+    ChallengeList:
       type: object
       required:
-      - total_count
-      - total_pages
-      - current_page
-      - next_page
-      - page_size
+      - challenges
+      - pagination
       properties:
-        total_count:
-          type: integer
-        total_pages:
-          type: integer
-        current_page:
-          type: integer
-        next_page:
-          type: integer
-          nullable: true
-        page_size:
-          type: integer
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Challenge'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
     Amount:
       type: object
       description: 'A monetary amount. `value` is a stringified integer in the smallest
@@ -236,27 +206,62 @@ components:
         currency:
           type: string
           example: FLY
-    Error:
+    ChallengeThreshold:
+      type: object
+      description: 'Completion thresholds. Which fields are populated depends on the challenge `type`.
+
+        '
+      properties:
+        spend_threshold:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        minimum_spend:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        dine_threshold:
+          type:
+          - integer
+          - 'null'
+        referral_threshold:
+          type:
+          - integer
+          - 'null'
+    Pagination:
       type: object
       required:
-      - error
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type: string
-              nullable: true
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type:
+          - integer
+          - 'null'
+        page_size:
+          type: integer
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   parameters:
     PageSize:
       name: page_size

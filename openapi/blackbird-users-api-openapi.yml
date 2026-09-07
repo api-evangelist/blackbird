@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Flynet App Users API
   version: '1.0'
@@ -299,140 +299,6 @@ paths:
           description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
 components:
   schemas:
-    User:
-      type: object
-      required:
-      - id
-      - object
-      - first_name
-      - last_name
-      - email
-      - account_status
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - user
-        first_name:
-          type: string
-        last_name:
-          type: string
-        email:
-          type: string
-          format: email
-        phone_number:
-          type: string
-          nullable: true
-        birthdate:
-          type: string
-          format: date
-          nullable: true
-          description: YYYY-MM-DD.
-        zipcode:
-          type: string
-          nullable: true
-        avatar:
-          type: string
-          format: uri
-          nullable: true
-          description: Profile image URL, or null.
-        account_status:
-          type: string
-          enum:
-          - ok
-          - suspended
-          - payment_disputed
-          - payment_failed
-          - unpaid_check
-          - negative_balance
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    Location:
-      type: object
-      required:
-      - id
-      - object
-      - restaurant
-      - neighborhood
-      - address
-      - time_zone
-      - payments_enabled
-      - is_club
-      - reservations_enabled
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - location
-        name:
-          type: string
-          nullable: true
-        restaurant:
-          $ref: '#/components/schemas/Restaurant'
-        neighborhood:
-          $ref: '#/components/schemas/Neighborhood'
-        slug:
-          type: string
-        address:
-          $ref: '#/components/schemas/Address'
-        coordinate:
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-          nullable: true
-        phone_number:
-          type: string
-          nullable: true
-        time_zone:
-          type: string
-        payments_enabled:
-          type: boolean
-        is_club:
-          type: boolean
-        reservations_enabled:
-          type: boolean
-        reservation_url:
-          type: string
-          format: uri
-          nullable: true
-        google_place_id:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    Address:
-      type: object
-      properties:
-        street:
-          type: string
-        street2:
-          type: string
-          nullable: true
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
     AccountBalance:
       type: object
       description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
@@ -487,6 +353,28 @@ components:
               type: string
               enum:
               - usd
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
     CheckInList:
       type: object
       required:
@@ -499,37 +387,6 @@ components:
             $ref: '#/components/schemas/CheckIn'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    Wallet:
-      type: object
-      required:
-      - id
-      - object
-      - wallet_type
-      - address
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - user_wallet
-        wallet_type:
-          type: string
-          enum:
-          - MEMBERSHIP
-          - SPENDING
-        address:
-          type: string
-          pattern: ^0x[a-fA-F0-9]{40}$
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     CheckIn:
       type: object
       required:
@@ -554,23 +411,47 @@ components:
           type: string
           format: date-time
         ended_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
-    Neighborhood:
+    Tag:
       type: object
+      required:
+      - object
+      - type
+      - metadata
+      - created_at
+      - updated_at
       properties:
-        id:
-          type: string
-          format: uuid
         object:
           type: string
           enum:
-          - neighborhood
-        name:
+          - user_tag
+        type:
           type: string
-        region:
+          enum:
+          - industry
+        metadata:
+          type: array
+          items:
+            type: object
+            required:
+            - key
+            - value
+            properties:
+              key:
+                type: string
+              value:
+                type: array
+                items:
+                  type: string
+        created_at:
           type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     Status:
       type: object
       required:
@@ -689,6 +570,193 @@ components:
         updated_at:
           type: string
           format: date-time
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
+    Wallet:
+      type: object
+      required:
+      - id
+      - object
+      - wallet_type
+      - address
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - user_wallet
+        wallet_type:
+          type: string
+          enum:
+          - MEMBERSHIP
+          - SPENDING
+        address:
+          type: string
+          pattern: ^0x[a-fA-F0-9]{40}$
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Location:
+      type: object
+      required:
+      - id
+      - object
+      - restaurant
+      - neighborhood
+      - address
+      - time_zone
+      - payments_enabled
+      - is_club
+      - reservations_enabled
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - location
+        name:
+          type:
+          - string
+          - 'null'
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        neighborhood:
+          $ref: '#/components/schemas/Neighborhood'
+        slug:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        coordinate:
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+        phone_number:
+          type:
+          - string
+          - 'null'
+        time_zone:
+          type: string
+        payments_enabled:
+          type: boolean
+        is_club:
+          type: boolean
+        reservations_enabled:
+          type: boolean
+        reservation_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        google_place_id:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    User:
+      type: object
+      required:
+      - id
+      - object
+      - first_name
+      - last_name
+      - email
+      - account_status
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - user
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone_number:
+          type:
+          - string
+          - 'null'
+        birthdate:
+          type:
+          - string
+          - 'null'
+          format: date
+          description: YYYY-MM-DD.
+        zipcode:
+          type:
+          - string
+          - 'null'
+        avatar:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: Profile image URL, or null.
+        account_status:
+          type: string
+          enum:
+          - ok
+          - suspended
+          - payment_disputed
+          - payment_failed
+          - unpaid_check
+          - negative_balance
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     Restaurant:
       type: object
       required:
@@ -715,59 +783,58 @@ components:
           items:
             type: string
         cohort:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         price:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         tags:
           type: array
           items:
             type: object
             additionalProperties: true
         asset:
-          type: object
-          nullable: true
+          type:
+          - object
+          - 'null'
           required:
           - preview_1x
           - web_2x
           - full_3x
           properties:
             preview_1x:
-              type: string
+              type:
+              - string
+              - 'null'
               format: uri
-              nullable: true
             web_2x:
-              type: string
+              type:
+              - string
+              - 'null'
               format: uri
-              nullable: true
             full_3x:
-              type: string
+              type:
+              - string
+              - 'null'
               format: uri
-              nullable: true
         website_url:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         instagram_url:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-    Coordinate:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
     Pagination:
       type: object
       required:
@@ -784,68 +851,20 @@ components:
         current_page:
           type: integer
         next_page:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         page_size:
           type: integer
-    Error:
+    Coordinate:
       type: object
-      required:
-      - error
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type: string
-              nullable: true
-    Tag:
-      type: object
-      required:
-      - object
-      - type
-      - metadata
-      - created_at
-      - updated_at
-      properties:
-        object:
-          type: string
-          enum:
-          - user_tag
-        type:
-          type: string
-          enum:
-          - industry
-        metadata:
-          type: array
-          items:
-            type: object
-            required:
-            - key
-            - value
-            properties:
-              key:
-                type: string
-              value:
-                type: array
-                items:
-                  type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
   parameters:
     PageSize:
       name: page_size

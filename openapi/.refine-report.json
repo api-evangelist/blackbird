@@ -27,6 +27,18 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "blackbird-app-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-challenges-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-check-ins-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-locations-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-memberships-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-payments-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-restaurants-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-rewards-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-specials-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-users-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
   "skipped": []
 }

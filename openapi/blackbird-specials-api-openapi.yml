@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Flynet App Specials API
   version: '1.0'
@@ -77,22 +77,101 @@ paths:
         '403':
           description: Key lacks the `read:restaurant_specials` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+  schemas:
+    Special:
+      type: object
+      required:
+      - id
+      - object
+      - label
+      - description
+      - emoji
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          example: special
+        restaurant_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        label:
+          type: string
+        description:
+          type: string
+        emoji:
+          type: string
+        image:
+          type:
+          - string
+          - 'null'
+        fly_reward:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        fly_reward_bips:
+          type:
+          - integer
+          - 'null'
+        check_in_threshold:
+          type:
+          - integer
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Amount:
+      type: object
+      description: 'A monetary amount. `value` is a stringified integer in the smallest
+
+        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
+
+        opaque — never parse it as a float. `currency` is the token or fiat
+
+        symbol; its casing is not guaranteed stable across endpoints, so
+
+        compare it case-insensitively.
 
         '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
-  schemas:
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          example: '1000000000000000000'
+        currency:
+          type: string
+          example: FLY
     SpecialList:
       type: object
       required:
@@ -121,100 +200,26 @@ components:
         current_page:
           type: integer
         next_page:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         page_size:
           type: integer
-    Amount:
-      type: object
-      description: 'A monetary amount. `value` is a stringified integer in the smallest
-
-        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
-
-        opaque — never parse it as a float. `currency` is the token or fiat
-
-        symbol; its casing is not guaranteed stable across endpoints, so
-
-        compare it case-insensitively.
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
 
         '
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          example: '1000000000000000000'
-        currency:
-          type: string
-          example: FLY
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type: string
-              nullable: true
-    Special:
-      type: object
-      required:
-      - id
-      - object
-      - label
-      - description
-      - emoji
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          example: special
-        restaurant_id:
-          type: string
-          format: uuid
-          nullable: true
-        label:
-          type: string
-        description:
-          type: string
-        emoji:
-          type: string
-        image:
-          type: string
-          nullable: true
-        fly_reward:
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-          nullable: true
-        fly_reward_bips:
-          type: integer
-          nullable: true
-        check_in_threshold:
-          type: integer
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   parameters:
     PageSize:
       name: page_size

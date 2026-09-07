@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Flynet App API
   version: '1.0'
@@ -86,21 +86,6 @@ paths:
         '403':
           description: Key lacks the `read:app` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
   schemas:
     App:
       type: object
@@ -138,6 +123,21 @@ components:
           format: date-time
         account:
           $ref: '#/components/schemas/AppAccount'
+    AppAccount:
+      type: object
+      required:
+      - id
+      - company_name
+      - contact_email
+      properties:
+        id:
+          type: string
+          format: uuid
+        company_name:
+          type: string
+        contact_email:
+          type: string
+          format: email
     Error:
       type: object
       required:
@@ -157,23 +157,24 @@ components:
             message:
               type: string
             param:
-              type: string
-              nullable: true
-    AppAccount:
-      type: object
-      required:
-      - id
-      - company_name
-      - contact_email
-      properties:
-        id:
-          type: string
-          format: uuid
-        company_name:
-          type: string
-        contact_email:
-          type: string
-          format: email
+              type:
+              - string
+              - 'null'
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   securitySchemes:
     oauthBearer:
       type: http

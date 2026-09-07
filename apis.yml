@@ -184,6 +184,14 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: TermsOfService
+  url: https://www.blackbird.xyz/terms
+- type: PrivacyPolicy
+  url: https://www.blackbird.xyz/privacy
+- type: About
+  url: https://www.blackbird.xyz/about
+- type: HelpCenter
+  url: https://www.blackbird.xyz/partnerhelp
 - type: Overlay
   url: overlays/blackbird-flynet-overlay.yaml
 - type: Website
