@@ -98,6 +98,8 @@ apis:
   humanURL: https://docs.flynet.org
   baseURL: https://api.blackbird.xyz/flynet/v1
   tags:
+  - Check-in
+  tags_raw:
   - Check-ins
   properties:
   - type: OpenAPI
@@ -108,6 +110,8 @@ apis:
   humanURL: https://docs.flynet.org
   baseURL: https://api.blackbird.xyz/flynet/v1
   tags:
+  - Location
+  tags_raw:
   - Locations
   properties:
   - type: OpenAPI
@@ -118,6 +122,8 @@ apis:
   humanURL: https://docs.flynet.org
   baseURL: https://api.blackbird.xyz/flynet/v1
   tags:
+  - Membership
+  tags_raw:
   - Memberships
   properties:
   - type: OpenAPI
