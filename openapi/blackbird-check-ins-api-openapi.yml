@@ -1,49 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Flynet App Check Ins API
+  title: Flynet Check Ins API
   version: '1.0'
-  description: 'Flynet''s partner API. Read access to member context, restaurants,
-
-    locations, check-ins, and memberships; write access for payment
-
-    intents.
-
-
-    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
-
-
-    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
-
-    member-scoped routes, API key (`X-API-Key`) for restaurant and
-
-    location discovery. See Concepts → Authentication.
-
-
-    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
-
-    default `50`. List responses include a `pagination` wrapper except
-
-    `GET /locations/{id}/open_hours`.
-
-
-    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
-
-    are documented there.
-
-    '
+  description: Flynet's partner API.
 servers:
 - url: https://api.staging.blackbird.xyz/flynet/v1
   description: Staging
 security:
 - oauthBearer: []
 tags:
-- name: Check-ins
+- name: Check Ins
   description: Filtered visit records.
 paths:
   /check_ins:
     get:
       tags:
-      - Check-ins
+      - Check Ins
       summary: List check-ins
       operationId: listCheckIns
       description: 'Returns paginated check-ins for a restaurant or location — an
@@ -72,9 +44,7 @@ paths:
 
         no member token needed. (A member''s own history at
 
-        `GET /users/me/check_ins` uses their OAuth token instead.)
-
-        '
+        `GET /users/me/check_ins` uses their OAuth token instead.)'
       security:
       - apiKey: []
       parameters:
@@ -132,7 +102,7 @@ paths:
   /check_ins/{id}:
     get:
       tags:
-      - Check-ins
+      - Check Ins
       summary: Get a check-in
       operationId: getCheckIn
       description: 'Single check-in by UUID. Responses carry no member identity.
@@ -140,9 +110,7 @@ paths:
 
         Auth: API key in `X-API-Key`, minted with the `read:checkins`
 
-        scope — the same credential as the `/check_ins` venue feed.
-
-        '
+        scope — the same credential as the `/check_ins` venue feed.'
       security:
       - apiKey: []
       parameters:
@@ -161,95 +129,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
-    Address:
-      type: object
-      properties:
-        street:
-          type: string
-        street2:
-          type:
-          - string
-          - 'null'
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
-    CheckIn:
-      type: object
-      required:
-      - id
-      - object
-      - location
-      - blackbird_pay_enabled
-      - created_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - check_in
-        location:
-          $ref: '#/components/schemas/Location'
-        blackbird_pay_enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        ended_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
     CheckInList:
       type: object
       required:
@@ -262,20 +142,6 @@ components:
             $ref: '#/components/schemas/CheckIn'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    Neighborhood:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
     Location:
       type: object
       required:
@@ -339,6 +205,73 @@ components:
           format: date-time
         updated_at:
           type: string
+          format: date-time
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    CheckIn:
+      type: object
+      required:
+      - id
+      - object
+      - location
+      - blackbird_pay_enabled
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - check_in
+        location:
+          $ref: '#/components/schemas/Location'
+        blackbird_pay_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        ended_at:
+          type:
+          - string
+          - 'null'
           format: date-time
     Restaurant:
       type: object
@@ -448,14 +381,21 @@ components:
         longitude:
           type: number
           format: double
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
   parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
     CheckInId:
       name: id
       in: path
@@ -464,6 +404,13 @@ components:
         type: string
         format: uuid
       example: '{uuid}'
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
     Page:
       name: page
       in: query
@@ -472,6 +419,27 @@ components:
         default: 0
         minimum: 0
       description: Zero-indexed page number.
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   securitySchemes:
     oauthBearer:
       type: http

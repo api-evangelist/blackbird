@@ -1,36 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Flynet App Restaurants API
+  title: Flynet Restaurants API
   version: '1.0'
-  description: 'Flynet''s partner API. Read access to member context, restaurants,
-
-    locations, check-ins, and memberships; write access for payment
-
-    intents.
-
-
-    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
-
-
-    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
-
-    member-scoped routes, API key (`X-API-Key`) for restaurant and
-
-    location discovery. See Concepts → Authentication.
-
-
-    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
-
-    default `50`. List responses include a `pagination` wrapper except
-
-    `GET /locations/{id}/open_hours`.
-
-
-    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
-
-    are documented there.
-
-    '
+  description: Flynet's partner API.
 servers:
 - url: https://api.staging.blackbird.xyz/flynet/v1
   description: Staging
@@ -132,81 +104,31 @@ components:
         default: 0
         minimum: 0
       description: Zero-indexed page number.
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
+    LocationList:
       type: object
       required:
-      - error
+      - locations
+      - pagination
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
-    Address:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    RestaurantList:
       type: object
+      required:
+      - restaurants
+      - pagination
       properties:
-        street:
-          type: string
-        street2:
-          type:
-          - string
-          - 'null'
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
-    Neighborhood:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
+        restaurants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Restaurant'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Location:
       type: object
       required:
@@ -271,18 +193,45 @@ components:
         updated_at:
           type: string
           format: date-time
-    RestaurantList:
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+    Error:
       type: object
       required:
-      - restaurants
-      - pagination
+      - error
       properties:
-        restaurants:
-          type: array
-          items:
-            $ref: '#/components/schemas/Restaurant'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
     Restaurant:
       type: object
       required:
@@ -391,18 +340,41 @@ components:
         longitude:
           type: number
           format: double
-    LocationList:
+    Neighborhood:
       type: object
-      required:
-      - locations
-      - pagination
       properties:
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Location'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   securitySchemes:
     oauthBearer:
       type: http

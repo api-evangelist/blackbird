@@ -1,16 +1,7 @@
 {
   "provider": "blackbird",
   "sources": [
-    "blackbird-app-api-openapi.yml",
-    "blackbird-challenges-api-openapi.yml",
-    "blackbird-check-ins-api-openapi.yml",
-    "blackbird-locations-api-openapi.yml",
-    "blackbird-memberships-api-openapi.yml",
-    "blackbird-payments-api-openapi.yml",
-    "blackbird-restaurants-api-openapi.yml",
-    "blackbird-rewards-api-openapi.yml",
-    "blackbird-specials-api-openapi.yml",
-    "blackbird-users-api-openapi.yml"
+    "_original/blackbird-flynet-openapi-original.yml"
   ],
   "outputs": [
     "blackbird-app-api-openapi.yml",
@@ -28,17 +19,24 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "blackbird-app-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-challenges-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-check-ins-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-locations-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-memberships-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-payments-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-restaurants-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-rewards-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-specials-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "blackbird-users-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "blackbird-flynet-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "blackbird-flynet-openapi-original.yml: declared missing tag: App",
+    "blackbird-flynet-openapi-original.yml: declared missing tag: Challenges",
+    "blackbird-flynet-openapi-original.yml: declared missing tag: Rewards",
+    "blackbird-flynet-openapi-original.yml: declared missing tag: Specials",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "blackbird-app-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-challenges-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-check-ins-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-locations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-memberships-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-payments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-restaurants-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-rewards-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-specials-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "blackbird-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

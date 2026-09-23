@@ -2,35 +2,7 @@ openapi: 3.2.0
 info:
   title: Flynet App API
   version: '1.0'
-  description: 'Flynet''s partner API. Read access to member context, restaurants,
-
-    locations, check-ins, and memberships; write access for payment
-
-    intents.
-
-
-    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
-
-
-    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
-
-    member-scoped routes, API key (`X-API-Key`) for restaurant and
-
-    location discovery. See Concepts → Authentication.
-
-
-    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
-
-    default `50`. List responses include a `pagination` wrapper except
-
-    `GET /locations/{id}/open_hours`.
-
-
-    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
-
-    are documented there.
-
-    '
+  description: Flynet's partner API.
 servers:
 - url: https://api.staging.blackbird.xyz/flynet/v1
   description: Staging
@@ -53,9 +25,7 @@ paths:
 
         payment-intent creation without waiting on the onboarding email.
 
-        Requires the `read:app` scope; API-key auth only.
-
-        '
+        Requires the `read:app` scope; API-key auth only.'
       security:
       - apiKey: []
       responses:
@@ -87,42 +57,6 @@ paths:
           description: Key lacks the `read:app` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
   schemas:
-    App:
-      type: object
-      required:
-      - id
-      - object
-      - name
-      - flynet_merchant_id
-      - allowed_scopes
-      - active
-      - created_at
-      - account
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The app's client ID.
-        object:
-          type: string
-          enum:
-          - app
-        name:
-          type: string
-        flynet_merchant_id:
-          type: string
-          format: uuid
-        allowed_scopes:
-          type: array
-          items:
-            type: string
-        active:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        account:
-          $ref: '#/components/schemas/AppAccount'
     AppAccount:
       type: object
       required:
@@ -160,6 +94,42 @@ components:
               type:
               - string
               - 'null'
+    App:
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - flynet_merchant_id
+      - allowed_scopes
+      - active
+      - created_at
+      - account
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The app's client ID.
+        object:
+          type: string
+          enum:
+          - app
+        name:
+          type: string
+        flynet_merchant_id:
+          type: string
+          format: uuid
+        allowed_scopes:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        account:
+          $ref: '#/components/schemas/AppAccount'
   responses:
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.

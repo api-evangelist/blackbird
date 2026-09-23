@@ -1,36 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Flynet App Rewards API
+  title: Flynet Rewards API
   version: '1.0'
-  description: 'Flynet''s partner API. Read access to member context, restaurants,
-
-    locations, check-ins, and memberships; write access for payment
-
-    intents.
-
-
-    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
-
-
-    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
-
-    member-scoped routes, API key (`X-API-Key`) for restaurant and
-
-    location discovery. See Concepts → Authentication.
-
-
-    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
-
-    default `50`. List responses include a `pagination` wrapper except
-
-    `GET /locations/{id}/open_hours`.
-
-
-    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
-
-    are documented there.
-
-    '
+  description: Flynet's partner API.
 servers:
 - url: https://api.staging.blackbird.xyz/flynet/v1
   description: Staging
@@ -53,9 +25,7 @@ paths:
 
         instead of issuing a second one. API-key auth only; requires the
 
-        `write:rewards` scope and enough FLY in your app''s wallet.
-
-        '
+        `write:rewards` scope and enough FLY in your app''s wallet.'
       security:
       - apiKey: []
       requestBody:
@@ -122,9 +92,7 @@ paths:
 
         `POST /issue_reward` draws from — alongside its USD equivalent.
 
-        API-key auth only; requires the `read:balance` scope.
-
-        '
+        API-key auth only; requires the `read:balance` scope.'
       security:
       - apiKey: []
       responses:
@@ -150,28 +118,40 @@ paths:
         '403':
           description: Key lacks the `read:balance` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
-    BadRequest:
-      description: Invalid request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Reward:
+      type: object
+      required:
+      - id
+      - object
+      - user_id
+      - amount
+      - description
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The reward id (the underlying payment-intent id).
+        object:
+          type: string
+          enum:
+          - reward
+        user_id:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/Money'
+        description:
+          type: string
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
     AccountBalance:
       type: object
       description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
@@ -266,39 +246,27 @@ components:
           type: string
           enum:
           - FLY
-    Reward:
-      type: object
-      required:
-      - id
-      - object
-      - user_id
-      - amount
-      - description
-      - created_at
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The reward id (the underlying payment-intent id).
-        object:
-          type: string
-          enum:
-          - reward
-        user_id:
-          type: string
-          format: uuid
-        amount:
-          $ref: '#/components/schemas/Money'
-        description:
-          type: string
-        metadata:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-        created_at:
-          type: string
-          format: date-time
+  responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   securitySchemes:
     oauthBearer:
       type: http

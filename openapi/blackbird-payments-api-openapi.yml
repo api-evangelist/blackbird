@@ -1,36 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Flynet App Payments API
+  title: Flynet Payments API
   version: '1.0'
-  description: 'Flynet''s partner API. Read access to member context, restaurants,
-
-    locations, check-ins, and memberships; write access for payment
-
-    intents.
-
-
-    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
-
-
-    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
-
-    member-scoped routes, API key (`X-API-Key`) for restaurant and
-
-    location discovery. See Concepts → Authentication.
-
-
-    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
-
-    default `50`. List responses include a `pagination` wrapper except
-
-    `GET /locations/{id}/open_hours`.
-
-
-    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
-
-    are documented there.
-
-    '
+  description: Flynet's partner API.
 servers:
 - url: https://api.staging.blackbird.xyz/flynet/v1
   description: Staging
@@ -52,9 +24,7 @@ paths:
 
         it to credit your own app''s merchant, or pass one to route the
 
-        payment to a specific merchant.
-
-        '
+        payment to a specific merchant.'
       security:
       - oauthBearer: []
       requestBody:
@@ -176,9 +146,7 @@ paths:
 
         200 with the same intent. Rejects with 400 if the intent has already
 
-        been paid or refunded.
-
-        '
+        been paid or refunded.'
       security:
       - oauthBearer: []
       parameters:
@@ -202,9 +170,7 @@ paths:
       operationId: confirmPaymentIntent
       description: 'Transfers FLY from the customer''s wallet to the merchant. Customer
 
-        must already hold enough FLY — v1 does not card-fund or auto-load.
-
-        '
+        must already hold enough FLY — v1 does not card-fund or auto-load.'
       security:
       - oauthBearer: []
       parameters:
@@ -247,9 +213,7 @@ paths:
       operationId: refundPaymentIntent
       description: 'Reverses the FLY transfer. Full refund only in v1; partial refunds
 
-        are not supported.
-
-        '
+        are not supported.'
       security:
       - oauthBearer: []
       parameters:
@@ -267,40 +231,6 @@ paths:
           description: Missing or invalid token. Empty body.
 components:
   schemas:
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
-    PaymentIntentList:
-      type: object
-      required:
-      - payment_intents
-      - pagination
-      properties:
-        payment_intents:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaymentIntent'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     PaymentIntent:
       type: object
       required:
@@ -370,6 +300,40 @@ components:
         updated_at:
           type: string
           format: date-time
+    PaymentIntentList:
+      type: object
+      required:
+      - payment_intents
+      - pagination
+      properties:
+        payment_intents:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentIntent'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
     Money:
       type: object
       required:
@@ -410,13 +374,6 @@ components:
         page_size:
           type: integer
   parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
     PaymentIntentId:
       name: id
       in: path
@@ -425,6 +382,13 @@ components:
         type: string
         format: uuid
       example: '{uuid}'
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
     Page:
       name: page
       in: query

@@ -1,36 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Flynet App Memberships API
+  title: Flynet Memberships API
   version: '1.0'
-  description: 'Flynet''s partner API. Read access to member context, restaurants,
-
-    locations, check-ins, and memberships; write access for payment
-
-    intents.
-
-
-    **Base URL:** staging `https://api.staging.blackbird.xyz/flynet/v1`.
-
-
-    **Auth:** Two schemes — OAuth bearer (`Authorization: Bearer ...`) for
-
-    member-scoped routes, API key (`X-API-Key`) for restaurant and
-
-    location discovery. See Concepts → Authentication.
-
-
-    **Pagination:** `page` is zero-indexed (default `0`); `page_size`
-
-    default `50`. List responses include a `pagination` wrapper except
-
-    `GET /locations/{id}/open_hours`.
-
-
-    **Errors:** see Concepts → Pagination + errors. Three envelope shapes
-
-    are documented there.
-
-    '
+  description: Flynet's partner API.
 servers:
 - url: https://api.staging.blackbird.xyz/flynet/v1
   description: Staging
@@ -70,9 +42,7 @@ paths:
 
         `sort` and related parameters are silently ignored, so sort
 
-        client-side.
-
-        '
+        client-side.'
       security:
       - oauthBearer: []
       parameters:
@@ -126,19 +96,23 @@ paths:
         '403':
           description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
 components:
+  parameters:
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
   schemas:
-    MembershipList:
-      type: object
-      required:
-      - memberships
-      - pagination
-      properties:
-        memberships:
-          type: array
-          items:
-            $ref: '#/components/schemas/Membership'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     Membership:
       type: object
       required:
@@ -209,6 +183,18 @@ components:
                   - string
                   - 'null'
                   format: uri
+    MembershipList:
+      type: object
+      required:
+      - memberships
+      - pagination
+      properties:
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/Membership'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Pagination:
       type: object
       required:
@@ -230,22 +216,6 @@ components:
           - 'null'
         page_size:
           type: integer
-  parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
   securitySchemes:
     oauthBearer:
       type: http
