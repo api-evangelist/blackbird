@@ -97,13 +97,6 @@ paths:
           description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
 components:
   parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
     Page:
       name: page
       in: query
@@ -112,6 +105,13 @@ components:
         default: 0
         minimum: 0
       description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   schemas:
     Membership:
       type: object

@@ -261,18 +261,6 @@ paths:
           description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
 components:
   schemas:
-    CheckInList:
-      type: object
-      required:
-      - check_ins
-      - pagination
-      properties:
-        check_ins:
-          type: array
-          items:
-            $ref: '#/components/schemas/CheckIn'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     User:
       type: object
       required:
@@ -334,66 +322,8 @@ components:
         updated_at:
           type: string
           format: date-time
-    Coordinate:
+    Neighborhood:
       type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-    Tag:
-      type: object
-      required:
-      - object
-      - type
-      - metadata
-      - created_at
-      - updated_at
-      properties:
-        object:
-          type: string
-          enum:
-          - user_tag
-        type:
-          type: string
-          enum:
-          - industry
-        metadata:
-          type: array
-          items:
-            type: object
-            required:
-            - key
-            - value
-            properties:
-              key:
-                type: string
-              value:
-                type: array
-                items:
-                  type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    Location:
-      type: object
-      required:
-      - id
-      - object
-      - restaurant
-      - neighborhood
-      - address
-      - time_zone
-      - payments_enabled
-      - is_club
-      - reservations_enabled
-      - created_at
-      - updated_at
       properties:
         id:
           type: string
@@ -401,49 +331,11 @@ components:
         object:
           type: string
           enum:
-          - location
+          - neighborhood
         name:
-          type:
-          - string
-          - 'null'
-        restaurant:
-          $ref: '#/components/schemas/Restaurant'
-        neighborhood:
-          $ref: '#/components/schemas/Neighborhood'
-        slug:
           type: string
-        address:
-          $ref: '#/components/schemas/Address'
-        coordinate:
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-        phone_number:
-          type:
-          - string
-          - 'null'
-        time_zone:
+        region:
           type: string
-        payments_enabled:
-          type: boolean
-        is_club:
-          type: boolean
-        reservations_enabled:
-          type: boolean
-        reservation_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        google_place_id:
-          type:
-          - string
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     AccountBalance:
       type: object
       description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
@@ -498,203 +390,6 @@ components:
               type: string
               enum:
               - usd
-    Address:
-      type: object
-      properties:
-        street:
-          type: string
-        street2:
-          type:
-          - string
-          - 'null'
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
-    CheckIn:
-      type: object
-      required:
-      - id
-      - object
-      - location
-      - blackbird_pay_enabled
-      - created_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - check_in
-        location:
-          $ref: '#/components/schemas/Location'
-        blackbird_pay_enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        ended_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    Restaurant:
-      type: object
-      required:
-      - id
-      - object
-      - name
-      - cuisine
-      - cohort
-      - tags
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - restaurant
-        name:
-          type: string
-        cuisine:
-          type: array
-          items:
-            type: string
-        cohort:
-          type:
-          - string
-          - 'null'
-        price:
-          type:
-          - integer
-          - 'null'
-        tags:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        asset:
-          type:
-          - object
-          - 'null'
-          required:
-          - preview_1x
-          - web_2x
-          - full_3x
-          properties:
-            preview_1x:
-              type:
-              - string
-              - 'null'
-              format: uri
-            web_2x:
-              type:
-              - string
-              - 'null'
-              format: uri
-            full_3x:
-              type:
-              - string
-              - 'null'
-              format: uri
-        website_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        instagram_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    Pagination:
-      type: object
-      required:
-      - total_count
-      - total_pages
-      - current_page
-      - next_page
-      - page_size
-      properties:
-        total_count:
-          type: integer
-        total_pages:
-          type: integer
-        current_page:
-          type: integer
-        next_page:
-          type:
-          - integer
-          - 'null'
-        page_size:
-          type: integer
-    Wallet:
-      type: object
-      required:
-      - id
-      - object
-      - wallet_type
-      - address
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - user_wallet
-        wallet_type:
-          type: string
-          enum:
-          - MEMBERSHIP
-          - SPENDING
-        address:
-          type: string
-          pattern: ^0x[a-fA-F0-9]{40}$
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     Status:
       type: object
       required:
@@ -813,8 +508,20 @@ components:
         updated_at:
           type: string
           format: date-time
-    Neighborhood:
+    Location:
       type: object
+      required:
+      - id
+      - object
+      - restaurant
+      - neighborhood
+      - address
+      - time_zone
+      - payments_enabled
+      - is_club
+      - reservations_enabled
+      - created_at
+      - updated_at
       properties:
         id:
           type: string
@@ -822,19 +529,305 @@ components:
         object:
           type: string
           enum:
-          - neighborhood
+          - location
+        name:
+          type:
+          - string
+          - 'null'
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        neighborhood:
+          $ref: '#/components/schemas/Neighborhood'
+        slug:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        coordinate:
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+        phone_number:
+          type:
+          - string
+          - 'null'
+        time_zone:
+          type: string
+        payments_enabled:
+          type: boolean
+        is_club:
+          type: boolean
+        reservations_enabled:
+          type: boolean
+        reservation_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        google_place_id:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    CheckIn:
+      type: object
+      required:
+      - id
+      - object
+      - location
+      - blackbird_pay_enabled
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - check_in
+        location:
+          $ref: '#/components/schemas/Location'
+        blackbird_pay_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        ended_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    Restaurant:
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - cuisine
+      - cohort
+      - tags
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - restaurant
         name:
           type: string
-        region:
+        cuisine:
+          type: array
+          items:
+            type: string
+        cohort:
+          type:
+          - string
+          - 'null'
+        price:
+          type:
+          - integer
+          - 'null'
+        tags:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        asset:
+          type:
+          - object
+          - 'null'
+          required:
+          - preview_1x
+          - web_2x
+          - full_3x
+          properties:
+            preview_1x:
+              type:
+              - string
+              - 'null'
+              format: uri
+            web_2x:
+              type:
+              - string
+              - 'null'
+              format: uri
+            full_3x:
+              type:
+              - string
+              - 'null'
+              format: uri
+        website_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        instagram_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Wallet:
+      type: object
+      required:
+      - id
+      - object
+      - wallet_type
+      - address
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - user_wallet
+        wallet_type:
+          type: string
+          enum:
+          - MEMBERSHIP
+          - SPENDING
+        address:
+          type: string
+          pattern: ^0x[a-fA-F0-9]{40}$
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type:
+          - integer
+          - 'null'
+        page_size:
+          type: integer
+    Tag:
+      type: object
+      required:
+      - object
+      - type
+      - metadata
+      - created_at
+      - updated_at
+      properties:
+        object:
+          type: string
+          enum:
+          - user_tag
+        type:
+          type: string
+          enum:
+          - industry
+        metadata:
+          type: array
+          items:
+            type: object
+            required:
+            - key
+            - value
+            properties:
+              key:
+                type: string
+              value:
+                type: array
+                items:
+                  type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CheckInList:
+      type: object
+      required:
+      - check_ins
+      - pagination
+      properties:
+        check_ins:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckIn'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
           type: string
   parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
     Page:
       name: page
       in: query
@@ -843,6 +836,13 @@ components:
         default: 0
         minimum: 0
       description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   securitySchemes:
     oauthBearer:
       type: http

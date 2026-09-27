@@ -54,6 +54,22 @@ paths:
         '403':
           description: Key lacks the `read:restaurant_challenges` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   schemas:
     Amount:
       type: object
@@ -78,18 +94,6 @@ components:
         currency:
           type: string
           example: FLY
-    ChallengeList:
-      type: object
-      required:
-      - challenges
-      - pagination
-      properties:
-        challenges:
-          type: array
-          items:
-            $ref: '#/components/schemas/Challenge'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     Challenge:
       type: object
       required:
@@ -197,6 +201,18 @@ components:
           - 'null'
         page_size:
           type: integer
+    ChallengeList:
+      type: object
+      required:
+      - challenges
+      - pagination
+      properties:
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Challenge'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     ChallengeThreshold:
       type: object
       description: 'Completion thresholds. Which fields are populated depends on the challenge `type`.
@@ -217,22 +233,6 @@ components:
           type:
           - integer
           - 'null'
-  parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
   responses:
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
