@@ -56,44 +56,22 @@ paths:
         '403':
           description: Key lacks the `read:app` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
   schemas:
-    Error:
+    AppAccount:
       type: object
       required:
-      - error
+      - id
+      - company_name
+      - contact_email
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
+        id:
+          type: string
+          format: uuid
+        company_name:
+          type: string
+        contact_email:
+          type: string
+          format: email
     App:
       type: object
       required:
@@ -130,21 +108,43 @@ components:
           format: date-time
         account:
           $ref: '#/components/schemas/AppAccount'
-    AppAccount:
+    Error:
       type: object
       required:
-      - id
-      - company_name
-      - contact_email
+      - error
       properties:
-        id:
-          type: string
-          format: uuid
-        company_name:
-          type: string
-        contact_email:
-          type: string
-          format: email
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   securitySchemes:
     oauthBearer:
       type: http

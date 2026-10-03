@@ -81,14 +81,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
     PageSize:
       name: page_size
       in: query
@@ -104,45 +96,46 @@ components:
         type: string
         format: uuid
       example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
   schemas:
-    LocationList:
+    Error:
       type: object
       required:
-      - locations
-      - pagination
+      - error
       properties:
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Location'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Neighborhood:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Coordinate:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
-    RestaurantList:
-      type: object
-      required:
-      - restaurants
-      - pagination
-      properties:
-        restaurants:
-          type: array
-          items:
-            $ref: '#/components/schemas/Restaurant'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
     Location:
       type: object
       required:
@@ -207,15 +200,35 @@ components:
         updated_at:
           type: string
           format: date-time
-    Coordinate:
+    LocationList:
+      type: object
+      required:
+      - locations
+      - pagination
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Address:
       type: object
       properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
+        street:
+          type: string
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
     Restaurant:
       type: object
       required:
@@ -294,28 +307,20 @@ components:
         updated_at:
           type: string
           format: date-time
-    Error:
+    Neighborhood:
       type: object
-      required:
-      - error
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
     Pagination:
       type: object
       required:
@@ -337,24 +342,25 @@ components:
           - 'null'
         page_size:
           type: integer
-    Address:
+    RestaurantList:
       type: object
+      required:
+      - restaurants
+      - pagination
       properties:
-        street:
-          type: string
-        street2:
-          type:
-          - string
-          - 'null'
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
+        restaurants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Restaurant'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
   responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
 
@@ -369,12 +375,6 @@ components:
               code: invalid_api_key
               message: Invalid or revoked API key.
               param: null
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauthBearer:
       type: http

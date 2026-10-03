@@ -231,14 +231,13 @@ paths:
           description: Missing or invalid token. Empty body.
 components:
   parameters:
-    Page:
-      name: page
+    PageSize:
+      name: page_size
       in: query
       schema:
         type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
+        default: 50
+      description: Items per page. Default `50`.
     PaymentIntentId:
       name: id
       in: path
@@ -247,44 +246,15 @@ components:
         type: string
         format: uuid
       example: '{uuid}'
-    PageSize:
-      name: page_size
+    Page:
+      name: page
       in: query
       schema:
         type: integer
-        default: 50
-      description: Items per page. Default `50`.
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
   schemas:
-    Money:
-      type: object
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          description: 'Amount as a stringified integer in the smallest unit of
-
-            `currency`. For FLY, this is wei (18-decimal precision).
-
-            '
-          example: '1000000000000000000'
-        currency:
-          type: string
-          enum:
-          - FLY
-    PaymentIntentList:
-      type: object
-      required:
-      - payment_intents
-      - pagination
-      properties:
-        payment_intents:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaymentIntent'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     PaymentIntent:
       type: object
       required:
@@ -376,6 +346,36 @@ components:
               type:
               - string
               - 'null'
+    PaymentIntentList:
+      type: object
+      required:
+      - payment_intents
+      - pagination
+      properties:
+        payment_intents:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentIntent'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Money:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: 'Amount as a stringified integer in the smallest unit of
+
+            `currency`. For FLY, this is wei (18-decimal precision).
+
+            '
+          example: '1000000000000000000'
+        currency:
+          type: string
+          enum:
+          - FLY
     Pagination:
       type: object
       required:
@@ -398,14 +398,14 @@ components:
         page_size:
           type: integer
   responses:
-    BadRequest:
-      description: Invalid request.
+    NotFound:
+      description: The requested resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
+    BadRequest:
+      description: Invalid request.
       content:
         application/json:
           schema:

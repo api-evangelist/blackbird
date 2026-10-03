@@ -130,14 +130,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
     PageSize:
       name: page_size
       in: query
@@ -153,21 +145,46 @@ components:
         type: string
         format: uuid
       example: '{uuid}'
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
   schemas:
-    Neighborhood:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Coordinate:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
     Location:
       type: object
       required:
@@ -232,43 +249,23 @@ components:
         updated_at:
           type: string
           format: date-time
-    Coordinate:
+    Address:
       type: object
       properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-    CheckIn:
-      type: object
-      required:
-      - id
-      - object
-      - location
-      - blackbird_pay_enabled
-      - created_at
-      properties:
-        id:
+        street:
           type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - check_in
-        location:
-          $ref: '#/components/schemas/Location'
-        blackbird_pay_enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        ended_at:
+        street2:
           type:
           - string
           - 'null'
-          format: date-time
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
     Restaurant:
       type: object
       required:
@@ -347,28 +344,60 @@ components:
         updated_at:
           type: string
           format: date-time
-    Error:
+    CheckIn:
       type: object
       required:
-      - error
+      - id
+      - object
+      - location
+      - blackbird_pay_enabled
+      - created_at
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - check_in
+        location:
+          $ref: '#/components/schemas/Location'
+        blackbird_pay_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        ended_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
+    CheckInList:
+      type: object
+      required:
+      - check_ins
+      - pagination
+      properties:
+        check_ins:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckIn'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Pagination:
       type: object
       required:
@@ -390,35 +419,6 @@ components:
           - 'null'
         page_size:
           type: integer
-    CheckInList:
-      type: object
-      required:
-      - check_ins
-      - pagination
-      properties:
-        check_ins:
-          type: array
-          items:
-            $ref: '#/components/schemas/CheckIn'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Address:
-      type: object
-      properties:
-        street:
-          type: string
-        street2:
-          type:
-          - string
-          - 'null'
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
   responses:
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.

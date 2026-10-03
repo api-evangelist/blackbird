@@ -47,22 +47,6 @@ paths:
         '403':
           description: Key lacks the `read:restaurant_specials` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
-  parameters:
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
   schemas:
     Amount:
       type: object
@@ -87,6 +71,28 @@ components:
         currency:
           type: string
           example: FLY
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
     Special:
       type: object
       required:
@@ -148,28 +154,6 @@ components:
             $ref: '#/components/schemas/Special'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
     Pagination:
       type: object
       required:
@@ -206,6 +190,22 @@ components:
               code: invalid_api_key
               message: Invalid or revoked API key.
               param: null
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   securitySchemes:
     oauthBearer:
       type: http

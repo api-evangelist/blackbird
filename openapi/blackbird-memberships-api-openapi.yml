@@ -113,6 +113,39 @@ components:
         default: 50
       description: Items per page. Default `50`.
   schemas:
+    MembershipList:
+      type: object
+      required:
+      - memberships
+      - pagination
+      properties:
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/Membership'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type:
+          - integer
+          - 'null'
+        page_size:
+          type: integer
     Membership:
       type: object
       required:
@@ -183,39 +216,6 @@ components:
                   - string
                   - 'null'
                   format: uri
-    MembershipList:
-      type: object
-      required:
-      - memberships
-      - pagination
-      properties:
-        memberships:
-          type: array
-          items:
-            $ref: '#/components/schemas/Membership'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Pagination:
-      type: object
-      required:
-      - total_count
-      - total_pages
-      - current_page
-      - next_page
-      - page_size
-      properties:
-        total_count:
-          type: integer
-        total_pages:
-          type: integer
-        current_page:
-          type: integer
-        next_page:
-          type:
-          - integer
-          - 'null'
-        page_size:
-          type: integer
   securitySchemes:
     oauthBearer:
       type: http

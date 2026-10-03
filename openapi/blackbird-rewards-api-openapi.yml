@@ -119,6 +119,61 @@ paths:
           description: Key lacks the `read:balance` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
   schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Reward:
+      type: object
+      required:
+      - id
+      - object
+      - user_id
+      - amount
+      - description
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The reward id (the underlying payment-intent id).
+        object:
+          type: string
+          enum:
+          - reward
+        user_id:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/Money'
+        description:
+          type: string
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
     AccountBalance:
       type: object
       description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
@@ -191,62 +246,13 @@ components:
           type: string
           enum:
           - FLY
-    Reward:
-      type: object
-      required:
-      - id
-      - object
-      - user_id
-      - amount
-      - description
-      - created_at
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The reward id (the underlying payment-intent id).
-        object:
-          type: string
-          enum:
-          - reward
-        user_id:
-          type: string
-          format: uuid
-        amount:
-          $ref: '#/components/schemas/Money'
-        description:
-          type: string
-        metadata:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-        created_at:
-          type: string
-          format: date-time
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
   responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
 
@@ -261,12 +267,6 @@ components:
               code: invalid_api_key
               message: Invalid or revoked API key.
               param: null
-    BadRequest:
-      description: Invalid request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauthBearer:
       type: http
