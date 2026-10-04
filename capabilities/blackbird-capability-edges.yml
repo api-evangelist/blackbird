@@ -1,0 +1,34 @@
+slug: blackbird
+provider: Blackbird
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Rewards
+  spec_file: blackbird-rewards-api-openapi.yml
+  capability_id: BC-420.40
+  capability_id_l1: BC-420
+  capability_name: Loyalty & Retention Management
+  confidence: 0.72
+  evidence: POST /issue_reward  issueReward  Issue a reward
+  reason: Issuing rewards against an app wallet balance (Reward, AccountBalance, Money schemas) within
+    a points/perks membership network is loyalty programme operation.
+- tag: Challenges
+  spec_file: blackbird-challenges-api-openapi.yml
+  capability_id: BC-420.40
+  capability_id_l1: BC-420
+  capability_name: Loyalty & Retention Management
+  confidence: 0.7
+  evidence: 'GET /challenges listChallenges; schemas: ChallengeList, ChallengeThreshold, Amount'
+  reason: Challenges with amount thresholds in a membership/loyalty network where diners 'earn status,
+    perks, and points' are loyalty-programme mechanics, mapping to Loyalty & Retention Management. Read-only
+    single operation keeps confidence moderate.

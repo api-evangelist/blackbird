@@ -193,6 +193,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/blackbird-capability-edges.yml
+  name: Blackbird Business Capability Map
 - type: TermsOfService
   url: https://www.blackbird.xyz/terms
 - type: PrivacyPolicy
