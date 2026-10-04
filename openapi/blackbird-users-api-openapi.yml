@@ -260,23 +260,28 @@ paths:
         '403':
           description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
 components:
-  parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
   schemas:
+    Pagination:
+      type: object
+      required:
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
+      properties:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type:
+          - integer
+          - 'null'
+        page_size:
+          type: integer
     User:
       type: object
       required:
@@ -338,49 +343,67 @@ components:
         updated_at:
           type: string
           format: date-time
-    Error:
+    AccountBalance:
       type: object
+      description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
+
+        '
       required:
-      - error
+      - id
+      - object
+      - owner_id
+      - owner_type
+      - balance
+      - balance_usd
       properties:
-        error:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - account_balance
+        owner_id:
+          type: string
+          format: uuid
+        owner_type:
+          type: string
+          enum:
+          - user
+          - flynet_merchant
+        balance:
           type: object
+          description: FLY balance. `value` is a base-unit big-integer string with 18 decimals (wei-style) — divide by 10^18 for human FLY. Never parse with a float.
           required:
-          - type
-          - code
-          - message
+          - value
+          - currency
           properties:
-            type:
+            value:
               type: string
-            code:
+            currency:
               type: string
-            message:
+              enum:
+              - fly
+        balance_usd:
+          type: object
+          description: USD equivalent. `value` is integer cents.
+          required:
+          - value
+          - currency
+          properties:
+            value:
+              type: integer
+            currency:
               type: string
-            param:
-              type:
-              - string
-              - 'null'
-    Coordinate:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-    Location:
+              enum:
+              - usd
+    Wallet:
       type: object
       required:
       - id
       - object
-      - restaurant
-      - neighborhood
+      - wallet_type
       - address
-      - time_zone
-      - payments_enabled
-      - is_club
-      - reservations_enabled
       - created_at
       - updated_at
       properties:
@@ -390,48 +413,69 @@ components:
         object:
           type: string
           enum:
-          - location
-        name:
-          type:
-          - string
-          - 'null'
-        restaurant:
-          $ref: '#/components/schemas/Restaurant'
-        neighborhood:
-          $ref: '#/components/schemas/Neighborhood'
-        slug:
+          - user_wallet
+        wallet_type:
           type: string
+          enum:
+          - MEMBERSHIP
+          - SPENDING
         address:
-          $ref: '#/components/schemas/Address'
-        coordinate:
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-        phone_number:
-          type:
-          - string
-          - 'null'
-        time_zone:
           type: string
-        payments_enabled:
-          type: boolean
-        is_club:
-          type: boolean
-        reservations_enabled:
-          type: boolean
-        reservation_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        google_place_id:
-          type:
-          - string
-          - 'null'
+          pattern: ^0x[a-fA-F0-9]{40}$
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
+          format: date-time
+    CheckInList:
+      type: object
+      required:
+      - check_ins
+      - pagination
+      properties:
+        check_ins:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckIn'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    CheckIn:
+      type: object
+      required:
+      - id
+      - object
+      - location
+      - blackbird_pay_enabled
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - check_in
+        location:
+          $ref: '#/components/schemas/Location'
+        blackbird_pay_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        ended_at:
+          type:
+          - string
+          - 'null'
           format: date-time
     Status:
       type: object
@@ -551,18 +595,8 @@ components:
         updated_at:
           type: string
           format: date-time
-    AccountBalance:
+    Neighborhood:
       type: object
-      description: 'Owner-level aggregate FLY balance — a single record across all of an owner''s wallets, not a per-wallet figure. The owner is the authenticated member on `/users/me/wallets`, or your app''s merchant wallet on `/balance`.
-
-        '
-      required:
-      - id
-      - object
-      - owner_id
-      - owner_type
-      - balance
-      - balance_usd
       properties:
         id:
           type: string
@@ -570,48 +604,23 @@ components:
         object:
           type: string
           enum:
-          - account_balance
-        owner_id:
+          - neighborhood
+        name:
           type: string
-          format: uuid
-        owner_type:
+        region:
           type: string
-          enum:
-          - user
-          - flynet_merchant
-        balance:
-          type: object
-          description: FLY balance. `value` is a base-unit big-integer string with 18 decimals (wei-style) — divide by 10^18 for human FLY. Never parse with a float.
-          required:
-          - value
-          - currency
-          properties:
-            value:
-              type: string
-            currency:
-              type: string
-              enum:
-              - fly
-        balance_usd:
-          type: object
-          description: USD equivalent. `value` is integer cents.
-          required:
-          - value
-          - currency
-          properties:
-            value:
-              type: integer
-            currency:
-              type: string
-              enum:
-              - usd
-    Wallet:
+    Location:
       type: object
       required:
       - id
       - object
-      - wallet_type
+      - restaurant
+      - neighborhood
       - address
+      - time_zone
+      - payments_enabled
+      - is_club
+      - reservations_enabled
       - created_at
       - updated_at
       properties:
@@ -621,15 +630,43 @@ components:
         object:
           type: string
           enum:
-          - user_wallet
-        wallet_type:
+          - location
+        name:
+          type:
+          - string
+          - 'null'
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        neighborhood:
+          $ref: '#/components/schemas/Neighborhood'
+        slug:
           type: string
-          enum:
-          - MEMBERSHIP
-          - SPENDING
         address:
+          $ref: '#/components/schemas/Address'
+        coordinate:
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+        phone_number:
+          type:
+          - string
+          - 'null'
+        time_zone:
           type: string
-          pattern: ^0x[a-fA-F0-9]{40}$
+        payments_enabled:
+          type: boolean
+        is_club:
+          type: boolean
+        reservations_enabled:
+          type: boolean
+        reservation_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        google_place_id:
+          type:
+          - string
+          - 'null'
         created_at:
           type: string
           format: date-time
@@ -731,81 +768,28 @@ components:
         updated_at:
           type: string
           format: date-time
-    CheckIn:
+    Error:
       type: object
       required:
-      - id
-      - object
-      - location
-      - blackbird_pay_enabled
-      - created_at
+      - error
       properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - check_in
-        location:
-          $ref: '#/components/schemas/Location'
-        blackbird_pay_enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        ended_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    Neighborhood:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
-    CheckInList:
-      type: object
-      required:
-      - check_ins
-      - pagination
-      properties:
-        check_ins:
-          type: array
-          items:
-            $ref: '#/components/schemas/CheckIn'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Pagination:
-      type: object
-      required:
-      - total_count
-      - total_pages
-      - current_page
-      - next_page
-      - page_size
-      properties:
-        total_count:
-          type: integer
-        total_pages:
-          type: integer
-        current_page:
-          type: integer
-        next_page:
-          type:
-          - integer
-          - 'null'
-        page_size:
-          type: integer
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
     Tag:
       type: object
       required:
@@ -843,6 +827,22 @@ components:
         updated_at:
           type: string
           format: date-time
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   securitySchemes:
     oauthBearer:
       type: http

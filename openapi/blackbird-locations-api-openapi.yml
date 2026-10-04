@@ -81,54 +81,36 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    OpenHour:
+    Pagination:
       type: object
       required:
-      - object
-      - day_of_week
-      - open_time
-      - close_time
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
       properties:
-        object:
-          type: string
-          enum:
-          - open_hour
-        day_of_week:
-          type: string
-          enum:
-          - monday
-          - tuesday
-          - wednesday
-          - thursday
-          - friday
-          - saturday
-          - sunday
-        open_time:
-          type: string
-        close_time:
-          type: string
-    Error:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type:
+          - integer
+          - 'null'
+        page_size:
+          type: integer
+    OpenHoursList:
       type: object
       required:
-      - error
+      - open_hours
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
+        open_hours:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenHour'
     Coordinate:
       type: object
       properties:
@@ -138,6 +120,20 @@ components:
         longitude:
           type: number
           format: double
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
     Location:
       type: object
       required:
@@ -202,44 +198,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    LocationList:
-      type: object
-      required:
-      - locations
-      - pagination
-      properties:
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Location'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    OpenHoursList:
-      type: object
-      required:
-      - open_hours
-      properties:
-        open_hours:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenHour'
-    Address:
-      type: object
-      properties:
-        street:
-          type: string
-        street2:
-          type:
-          - string
-          - 'null'
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
     Restaurant:
       type: object
       required:
@@ -318,57 +276,84 @@ components:
         updated_at:
           type: string
           format: date-time
-    Neighborhood:
+    LocationList:
+      type: object
+      required:
+      - locations
+      - pagination
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Address:
       type: object
       properties:
-        id:
+        street:
           type: string
-          format: uuid
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+    OpenHour:
+      type: object
+      required:
+      - object
+      - day_of_week
+      - open_time
+      - close_time
+      properties:
         object:
           type: string
           enum:
-          - neighborhood
-        name:
+          - open_hour
+        day_of_week:
           type: string
-        region:
+          enum:
+          - monday
+          - tuesday
+          - wednesday
+          - thursday
+          - friday
+          - saturday
+          - sunday
+        open_time:
           type: string
-    Pagination:
-      type: object
-      required:
-      - total_count
-      - total_pages
-      - current_page
-      - next_page
-      - page_size
-      properties:
-        total_count:
-          type: integer
-        total_pages:
-          type: integer
-        current_page:
-          type: integer
-        next_page:
-          type:
-          - integer
-          - 'null'
-        page_size:
-          type: integer
+        close_time:
+          type: string
   parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
-    LocationId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: c54a3b6a-c31b-49b4-8af1-2dfb70ff3eec
     Page:
       name: page
       in: query
@@ -377,13 +362,22 @@ components:
         default: 0
         minimum: 0
       description: Zero-indexed page number.
+    LocationId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: c54a3b6a-c31b-49b4-8af1-2dfb70ff3eec
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
 
@@ -398,6 +392,12 @@ components:
               code: invalid_api_key
               message: Invalid or revoked API key.
               param: null
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauthBearer:
       type: http

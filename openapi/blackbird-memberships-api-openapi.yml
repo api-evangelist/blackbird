@@ -96,35 +96,7 @@ paths:
         '403':
           description: Token lacks the required scope. Empty body; reason in the `WWW-Authenticate` header.
 components:
-  parameters:
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
   schemas:
-    MembershipList:
-      type: object
-      required:
-      - memberships
-      - pagination
-      properties:
-        memberships:
-          type: array
-          items:
-            $ref: '#/components/schemas/Membership'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     Pagination:
       type: object
       required:
@@ -216,6 +188,34 @@ components:
                   - string
                   - 'null'
                   format: uri
+    MembershipList:
+      type: object
+      required:
+      - memberships
+      - pagination
+      properties:
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/Membership'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   securitySchemes:
     oauthBearer:
       type: http

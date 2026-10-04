@@ -80,53 +80,28 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    PageSize:
-      name: page_size
-      in: query
-      schema:
-        type: integer
-        default: 50
-      description: Items per page. Default `50`.
-    RestaurantId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
   schemas:
-    Error:
+    Pagination:
       type: object
       required:
-      - error
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
+          type:
+          - integer
+          - 'null'
+        page_size:
+          type: integer
     Coordinate:
       type: object
       properties:
@@ -136,6 +111,20 @@ components:
         longitude:
           type: number
           format: double
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
     Location:
       type: object
       required:
@@ -200,35 +189,18 @@ components:
         updated_at:
           type: string
           format: date-time
-    LocationList:
+    RestaurantList:
       type: object
       required:
-      - locations
+      - restaurants
       - pagination
       properties:
-        locations:
+        restaurants:
           type: array
           items:
-            $ref: '#/components/schemas/Location'
+            $ref: '#/components/schemas/Restaurant'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    Address:
-      type: object
-      properties:
-        street:
-          type: string
-        street2:
-          type:
-          - string
-          - 'null'
-        city:
-          type: string
-        state:
-          type: string
-        zipcode:
-          type: string
-        country:
-          type: string
     Restaurant:
       type: object
       required:
@@ -307,60 +279,82 @@ components:
         updated_at:
           type: string
           format: date-time
-    Neighborhood:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
-    Pagination:
+    LocationList:
       type: object
       required:
-      - total_count
-      - total_pages
-      - current_page
-      - next_page
-      - page_size
-      properties:
-        total_count:
-          type: integer
-        total_pages:
-          type: integer
-        current_page:
-          type: integer
-        next_page:
-          type:
-          - integer
-          - 'null'
-        page_size:
-          type: integer
-    RestaurantList:
-      type: object
-      required:
-      - restaurants
+      - locations
       - pagination
       properties:
-        restaurants:
+        locations:
           type: array
           items:
-            $ref: '#/components/schemas/Restaurant'
+            $ref: '#/components/schemas/Location'
         pagination:
           $ref: '#/components/schemas/Pagination'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        street2:
+          type:
+          - string
+          - 'null'
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+  parameters:
+    RestaurantId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 14339db3-2e7a-42c4-aa98-4c0fb18679eb
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: 50
+      description: Items per page. Default `50`.
   responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
 
@@ -375,6 +369,12 @@ components:
               code: invalid_api_key
               message: Invalid or revoked API key.
               param: null
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauthBearer:
       type: http

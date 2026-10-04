@@ -55,83 +55,27 @@ paths:
           description: Key lacks the `read:restaurant_challenges` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
   schemas:
-    Amount:
-      type: object
-      description: 'A monetary amount. `value` is a stringified integer in the smallest
-
-        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
-
-        opaque — never parse it as a float. `currency` is the token or fiat
-
-        symbol; its casing is not guaranteed stable across endpoints, so
-
-        compare it case-insensitively.
-
-        '
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          example: '1000000000000000000'
-        currency:
-          type: string
-          example: FLY
-    Error:
+    Pagination:
       type: object
       required:
-      - error
+      - total_count
+      - total_pages
+      - current_page
+      - next_page
+      - page_size
       properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type:
-              - string
-              - 'null'
-    ChallengeList:
-      type: object
-      required:
-      - challenges
-      - pagination
-      properties:
-        challenges:
-          type: array
-          items:
-            $ref: '#/components/schemas/Challenge'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    ChallengeThreshold:
-      type: object
-      description: 'Completion thresholds. Which fields are populated depends on the challenge `type`.
-
-        '
-      properties:
-        spend_threshold:
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        minimum_spend:
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        dine_threshold:
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        next_page:
           type:
           - integer
           - 'null'
-        referral_threshold:
-          type:
-          - integer
-          - 'null'
+        page_size:
+          type: integer
     Challenge:
       type: object
       required:
@@ -196,27 +140,83 @@ components:
         updated_at:
           type: string
           format: date-time
-    Pagination:
+    ChallengeList:
       type: object
       required:
-      - total_count
-      - total_pages
-      - current_page
-      - next_page
-      - page_size
+      - challenges
+      - pagination
       properties:
-        total_count:
-          type: integer
-        total_pages:
-          type: integer
-        current_page:
-          type: integer
-        next_page:
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Challenge'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Amount:
+      type: object
+      description: 'A monetary amount. `value` is a stringified integer in the smallest
+
+        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
+
+        opaque — never parse it as a float. `currency` is the token or fiat
+
+        symbol; its casing is not guaranteed stable across endpoints, so
+
+        compare it case-insensitively.
+
+        '
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          example: '1000000000000000000'
+        currency:
+          type: string
+          example: FLY
+    ChallengeThreshold:
+      type: object
+      description: 'Completion thresholds. Which fields are populated depends on the challenge `type`.
+
+        '
+      properties:
+        spend_threshold:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        minimum_spend:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        dine_threshold:
           type:
           - integer
           - 'null'
-        page_size:
-          type: integer
+        referral_threshold:
+          type:
+          - integer
+          - 'null'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
   parameters:
     Page:
       name: page
