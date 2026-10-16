@@ -2,6 +2,20 @@
   "repo": "blackbird",
   "feeds": [
     {
+      "source": "https://www.blackbird.xyz/blog",
+      "feed_url": "https://www.blackbird.xyz/blog",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
+      "source": "https://www.thesupersonic.blackbird.xyz",
+      "feed_url": "https://www.thesupersonic.blackbird.xyz/feed",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
       "source": "https://docs.flynet.org/resources/support",
       "feed_url": "https://docs.flynet.org/resources/support",
       "title": "",
@@ -10,5 +24,5 @@
     }
   ],
   "post_count": 0,
-  "fetched": "2026-10-03T12:30:02Z"
+  "fetched": "2026-10-10T13:15:00Z"
 }
