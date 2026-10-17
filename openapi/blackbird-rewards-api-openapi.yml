@@ -118,27 +118,6 @@ paths:
         '403':
           description: Key lacks the `read:balance` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
-  responses:
-    BadRequest:
-      description: Invalid request.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
   schemas:
     AccountBalance:
       type: object
@@ -267,6 +246,27 @@ components:
               type:
               - string
               - 'null'
+  responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   securitySchemes:
     oauthBearer:
       type: http

@@ -57,6 +57,42 @@ paths:
           description: Key lacks the `read:app` scope. JSON `insufficient_scope` body with a `WWW-Authenticate` header.
 components:
   schemas:
+    App:
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - flynet_merchant_id
+      - allowed_scopes
+      - active
+      - created_at
+      - account
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The app's client ID.
+        object:
+          type: string
+          enum:
+          - app
+        name:
+          type: string
+        flynet_merchant_id:
+          type: string
+          format: uuid
+        allowed_scopes:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        account:
+          $ref: '#/components/schemas/AppAccount'
     AppAccount:
       type: object
       required:
@@ -94,42 +130,6 @@ components:
               type:
               - string
               - 'null'
-    App:
-      type: object
-      required:
-      - id
-      - object
-      - name
-      - flynet_merchant_id
-      - allowed_scopes
-      - active
-      - created_at
-      - account
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The app's client ID.
-        object:
-          type: string
-          enum:
-          - app
-        name:
-          type: string
-        flynet_merchant_id:
-          type: string
-          format: uuid
-        allowed_scopes:
-          type: array
-          items:
-            type: string
-        active:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        account:
-          $ref: '#/components/schemas/AppAccount'
   responses:
     MissingApiKey:
       description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.

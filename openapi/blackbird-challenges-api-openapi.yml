@@ -76,6 +76,61 @@ components:
           - 'null'
         page_size:
           type: integer
+    Amount:
+      type: object
+      description: 'A monetary amount. `value` is a stringified integer in the smallest
+
+        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
+
+        opaque — never parse it as a float. `currency` is the token or fiat
+
+        symbol; its casing is not guaranteed stable across endpoints, so
+
+        compare it case-insensitively.
+
+        '
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          example: '1000000000000000000'
+        currency:
+          type: string
+          example: FLY
+    ChallengeThreshold:
+      type: object
+      description: 'Completion thresholds. Which fields are populated depends on the challenge `type`.
+
+        '
+      properties:
+        spend_threshold:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        minimum_spend:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        dine_threshold:
+          type:
+          - integer
+          - 'null'
+        referral_threshold:
+          type:
+          - integer
+          - 'null'
+    ChallengeList:
+      type: object
+      required:
+      - challenges
+      - pagination
+      properties:
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Challenge'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Challenge:
       type: object
       required:
@@ -140,61 +195,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    ChallengeList:
-      type: object
-      required:
-      - challenges
-      - pagination
-      properties:
-        challenges:
-          type: array
-          items:
-            $ref: '#/components/schemas/Challenge'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Amount:
-      type: object
-      description: 'A monetary amount. `value` is a stringified integer in the smallest
-
-        unit of `currency` (wei for FLY, cents for USD). Treat `value` as
-
-        opaque — never parse it as a float. `currency` is the token or fiat
-
-        symbol; its casing is not guaranteed stable across endpoints, so
-
-        compare it case-insensitively.
-
-        '
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          example: '1000000000000000000'
-        currency:
-          type: string
-          example: FLY
-    ChallengeThreshold:
-      type: object
-      description: 'Completion thresholds. Which fields are populated depends on the challenge `type`.
-
-        '
-      properties:
-        spend_threshold:
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        minimum_spend:
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        dine_threshold:
-          type:
-          - integer
-          - 'null'
-        referral_threshold:
-          type:
-          - integer
-          - 'null'
     Error:
       type: object
       required:
@@ -217,6 +217,21 @@ components:
               type:
               - string
               - 'null'
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
   parameters:
     Page:
       name: page
@@ -233,21 +248,6 @@ components:
         type: integer
         default: 50
       description: Items per page. Default `50`.
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
   securitySchemes:
     oauthBearer:
       type: http

@@ -130,6 +130,20 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
     Pagination:
       type: object
       required:
@@ -151,133 +165,6 @@ components:
           - 'null'
         page_size:
           type: integer
-    CheckInList:
-      type: object
-      required:
-      - check_ins
-      - pagination
-      properties:
-        check_ins:
-          type: array
-          items:
-            $ref: '#/components/schemas/CheckIn'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Coordinate:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-    CheckIn:
-      type: object
-      required:
-      - id
-      - object
-      - location
-      - blackbird_pay_enabled
-      - created_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - check_in
-        location:
-          $ref: '#/components/schemas/Location'
-        blackbird_pay_enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        ended_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    Neighborhood:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
-    Location:
-      type: object
-      required:
-      - id
-      - object
-      - restaurant
-      - neighborhood
-      - address
-      - time_zone
-      - payments_enabled
-      - is_club
-      - reservations_enabled
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - location
-        name:
-          type:
-          - string
-          - 'null'
-        restaurant:
-          $ref: '#/components/schemas/Restaurant'
-        neighborhood:
-          $ref: '#/components/schemas/Neighborhood'
-        slug:
-          type: string
-        address:
-          $ref: '#/components/schemas/Address'
-        coordinate:
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-        phone_number:
-          type:
-          - string
-          - 'null'
-        time_zone:
-          type: string
-        payments_enabled:
-          type: boolean
-        is_club:
-          type: boolean
-        reservations_enabled:
-          type: boolean
-        reservation_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        google_place_id:
-          type:
-          - string
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     Restaurant:
       type: object
       required:
@@ -356,6 +243,107 @@ components:
         updated_at:
           type: string
           format: date-time
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    CheckIn:
+      type: object
+      required:
+      - id
+      - object
+      - location
+      - blackbird_pay_enabled
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - check_in
+        location:
+          $ref: '#/components/schemas/Location'
+        blackbird_pay_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        ended_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    Location:
+      type: object
+      required:
+      - id
+      - object
+      - restaurant
+      - neighborhood
+      - address
+      - time_zone
+      - payments_enabled
+      - is_club
+      - reservations_enabled
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - location
+        name:
+          type:
+          - string
+          - 'null'
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        neighborhood:
+          $ref: '#/components/schemas/Neighborhood'
+        slug:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        coordinate:
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+        phone_number:
+          type:
+          - string
+          - 'null'
+        time_zone:
+          type: string
+        payments_enabled:
+          type: boolean
+        is_club:
+          type: boolean
+        reservations_enabled:
+          type: boolean
+        reservation_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        google_place_id:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     Error:
       type: object
       required:
@@ -378,6 +366,18 @@ components:
               type:
               - string
               - 'null'
+    CheckInList:
+      type: object
+      required:
+      - check_ins
+      - pagination
+      properties:
+        check_ins:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckIn'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Address:
       type: object
       properties:
@@ -395,6 +395,27 @@ components:
           type: string
         country:
           type: string
+  responses:
+    MissingApiKey:
+      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication_error
+              code: invalid_api_key
+              message: Invalid or revoked API key.
+              param: null
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     Page:
       name: page
@@ -419,27 +440,6 @@ components:
         type: string
         format: uuid
       example: '{uuid}'
-  responses:
-    MissingApiKey:
-      description: 'Unauthorized. A **missing** `X-API-Key` returns an empty body with a `WWW-Authenticate: Bearer` header (read the header, not the body). An **invalid or revoked** key returns the JSON body below with `code: "invalid_api_key"`.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error:
-              type: authentication_error
-              code: invalid_api_key
-              message: Invalid or revoked API key.
-              param: null
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauthBearer:
       type: http

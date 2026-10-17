@@ -81,6 +81,32 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    Neighborhood:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - neighborhood
+        name:
+          type: string
+        region:
+          type: string
+    LocationList:
+      type: object
+      required:
+      - locations
+      - pagination
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Pagination:
       type: object
       required:
@@ -111,93 +137,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpenHour'
-    Coordinate:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-    Neighborhood:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - neighborhood
-        name:
-          type: string
-        region:
-          type: string
-    Location:
-      type: object
-      required:
-      - id
-      - object
-      - restaurant
-      - neighborhood
-      - address
-      - time_zone
-      - payments_enabled
-      - is_club
-      - reservations_enabled
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-        object:
-          type: string
-          enum:
-          - location
-        name:
-          type:
-          - string
-          - 'null'
-        restaurant:
-          $ref: '#/components/schemas/Restaurant'
-        neighborhood:
-          $ref: '#/components/schemas/Neighborhood'
-        slug:
-          type: string
-        address:
-          $ref: '#/components/schemas/Address'
-        coordinate:
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-        phone_number:
-          type:
-          - string
-          - 'null'
-        time_zone:
-          type: string
-        payments_enabled:
-          type: boolean
-        is_club:
-          type: boolean
-        reservations_enabled:
-          type: boolean
-        reservation_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        google_place_id:
-          type:
-          - string
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     Restaurant:
       type: object
       required:
@@ -276,18 +215,105 @@ components:
         updated_at:
           type: string
           format: date-time
-    LocationList:
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    OpenHour:
       type: object
       required:
-      - locations
-      - pagination
+      - object
+      - day_of_week
+      - open_time
+      - close_time
       properties:
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Location'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
+        object:
+          type: string
+          enum:
+          - open_hour
+        day_of_week:
+          type: string
+          enum:
+          - monday
+          - tuesday
+          - wednesday
+          - thursday
+          - friday
+          - saturday
+          - sunday
+        open_time:
+          type: string
+        close_time:
+          type: string
+    Location:
+      type: object
+      required:
+      - id
+      - object
+      - restaurant
+      - neighborhood
+      - address
+      - time_zone
+      - payments_enabled
+      - is_club
+      - reservations_enabled
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+          enum:
+          - location
+        name:
+          type:
+          - string
+          - 'null'
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        neighborhood:
+          $ref: '#/components/schemas/Neighborhood'
+        slug:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        coordinate:
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+        phone_number:
+          type:
+          - string
+          - 'null'
+        time_zone:
+          type: string
+        payments_enabled:
+          type: boolean
+        is_club:
+          type: boolean
+        reservations_enabled:
+          type: boolean
+        reservation_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        google_place_id:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     Error:
       type: object
       required:
@@ -327,41 +353,7 @@ components:
           type: string
         country:
           type: string
-    OpenHour:
-      type: object
-      required:
-      - object
-      - day_of_week
-      - open_time
-      - close_time
-      properties:
-        object:
-          type: string
-          enum:
-          - open_hour
-        day_of_week:
-          type: string
-          enum:
-          - monday
-          - tuesday
-          - wednesday
-          - thursday
-          - friday
-          - saturday
-          - sunday
-        open_time:
-          type: string
-        close_time:
-          type: string
   parameters:
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-      description: Zero-indexed page number.
     LocationId:
       name: id
       in: path
@@ -370,6 +362,14 @@ components:
         type: string
         format: uuid
       example: c54a3b6a-c31b-49b4-8af1-2dfb70ff3eec
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Zero-indexed page number.
     PageSize:
       name: page_size
       in: query
