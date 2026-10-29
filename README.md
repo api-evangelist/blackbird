@@ -64,8 +64,142 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Blackbird Labs is the membership network for restaurant lovers, founded by Eater and Resy co-founder Ben Leventhal. Diners earn status, perks, and points at world-class restaurants and can pay their check in FLY, Blackbird's loyalty token. The developer platform is the **Flynet API** — read access to the dining network (restaurants, locations, check-ins, member identity, memberships) plus FLY Payment Intents modeled on Stripe. Flynet is a layer-3 network on Coinbase's Base chain.
+Blackbird Labs is the membership network for restaurant lovers, founded by Eater and Resy co-founder Ben Leventhal. Its consumer app lets diners earn status, perks, and points at world-class restaurants and pay their check in FLY, Blackbird's loyalty token. Blackbird's developer platform is the Flynet API — read access to the dining network (restaurants, locations, check-ins, member identity, and memberships) plus FLY Payment Intents modeled on Stripe — backed by an OpenAPI spec, first-party TypeScript SDKs (@flynetdev/core and @flynetdev/react), two MCP servers, a published agent skill, and llms.txt. Flynet is a layer-3 network built on Coinbase's Base chain. Backed by a16z, dcvc, and multicoin-capital.
 
-Developer docs: https://docs.flynet.org — OpenAPI, TypeScript SDKs (`@flynetdev/core`, `@flynetdev/react`), two MCP servers, a published agent skill, and llms.txt.
+**Areas:** Company · Restaurant · Loyalty · Payments · Dining · Membership · Cryptocurrency · Blockchain · Web3
 
-Backed by: a16z, dcvc, multicoin-capital — https://blackbird.xyz
+## Blackbird on APIs.io
+
+Everything profiled for Blackbird is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/blackbird/](https://apis.io/providers/blackbird/)** — or go straight to one of the APIs or properties below.
+
+### APIs (10)
+
+- [Blackbird App API](https://apis.io/apis/blackbird/blackbird-app-api/) — The App API from Blackbird — 1 operation(s) for app.
+- [Blackbird Challenges API](https://apis.io/apis/blackbird/blackbird-challenges-api/) — The Challenges API from Blackbird — 1 operation(s) for challenges.
+- [Blackbird Check-ins API](https://apis.io/apis/blackbird/blackbird-check-ins-api/) — Filtered visit records.
+- [Blackbird Locations API](https://apis.io/apis/blackbird/blackbird-locations-api/) — Physical venues and open hours.
+- [Blackbird Memberships API](https://apis.io/apis/blackbird/blackbird-memberships-api/) — Per-(member, restaurant) loyalty records carrying check-in counts and tiers.
+- [Blackbird Payments API](https://apis.io/apis/blackbird/blackbird-payments-api/) — Payment Intents for FLY-funded payments.
+- [Blackbird Restaurants API](https://apis.io/apis/blackbird/blackbird-restaurants-api/) — Brand-level restaurant discovery.
+- [Blackbird Rewards API](https://apis.io/apis/blackbird/blackbird-rewards-api/) — The Rewards API from Blackbird — 2 operation(s) for rewards.
+- [Blackbird Specials API](https://apis.io/apis/blackbird/blackbird-specials-api/) — The Specials API from Blackbird — 1 operation(s) for specials.
+- [Blackbird Users API](https://apis.io/apis/blackbird/blackbird-users-api/) — The authenticated member — profile, status, wallets, tags, and check-in history. Subject resolved from the token.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [blackbird-mcp.yml](https://apis.io/servers/blackbird/blackbird-mcp-yml/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Blackbird Agentic Access](https://apis.io/agentic-access/blackbird/blackbird-agentic-access/)
+
+#### Collections (10)
+
+Postman and Open Collection request collections.
+
+- [Flynet App API](https://apis.io/collections/blackbird/open-blackbird-app-api/)
+- [Flynet App Challenges API](https://apis.io/collections/blackbird/open-blackbird-challenges-api/)
+- [Flynet App Check-ins API](https://apis.io/collections/blackbird/open-blackbird-check-ins-api/)
+- [Flynet App Locations API](https://apis.io/collections/blackbird/open-blackbird-locations-api/)
+- [Flynet App Memberships API](https://apis.io/collections/blackbird/open-blackbird-memberships-api/)
+- [Flynet App Payments API](https://apis.io/collections/blackbird/open-blackbird-payments-api/)
+- [Flynet App Restaurants API](https://apis.io/collections/blackbird/open-blackbird-restaurants-api/)
+- [Flynet App Rewards API](https://apis.io/collections/blackbird/open-blackbird-rewards-api/)
+- [Flynet App Specials API](https://apis.io/collections/blackbird/open-blackbird-specials-api/)
+- [Flynet App Users API](https://apis.io/collections/blackbird/open-blackbird-users-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Blackbird Flynet Overlay](https://apis.io/overlays/blackbird/blackbird-flynet-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Blackbird Authentication](https://apis.io/security/blackbird/blackbird-authentication/)
+- [Blackbird Domain Security](https://apis.io/security/blackbird/blackbird-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Blackbird Scopes](https://apis.io/scopes/blackbird/blackbird-scopes/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://blackbird.xyz)
+- [Documentation](https://docs.flynet.org)
+- [Getting started](https://docs.flynet.org/getting-started)
+- [API reference](https://docs.flynet.org/api-reference/introduction)
+- [Sign up](https://docs.flynet.org/resources/request-access)
+- [Support](https://docs.flynet.org/resources/support)
+- [Blog](https://www.blackbird.xyz/blog)
+- [Terms of service](https://www.blackbird.xyz/terms)
+- [Privacy policy](https://www.blackbird.xyz/privacy)
+
+## API Evangelist rating
+
+**Kin Score 43.4** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 71.7 |
+| Contract quality | 50.2 |
+| Contract governance | 4.5 |
+| Operational transparency | 15.8 |
+| Developer ergonomics | 78.6 |
+| Access clarity | 13.2 |
+
+**Agent readiness 41.7** — agent-native
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | verified |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | yes |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 24.1** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/blackbird/](https://apis.io/providers/blackbird/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Blackbird: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/blackbird/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
